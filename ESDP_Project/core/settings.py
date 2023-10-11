@@ -135,3 +135,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SHELL_PLUS = 'bpython'
+
+
+AUTH_USER_MODEL = 'accounts.User'
