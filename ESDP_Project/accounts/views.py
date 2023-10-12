@@ -13,10 +13,9 @@ class LoginView(views.LoginView):
     form_class = LoginForm
 
     def get_success_url(self):
-        return reverse('home')
+        return redirect('home')
 
     def form_invalid(self, form):
-        print(form.errors)
         return render(self.request, 'login.html', {'form': form})
 
 
