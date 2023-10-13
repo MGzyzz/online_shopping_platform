@@ -13,13 +13,15 @@ class LoginView(views.LoginView):
     form_class = LoginForm
 
     def get_success_url(self):
-        return redirect('home')
+        return reverse('home')
 
     def form_invalid(self, form):
         return render(self.request, 'login.html', {'form': form})
 
 
-
+class Logout(views.LogoutView):
+    def get_next_page(self):
+        return self.request.META.get('HTTP_REFERER')
 
 class RegisterView(CreateView):
     template_name = 'register.html'
