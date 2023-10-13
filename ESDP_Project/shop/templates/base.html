@@ -39,6 +39,8 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="#">Профиль</a>
                         <a class="dropdown-item" href="#">Настройки</a>
+                        <a class="dropdown-item" href="{% url 'update_user' id=request.user.id %}">Изменение пользователя</a>
+                        <a class="dropdown-item" href="{% url 'change_password' id=request.user.id %}">Изменить пароль</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Выйти</a>
                     </div>
