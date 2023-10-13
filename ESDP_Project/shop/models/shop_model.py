@@ -18,7 +18,8 @@ class ShopModel(models.Model):
         max_length=255,
         null=False,
         blank=False,
-        verbose_name='Название магазина'
+        verbose_name='Название магазина',
+        unique=True
     )
     logo = models.ImageField(
         null=True,
