@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="product-upload-container">
+        <h2 class="form-title">Add New Product</h2>
+        <form method="post" enctype="multipart/form-data" class="product-form">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_name" class="form-label">Name</label>
+                <input type="text" class="form-control custom-input" id="id_name" name="name" value="{{ form.name.value|default:'' }}">
+                {% if form.name.errors %}
+       <div class="alert alert-danger mt-3">
+                {{ form.name.errors }}
+        </div>
+    {% endif %}
+            </div>
+            <div class="mb-3">
+                <label for="id_description" class="form-label">Description</label>
+<textarea class="form-control custom-input" id="id_description" name="description">{{ form.description.value|default:'' }}</textarea>
+                {% if form.description.errors %}
+       <div class="alert alert-danger mt-3">
+                {{ form.description.errors }}
+        </div>
+    {% endif %}
+            </div>
+            <div class="mb-3">
+                <label for="id_vendor_code" class="form-label">Vendor Code</label>
+                <input type="number" class="form-control custom-input" id="id_vendor_code" name="vendor_code" value="{{ form.vendor_code.value|default:'' }}">
+                {% if form.vendor_code.errors %}
+       <div class="alert alert-danger mt-3">
+                {{ form.vendor_code.errors }}
+        </div>
+    {% endif %}
+            </div>
+            <div class="mb-3">
+                <label for="id_quantity" class="form-label">Quantity</label>
+                <input type="number" class="form-control custom-input" id="id_quantity" name="quantity" value="{{ form.quantity.value|default:'' }}">
+                {% if form.quantity.errors %}
+       <div class="alert alert-danger mt-3">
+                {{ form.quantity.errors }}
+        </div>
+    {% endif %}
+            </div>
+            <div class="mb-3">
+                <label for="id_price" class="form-label">Price</label>
+                <input type="number" class="form-control custom-input" id="id_price" name="price" value="{{ form.price.value|default:'' }}">
+                {% if form.price.errors %}
+       <div class="alert alert-danger mt-3">
+                {{ form.price.errors }}
+        </div>
+    {% endif %}
+            </div>
+            <div class="mb-3">
+                <label for="id_discount" class="form-label">Discount</label>
+                <input type="number" class="form-control custom-input" id="id_discount" name="discount" value="{{ form.discount.value|default:'' }}">
+                {% if form.discount.errors %}
+       <div class="alert alert-danger mt-3">
+                {{ form.discount.errors }}
+        </div>
+    {% endif %}
+            </div>
+            <div class="mb-3 input-group">
+                <label for="id_photo_one" class="input-group-text">Photo 1</label>
+                <input type="file" class="form-control custom-input" id="id_photo_one" name="photo_one" value="{{ form.photo_one.value|default:'' }}">
+                {% if form.photo_one.errors %}
+       <div class="alert alert-danger mt-3">
+                {{ form.photo_one.errors }}
+        </div>
+    {% endif %}
+            </div>
+            <div class="mb-3 input-group">
+                <label for="id_photo_two" class="input-group-text">Photo 2</label>
+                <input type="file" class="form-control custom-input" id="id_photo_two" name="photo_two" value="{{ form.photo_two.value|default:'' }}">
+                {% if form.photo_two.errors %}
+       <div class="alert alert-danger mt-3">
+                {{ form.photo_two.errors }}
+        </div>
+    {% endif %}
+            </div>
+            <div class="mb-3 input-group">
+                <label for="id_photo_three" class="input-group-text">Photo 3</label>
+                <input type="file" class="form-control" id="id_photo_three" name="photo_three" value="{{ form.photo_three.value|default:'' }}">
+                {% if form.photo_three.errors %}
+       <div class="alert alert-danger mt-3">
+                {{ form.photo_three.errors }}
+        </div>
+    {% endif %}
+            </div>
+            <button type="submit" class="btn btn-submit">Create</button>
+        </form>
+    </div>
+{% endblock %}
