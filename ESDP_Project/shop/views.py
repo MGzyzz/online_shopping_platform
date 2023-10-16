@@ -1,7 +1,8 @@
 from django.views.generic import TemplateView, CreateView, UpdateView
-from .forms import ShopModelForm
-from shop.models import ShopModel
+from .forms import ShopModelForm, ProductForm
+from shop.models import ShopModel, ProductModel
 from django.urls import reverse_lazy
+from django.shortcuts import render, get_object_or_404, redirect
 
 
 # Create your views here.
@@ -32,3 +33,20 @@ class ShopUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('home')
+
+
+class ProductCreateView(CreateView):
+    model = ProductModel
+    form_class = ProductForm
+    template_name = 'create_product.html'
+
+    def form_valid(self, form):
+        shop = get_object_or_404(ShopModel, id=self.kwargs['shop_id'])
+        product = form.save(commit=False)
+        product.shop_id = shop
+        product.save()
+        form.save()
+        return redirect('home')
+
+    def form_invalid(self, form):
+        return render(self.request, 'create_product.html', {'form': form})
