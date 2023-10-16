@@ -14,6 +14,19 @@ class TimeDiscountViewSet(viewsets.ModelViewSet):
     lookup_url_kwarg = 'id'
     lookup_field = 'id'
 
+    def create(self, request, *args, **kwargs):
+        serializer = TimeDiscountSerializer(data=request.data)
+        if serializer.is_valid():
+            time_discount = serializer.save()
+
+            discounted_price = time_discount.product.price - (
+                        time_discount.product.price * (time_discount.discount / 100))
+            time_discount.discounted_price = discounted_price
+            time_discount.save()
+
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
     @action(detail=True, methods=['get'], url_path='check-expiration')
     def check_expiration(self, request, id=None):
         discount = self.get_object()
