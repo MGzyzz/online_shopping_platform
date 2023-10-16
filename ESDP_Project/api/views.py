@@ -1,3 +1,26 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from shop.models import TimeDiscount
+from .serializers import TimeDiscountSerializer
+from datetime import datetime
 
-# Create your views here.
+
+class TimeDiscountViewSet(viewsets.ModelViewSet):
+    queryset = TimeDiscount.objects.all()
+    serializer_class = TimeDiscountSerializer
+    lookup_url_kwarg = 'id'
+    lookup_field = 'id'
+
+    @action(detail=True, methods=['get'], url_path='check-expiration')
+    def check_expiration(self, request, id=None):
+        discount = self.get_object()
+        end_date = discount.end_date.astimezone(timezone.get_current_timezone())
+        now = timezone.now()
+        if now >= end_date:
+            discount.delete()
+            return Response({'expired': True})
+        else:
+            return Response({'expired': False})
