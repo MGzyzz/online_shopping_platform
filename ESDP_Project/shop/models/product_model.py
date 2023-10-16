@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import TextChoices
 from shop.models import ShopModel
 
+
 class ProductModel(models.Model):
     shop_id = models.ForeignKey(ShopModel, on_delete=models.CASCADE, related_name='products')
     name = models.CharField(max_length=100, null=False, blank=False, verbose_name='Название продукта')
