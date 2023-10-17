@@ -10,7 +10,7 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = [
             'email', 'first_name', 'last_name', 'surname', 'password1', 'password2',
-            'phone'
+            'phone', 'seller'
         ]
 
 
