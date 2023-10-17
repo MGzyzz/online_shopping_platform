@@ -30,6 +30,7 @@
             {% if user.is_authenticated %}
             <a href="{% url "shop_create" %}">Create shop</a>
             <a href="{% url "create_product" shop_id=1 %}" class="mx-3 btn btn-info shadow">Create product test</a>
+                <a href="{% url 'shop_list' user_id=request.user.id %}" class="btn btn-light shadow">Your shops</a>
                 {% else %}
             {% endif %}
             <ul class="navbar-nav ml-auto">

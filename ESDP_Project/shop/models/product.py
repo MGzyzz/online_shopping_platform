@@ -1,10 +1,10 @@
 from django.db import models
 from django.db.models import TextChoices
-from shop.models import ShopModel
+from shop.models import Shop
 
 
-class ProductModel(models.Model):
-    shop_id = models.ForeignKey(ShopModel, on_delete=models.CASCADE, related_name='products')
+class Product(models.Model):
+    shop_id = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='products')
     name = models.CharField(max_length=100, null=False, blank=False, verbose_name='Название продукта')
     description = models.TextField(max_length=500, null=False, blank=False, verbose_name='Описание')
     vendor_code = models.IntegerField(unique=True, null=False, blank=False, verbose_name='Код Поставщика')
