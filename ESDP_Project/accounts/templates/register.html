@@ -95,7 +95,7 @@
         </div>
     {% endif %}
 
- <label for="inputStatus" class="mt-3" style="color:black">Вы являетесь продавцом?</label>
+ <label for="inputStatus" class="mt-3 text-dark">Вы являетесь продавцом?</label>
     <input style="height: 25px; width: 45px" type="checkbox" role="switch" class="form_check_input form-control" id="inputStatus"  name="seller" value="{{ form.seller.value|yesno:"1,0"}}">
     {% if form.seller.errors %}
        <div class="alert alert-danger mt-3">
