@@ -1,14 +1,20 @@
 from django import forms
-from .models import ShopModel, ProductModel
+from .models import Shop, Product, Images
 
 
 class ShopModelForm(forms.ModelForm):
     class Meta:
-        model = ShopModel
+        model = Shop
         fields = ['name', 'logo', 'description', 'theme']
 
 
 class ProductForm(forms.ModelForm):
     class Meta:
-        model = ProductModel
-        fields = ['name', 'description', 'vendor_code', 'quantity', 'price', 'discount', 'photo_one', 'photo_two', 'photo_three']
+        model = Product
+        fields = ['name', 'description', 'vendor_code', 'quantity', 'price', 'discount']
+
+
+class ImagesForm(forms.ModelForm):
+    class Meta:
+        model = Images
+        fields = ['image']

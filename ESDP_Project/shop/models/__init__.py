@@ -1,3 +1,5 @@
-from .shop_model import ShopModel
-from .product_model import ProductModel
+
+from .shop import Shop
+from .product import Product
+from .images import Images
 from .time_discount import TimeDiscount

@@ -8,7 +8,7 @@ class Themes(TextChoices):
     RED = 'Red', 'Красная'
 
 
-class ShopModel(models.Model):
+class Shop(models.Model):
     user = models.ForeignKey(
         'accounts.User',
         on_delete=models.CASCADE,
