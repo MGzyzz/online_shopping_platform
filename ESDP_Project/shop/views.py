@@ -1,8 +1,10 @@
 from django.views.generic import TemplateView, CreateView, UpdateView, ListView
-from .forms import ShopModelForm, ProductForm
+from .forms import ShopModelForm, ProductForm, ImagesForm
 from shop.models import Shop, Product
 from django.urls import reverse_lazy
 from django.shortcuts import render, get_object_or_404, redirect
+
+from .models import Images
 
 
 # Create your views here.
@@ -39,12 +41,22 @@ class ProductCreateView(CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'create_product.html'
+    extra_context = {
+        'image_form': ImagesForm
+    }
 
     def form_valid(self, form):
         shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
         product = form.save(commit=False)
         product.shop_id = shop
-        product.save()
+        images = self.request.FILES.getlist('images')
+        if len(images) <= 3:
+            product.save()
+            for image in images:
+                Images.objects.create(product=product, image=image)
+        else:
+            return render(self.request, 'create_product.html', {'form': form,
+                                                                'image_errors': 'Максимальное количество изображений: 3'})
         form.save()
         return redirect('home')
 
@@ -64,7 +76,6 @@ class ProductListView(ListView):
     model = Product
     context_object_name = 'products'
     paginate_by = 5
-
 
     def get_allow_empty(self):
         allow_empty = True
