@@ -35,6 +35,13 @@ class ShopUpdateView(UpdateView):
         return reverse_lazy('home')
 
 
+class ShopListView(ListView):
+    template_name = 'shop_list_view.html'
+    model = Shop
+    context_object_name = 'shops'
+    paginate_by = 5
+
+
 class ProductCreateView(CreateView):
     model = Product
     form_class = ProductForm
@@ -52,15 +59,8 @@ class ProductCreateView(CreateView):
         return render(self.request, 'create_product.html', {'form': form})
 
 
-class ShopListView(ListView):
-    template_name = 'shop_list_view.html'
-    model = Shop
-    context_object_name = 'shops'
-    paginate_by = 5
-
-
 class ProductListView(ListView):
-    template_name = 'shop/shop_view.html'
+    template_name = 'shop_templates/shop_view.html'
     model = Product
     context_object_name = 'products'
     paginate_by = 5
