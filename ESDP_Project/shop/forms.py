@@ -1,5 +1,5 @@
 from django import forms
-from .models import Shop, Product, Images
+from .models import Shop, Product, Images, Category
 
 
 class ShopModelForm(forms.ModelForm):
@@ -9,6 +9,9 @@ class ShopModelForm(forms.ModelForm):
 
 
 class ProductForm(forms.ModelForm):
+    category = forms.ModelChoiceField(queryset=Category.objects.all(),
+                                      widget=forms.Select(attrs={'class': 'form-control'}), required=False)
+
     class Meta:
         model = Product
         fields = ['name', 'description', 'vendor_code', 'quantity', 'price', 'discount']
