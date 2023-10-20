@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование товара</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+</head>
+
+<body>
+
+<div class="container mt-5">
+    <h2 class="mb-4">Редактирование товара</h2>
+    <form action="#" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="productName">Название товара:</label>
+            <input type="text" class="form-control" id="productName" name="name" value="{{ product.name }}" placeholder="Введите название">
+        </div>
+
+        <div class="form-group">
+            <label for="productDescription">Описание:</label>
+            <textarea class="form-control" id="productDescription" name="description" rows="4" placeholder="Введите описание">{{ product.description }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="productPrice">Цена:</label>
+            <input type="number" class="form-control" id="productPrice" name="price" value="{{ product.price }}" placeholder="Введите цену">
+        </div>
+
+        <div class="form-group">
+            <label for="productVendorCode">Артикул:</label>
+            <input type="number" class="form-control" id="productVendorCode" name="vendor_code" value="{{ product.vendor_code }}" placeholder="Введите артикул">
+        </div>
+
+        <div class="form-group">
+            <label for="productQuantity">Количество:</label>
+            <input type="number" class="form-control" id="productQuantity" name="quantity" value="{{ product.quantity }}" placeholder="Введите количество">
+        </div>
+
+        <div class="row">
+            {% for image in product.images.all %}
+            <div class="col-md-4 mb-4">
+                <div class="form-group">
+                    <label for="productPhoto{{ forloop.counter }}">Фотография {{ forloop.counter }}:</label>
+                    <input type="file" class="form-control-file" id="productPhoto{{ forloop.counter }}" name="photo_{{ forloop.counter }}">
+                    {% if image.image %}
+                    <img src="{{ image.image.url }}" width="100" alt="Фото {{ forloop.counter }}" class="mt-2">
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            <label for="productDiscount">Скидка (%):</label>
+            <input type="number" class="form-control" id="productDiscount" name="discount" value="{{ product.discount }}" placeholder="Введите скидку">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a href="#" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
