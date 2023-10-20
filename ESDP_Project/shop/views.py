@@ -4,7 +4,8 @@ from shop.models import Shop, Product
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, get_object_or_404, redirect
 
-from .models import Images
+from .models import Images, Category
+from accounts.models import User
 
 
 # Create your views here.
@@ -48,8 +49,13 @@ class ProductCreateView(CreateView):
     def form_valid(self, form):
         shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
         product = form.save(commit=False)
-        product.shop_id = shop
+
+        product.shop = shop
+        product.category = form.cleaned_data['category']
         images = self.request.FILES.getlist('images')
+
+        self.new_category(product)
+
         if len(images) <= 3:
             product.save()
             for image in images:
@@ -57,8 +63,21 @@ class ProductCreateView(CreateView):
         else:
             return render(self.request, 'product/create_product.html', {'form': form,
                                                                 'image_errors': 'Максимальное количество изображений: 3'})
+
         form.save()
         return redirect('home')
+
+    def new_category(self, product):
+        if new_category := self.request.POST['new_category']:
+            new_category = new_category.capitalize()
+
+            if not Category.objects.filter(name=new_category).exists():
+                Category.objects.create(name=new_category)
+
+            product.category = Category.objects.get(name=new_category)
+
+    def form_invalid(self, form):
+        return render(self.request, 'create_product.html', {'form': form})
 
 
 class ShopListView(ListView):

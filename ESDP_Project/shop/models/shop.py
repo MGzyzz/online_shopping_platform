@@ -1,6 +1,8 @@
 from django.db import models
 from django.db.models import TextChoices
 
+from core import settings
+
 
 class Themes(TextChoices):
     DARK = 'Dark', 'Темная'
@@ -24,7 +26,7 @@ class Shop(models.Model):
     logo = models.ImageField(
         null=True,
         blank=True,
-        upload_to='logos/',
+        upload_to=settings.LOGO_IMG_UPLOAD_PATH,
         verbose_name='Логотип магазина',
         default='default_img/default'
     )
