@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='product',
             name='category',
-            field=models.ForeignKey(default='Другое', null=True, on_delete=django.db.models.deletion.SET_DEFAULT, related_name='products', to='shop.category', verbose_name='Категория'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='products', to='shop.category', verbose_name='Категория'),
         ),
     ]
