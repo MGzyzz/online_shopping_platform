@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+
     let registrationButton = document.getElementById('registrationButton');
     let myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
     let smsConfirmInput = document.getElementById('smsConfirm');
@@ -38,6 +39,7 @@ function checkSmsConfirmValidity() {
         registrationDoneButton.setAttribute('disabled', 'disabled'); // Деактивируем кнопку
     }
 }
+
 function validateForm() {
     let firstName = document.getElementById('inputFirstName').value;
     let lastName = document.getElementById('inputLastName').value;
@@ -50,11 +52,13 @@ function validateForm() {
 
     if (!firstName || !lastName || !sureName || !phone || !email || !pass1 || !pass2 ) {
         alert('Пожалуйста, заполните все поля.');
+
         return false;
     }
      let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         alert('Пожалуйста, введите корректный email.');
+
         return false;
     }
 
@@ -66,13 +70,13 @@ function validateForm() {
 
     if (pass1 !== pass2) {
     alert('Пароли не совпадают.');
+
     return false;
     }
 
     // if (sellerCheck.checked && !confirm('Вы уверены, что являетесь продавцом?')) {
     //     return false;
     // }
-
 
     return true;
 }
