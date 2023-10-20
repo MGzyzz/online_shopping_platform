@@ -138,3 +138,6 @@ SHELL_PLUS = 'bpython'
 
 
 AUTH_USER_MODEL = 'accounts.User'
+
+PRODUCT_IMG_UPLOAD_PATH = 'product_images'
+LOGO_IMG_UPLOAD_PATH = 'logos'
