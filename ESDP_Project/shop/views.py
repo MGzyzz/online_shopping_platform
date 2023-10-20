@@ -86,6 +86,7 @@ class ProductListView(ListView):
         context = super().get_context_data(**kwargs)
         shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
         context['shop'] = shop
+
         return context
 
 
@@ -94,7 +95,7 @@ class EditProduct(UpdateView):
     context_object_name = 'product'
     model = Product
     form_class = ProductForm
-    pk_url_kwarg = 'product_id'
+    pk_url_kwarg = 'id'
 
     def get_success_url(self):
         return reverse('shop_view', kwargs={'shop_id': self.object.shop_id_id})
@@ -102,16 +103,19 @@ class EditProduct(UpdateView):
     def form_valid(self, form):
         shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
         product = form.save(commit=False)
+
         product.shop_id = shop
         product.save()
 
         uploaded_images_count = 0
+
         for i, image_obj in enumerate(product.images.all(), start=1):
             uploaded_image = self.request.FILES.get(f'photo_{i}')
             if uploaded_image:
                 image_obj.image = uploaded_image
                 image_obj.save()
                 uploaded_images_count += 1
+
         return redirect(self.get_success_url())
 
 
@@ -119,10 +123,9 @@ class DeleteProduct(DeleteView):
     template_name = 'shop/shop_view.html'
     context_object_name = 'product'
     model = Product
-    pk_url_kwarg = 'product_id'
+    pk_url_kwarg = 'id'
 
     def get_success_url(self):
-        print()
         return reverse('shop_view', kwargs={'shop_id': self.object.shop_id_id})
 
 
