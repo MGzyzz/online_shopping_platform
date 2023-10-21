@@ -42,5 +42,15 @@ class TimeDiscountViewSet(viewsets.ModelViewSet):
 
             return Response({'expired': True})
         else:
-
             return Response({'expired': False})
+
+    @action(detail=False, methods=['GET'], url_path='get-discount-by-product')
+    def get_discount_by_product(self, request):
+        product_id = request.query_params.get('product_id')
+
+        try:
+            discount = TimeDiscount.objects.get(product_id=product_id)
+
+            return Response({'discount_id': discount.id})
+        except TimeDiscount.DoesNotExist:
+            return Response({'error': 'Discount not found for the product'}, status=404)

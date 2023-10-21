@@ -3,7 +3,7 @@ from .forms import ShopModelForm, ProductForm, ImagesForm
 from shop.models import Shop, Product
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, get_object_or_404, redirect
-
+from django.utils import timezone
 from .models import Images, Category
 from accounts.models import User
 
@@ -12,6 +12,12 @@ from accounts.models import User
 
 class Home(TemplateView):
     template_name = 'base.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product_test'] = Product.objects.get(id=1)
+
+        return context
 
 
 class ShopCreateView(CreateView):
@@ -105,6 +111,7 @@ class ProductListView(ListView):
         context = super().get_context_data(**kwargs)
         shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
         context['shop'] = shop
+        context['now'] = timezone.now()
 
         return context
 

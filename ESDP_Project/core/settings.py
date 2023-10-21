@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_extensions',
 
+    'rest_framework.authtoken',
     'accounts',
     'shop',
     'api',
@@ -135,6 +136,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SHELL_PLUS = 'bpython'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
 
 
 AUTH_USER_MODEL = 'accounts.User'

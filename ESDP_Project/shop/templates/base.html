@@ -32,7 +32,8 @@
             <a href="{% url "shop_create" %}">Create shop</a>
             <a href="{% url "create_product" shop_id=1 %}" class="mx-3 btn btn-info shadow">Create product test</a>
                 <a href="{% url 'shop_list' user_id=request.user.id %}" class="btn btn-light shadow">Your shops</a>
-            <button type="button" class="btn btn-success mx-3 add-discount">
+                <input type="hidden" id="product" value="1" name="product">
+                <button type="button" class="btn btn-success mx-3 add-discount" >
                 Добавить временную скидку
             </button>
             <div class="modal" id="exampleModal" tabindex="-1" style="display: none">
@@ -46,24 +47,48 @@
                 </div>
                 <div class="modal-body">
                     <form method="post">
-                        {% csrf_token %}
                         <label for="date">Начало скидки: </label>
                         <input class="form-control" required type="datetime-local" id="start_date" name="start_date"/>
                         <label for="date">Конец скидки: </label>
                         <input class="form-control" required type="datetime-local" id="end_date" name="end_date"/>
                          <label for="percent">Скидка в процентах:</label>
                         <input class="form-control" required type="number" id="percent" name="percent" min="1" max="100">
-                        <input type="hidden" id="product" value="1" name="product">
                     </form>
                 </div>
                         <div class="modal-footer">
-                        <button type="button" class="btn btn-danger close-btn" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger close-btn" data-dismiss="modal">Закрыть</button>
                         <button type="button" class="btn btn-success" id="make_sale" >Применить скидку</button>
                     </div>
                 </div>
             </div>
             </div>
-                {% else %}
+
+
+                <button type="button" class="btn btn-danger mx-3" id="delete-btn" style="display: none">
+                Убрать временную скидку
+            </button>
+             <div class="modal" id="delete_modal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Удаление временной скидки</h5>
+                    <button type="button" class="close-btn" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h2>Вы уверены что хотите удалить скидку?</h2>
+                </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-danger close-btn" data-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-success" id="delete_sale" >Удалить скидку</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+
+            {% else %}
             {% endif %}
             <ul class="navbar-nav ml-auto">
                 {% if user.is_authenticated %}
