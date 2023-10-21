@@ -13,12 +13,6 @@ from accounts.models import User
 class Home(TemplateView):
     template_name = 'base.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['product_test'] = Product.objects.get(id=1)
-
-        return context
-
 
 class ShopCreateView(CreateView):
     model = Shop
