@@ -42,6 +42,7 @@ $('#make_sale').click(function () {
             discountBtn.hide()
             $('#delete-btn').show()
         }).catch(function (error){
+            console.log(error)
             if (error.responseJSON){
                 let errorMessages = []
                 if (error.responseJSON.start_date){
@@ -52,6 +53,9 @@ $('#make_sale').click(function () {
                 }
                 if (error.responseJSON.discount){
                     errorMessages.push(error.responseJSON.discount[0])
+                }
+                if (error.responseJSON.non_field_errors) {
+                    errorMessages.push(error.responseJSON.non_field_errors[0])
                 }
                 if (errorMessages.length > 0) {
                     let errorDiv = $('#error-messages')

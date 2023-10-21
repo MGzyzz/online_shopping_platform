@@ -15,7 +15,7 @@ class TimeDiscountSerializer(serializers.ModelSerializer):
         current_datetime = timezone.now()
 
         if value < current_datetime:
-            raise serializers.ValidationError("Дата начала скидки должна быть в будущем или настоящем ")
+            raise serializers.ValidationError("Дата и время начала скидки должна быть в будущем или настоящем ")
 
         return value
 
@@ -23,7 +23,7 @@ class TimeDiscountSerializer(serializers.ModelSerializer):
         current_datetime = timezone.now()
 
         if value <= current_datetime:
-            raise serializers.ValidationError("Дата окончания скидки должна быть в будущем.")
+            raise serializers.ValidationError("Дата и время окончания скидки должна быть в будущем.")
 
         return value
 
@@ -32,5 +32,14 @@ class TimeDiscountSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Скидка должна быть в диапазоне от 1 до 99.")
 
         return value
+
+    def validate(self, data):
+        start_date = data.get('start_date')
+        end_date = data.get('end_date')
+
+        if start_date and end_date and start_date >= end_date:
+            raise serializers.ValidationError("Дата и время начала должна быть меньше даты и времени окончания.")
+
+        return data
 
 
