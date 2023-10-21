@@ -41,6 +41,28 @@ $('#make_sale').click(function () {
             let discountBtn =  $('.add-discount')
             discountBtn.hide()
             $('#delete-btn').show()
+        }).catch(function (error){
+            if (error.responseJSON){
+                let errorMessages = []
+                if (error.responseJSON.start_date){
+                    errorMessages.push(error.responseJSON.start_date[0])
+                }
+                if (error.responseJSON.end_date){
+                    errorMessages.push(error.responseJSON.end_date[0])
+                }
+                if (error.responseJSON.discount){
+                    errorMessages.push(error.responseJSON.discount[0])
+                }
+                if (errorMessages.length > 0) {
+                    let errorDiv = $('#error-messages')
+                    errorDiv.html(errorMessages.join('<br>'))
+                    errorDiv.show()
+                }
+            }
+            else {
+                console.log(error)
+            }
+
         })
 
 })
