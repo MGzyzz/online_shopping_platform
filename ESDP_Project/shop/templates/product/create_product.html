@@ -94,6 +94,16 @@
                     {{ image_errors }}
                 </div>
             {% endif %}
+            <div class="mb-3">
+    <label for="id_tags" class="form-label">Тэги</label>
+<input type="text" class="form-control custom-input" id="id_tags" name="tags" placeholder="Введите теги, разделяя их точкой или точкой с запятой" value="{{ product.tags.all|join:'; '|default:'' }}">
+    <small class="form-text text-muted">Введите теги, разделяя их точкой или точкой с запятой. Например: тег1; тег2; тег3 или тег1. тег2. тег3.</small>
+    {% if form.tags.errors %}
+        <div class="alert alert-danger mt-3">
+            {{ form.tags.errors }}
+        </div>
+    {% endif %}
+</div>
             <button type="submit" class="btn btn-submit">Добавить</button>
         </form>
     </div>
