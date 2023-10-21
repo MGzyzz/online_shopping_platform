@@ -9,6 +9,30 @@ class TimeDiscountSerializer(serializers.ModelSerializer):
         model = TimeDiscount
         fields = '__all__'
 
+    start_date = serializers.DateTimeField(
+        required=True,
+        error_messages={
+            'required': 'Поле "Начало скидки" обязательно для заполнения.',
+            'invalid': 'Введите корректные данные в поле "Начало скидки"'
+        }
+    )
+
+    end_date = serializers.DateTimeField(
+        required=True,
+        error_messages={
+            'required': 'Поле "Конец скидки" обязательно для заполнения.',
+            'invalid': 'Введите корректные данные в поле "Конец скидки"'
+        }
+    )
+
+    discount = serializers.IntegerField(
+        required=True,
+        error_messages={
+            'required': 'Поле "Скидка в процентах" обязательно для заполнения.',
+            'invalid': 'Введите корректные данные в поле "Скидка в процентах"'
+        }
+    )
+
     discounted_price = serializers.IntegerField(required=False)
 
     def validate_start_date(self, value):
