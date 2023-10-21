@@ -18,7 +18,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                   <div>
                     <p class="mb-1">Shopping list</p>
-                    <p class="mb-0">You have 4 shops in your profile</p>
+                    <p class="mb-0">You have {{ shops.count }} shops in your profile</p>
                   </div>
                 </div>
 
@@ -29,7 +29,7 @@
             <div class="d-flex justify-content-between">
                 <div class="d-flex flex-row align-items-center">
                     <div>
-                        <img src="{{ shop.logo.url }}" class="img-fluid rounded-3 m-right" alt="Shopping item" style="width: 65px;">
+                        <img src="{{ shop.logo.url}}" class="img-fluid rounded-3 m-right" alt="Shopping item" style="width: 65px;">
                     </div>
                     <div class="ms-3">
                         <h5>{{ shop.name }}</h5>
