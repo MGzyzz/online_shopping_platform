@@ -3,6 +3,7 @@ from django.db.models import TextChoices
 from django.template.context_processors import media
 
 from core import settings
+from taggit.managers import TaggableManager
 
 
 class Themes(TextChoices):
@@ -44,4 +45,4 @@ class Shop(models.Model):
         default=Themes.DARK,
         verbose_name='Тема магазина'
     )
-
+    tags = TaggableManager(blank=True, verbose_name='Тэги')

@@ -16,7 +16,7 @@ class ProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ['name', 'description', 'vendor_code', 'quantity', 'price', 'discount']
+        fields = ['name', 'description', 'vendor_code', 'quantity', 'price', 'discount', 'tags']
 
 
 class MultipleImageInput(forms.ClearableFileInput):

@@ -1,3 +1,5 @@
+import re
+
 from django.views.generic import TemplateView, CreateView, UpdateView, ListView, DeleteView
 from .forms import ShopModelForm, ProductForm, ImagesForm
 from shop.models import Shop, Product
@@ -5,8 +7,6 @@ from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, get_object_or_404, redirect
 
 from .models import Images, Category
-from accounts.models import User
-
 
 # Create your views here.
 
@@ -125,14 +125,15 @@ class EditProduct(UpdateView):
     pk_url_kwarg = 'id'
 
     def get_success_url(self):
-        return reverse('shop_view', kwargs={'shop_id': self.object.shop_id_id})
+        return reverse('shop_view', kwargs={'shop_id': self.kwargs['shop_id']})
 
     def form_valid(self, form):
         shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
         product = form.save(commit=False)
-
         product.shop_id = shop
         product.save()
+        tags_string = form.cleaned_data['tags']
+        product.tags.set(tags_string)
 
         uploaded_images_count = 0
 
@@ -147,10 +148,14 @@ class EditProduct(UpdateView):
 
 
 class DeleteProduct(DeleteView):
-    template_name = 'shop/shop_view.html'
+    template_name = 'shop_templates/shop_view.html'
     context_object_name = 'product'
     model = Product
     pk_url_kwarg = 'id'
 
     def get_success_url(self):
-        return reverse('shop_view', kwargs={'shop_id': self.object.shop_id_id})
+        return reverse('shop_view', kwargs={'shop_id': self.object.shop_id})
+
+
+
+
