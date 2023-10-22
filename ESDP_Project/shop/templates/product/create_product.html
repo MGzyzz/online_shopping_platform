@@ -32,7 +32,9 @@
                 <label for="id_name" class="form-label">Категория</label>
                 {{ form.category }}
                 <small class="mt-2">Нет подходящей категории?
-                    <button type="button" class="btn border-secondary p-1 mt-1" style="font-size: 14px" id="category-btn">Добавить</button>
+                    <button type="button" class="btn border-secondary p-1 mt-1" style="font-size: 14px"
+                            id="category-btn">Добавить
+                    </button>
                 </small>
                 {% if form.category.errors %}
                     <div class="alert alert-danger mt-3">
@@ -84,14 +86,13 @@
                     </div>
                 {% endif %}
             </div>
-            <div class="mb-3 input-group">
-                <label for="id_images" class="input-group-text">Изображения</label>
-                <input type="file" class="form-control custom-input" id="id_images" name="images"
-                       value="{{ image_form.image.value|default:'' }}" multiple>
+            <div class="mb-3">
+                <label for="id_images" class="form-label">Изображения товара (максимум 3 изображения)</label>
+                {{ image_form.image }}
             </div>
-            {% if image_errors %}
+            {% if image_form.image.errors %}
                 <div class="alert alert-danger mt-3">
-                    {{ image_errors }}
+                    {{ image_form.image.errors }}
                 </div>
             {% endif %}
             <div class="mb-3">

@@ -50,28 +50,36 @@ class ProductCreateView(CreateView):
     form_class = ProductForm
     template_name = 'product/create_product.html'
     extra_context = {
-        'image_form': ImagesForm
+        'image_form': ImagesForm()
     }
+
+    def dispatch(self, request, *args, **kwargs):
+        self.image_form = ImagesForm()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.image_form = ImagesForm(request.POST, request.FILES)
+        if self.image_form.is_valid():
+            return self.form_valid(self.get_form())
+        else:
+            return render(self.request, 'product/create_product.html',
+                          {'form': self.get_form(), 'image_form': self.image_form})
 
     def form_valid(self, form):
         shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
-        product = form.save(commit=False)
 
+        product = form.save(commit=False)
         product.shop = shop
         product.category = form.cleaned_data['category']
-        images = self.request.FILES.getlist('images')
 
         self.new_category(product)
+        product.save()
 
-        if len(images) <= 3:
-            product.save()
-            for image in images:
-                Images.objects.create(product=product, image=image)
-        else:
-            return render(self.request, 'product/create_product.html', {'form': form,
-                                                                'image_errors': 'Максимальное количество изображений: 3'})
+        images = self.image_form.cleaned_data['image']
 
-        form.save()
+        for image in images:
+            Images.objects.create(product=product, image=image)
+
         return redirect('home')
 
     def new_category(self, product):
@@ -84,7 +92,7 @@ class ProductCreateView(CreateView):
             product.category = Category.objects.get(name=new_category)
 
     def form_invalid(self, form):
-        return render(self.request, 'create_product.html', {'form': form})
+        return render(self.request, 'product/create_product.html', {'form': form})
 
 
 class ProductListView(ListView):
