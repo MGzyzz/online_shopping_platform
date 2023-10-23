@@ -1,12 +1,12 @@
+import re
+
 from django.views.generic import TemplateView, CreateView, UpdateView, ListView, DeleteView
 from .forms import ShopModelForm, ProductForm, ImagesForm
 from shop.models import Shop, Product
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, get_object_or_404, redirect
-
+from django.utils import timezone
 from .models import Images, Category
-from accounts.models import User
-
 
 # Create your views here.
 
@@ -50,28 +50,36 @@ class ProductCreateView(CreateView):
     form_class = ProductForm
     template_name = 'product/create_product.html'
     extra_context = {
-        'image_form': ImagesForm
+        'image_form': ImagesForm()
     }
+
+    def dispatch(self, request, *args, **kwargs):
+        self.image_form = ImagesForm()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.image_form = ImagesForm(request.POST, request.FILES)
+        if self.image_form.is_valid():
+            return self.form_valid(self.get_form())
+        else:
+            return render(self.request, 'product/create_product.html',
+                          {'form': self.get_form(), 'image_form': self.image_form})
 
     def form_valid(self, form):
         shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
-        product = form.save(commit=False)
 
+        product = form.save(commit=False)
         product.shop = shop
         product.category = form.cleaned_data['category']
-        images = self.request.FILES.getlist('images')
 
         self.new_category(product)
+        product.save()
 
-        if len(images) <= 3:
-            product.save()
-            for image in images:
-                Images.objects.create(product=product, image=image)
-        else:
-            return render(self.request, 'product/create_product.html', {'form': form,
-                                                                'image_errors': 'Максимальное количество изображений: 3'})
+        images = self.image_form.cleaned_data['image']
 
-        form.save()
+        for image in images:
+            Images.objects.create(product=product, image=image)
+
         return redirect('home')
 
     def new_category(self, product):
@@ -84,7 +92,7 @@ class ProductCreateView(CreateView):
             product.category = Category.objects.get(name=new_category)
 
     def form_invalid(self, form):
-        return render(self.request, 'create_product.html', {'form': form})
+        return render(self.request, 'product/create_product.html', {'form': form})
 
 
 class ProductListView(ListView):
@@ -105,6 +113,7 @@ class ProductListView(ListView):
         context = super().get_context_data(**kwargs)
         shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
         context['shop'] = shop
+        context['now'] = timezone.now()
 
         return context
 
@@ -117,14 +126,15 @@ class EditProduct(UpdateView):
     pk_url_kwarg = 'id'
 
     def get_success_url(self):
-        return reverse('shop_view', kwargs={'shop_id': self.object.shop_id_id})
+        return reverse('shop_view', kwargs={'shop_id': self.kwargs['shop_id']})
 
     def form_valid(self, form):
         shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
         product = form.save(commit=False)
-
         product.shop_id = shop
         product.save()
+        tags_string = form.cleaned_data['tags']
+        product.tags.set(tags_string)
 
         uploaded_images_count = 0
 
@@ -139,13 +149,13 @@ class EditProduct(UpdateView):
 
 
 class DeleteProduct(DeleteView):
-    template_name = 'shop/shop_view.html'
+    template_name = 'shop_templates/shop_view.html'
     context_object_name = 'product'
     model = Product
     pk_url_kwarg = 'id'
 
     def get_success_url(self):
-        return reverse('shop_view', kwargs={'shop_id': self.object.shop_id_id})
+        return reverse('shop_view', kwargs={'shop_id': self.object.shop_id})
 
 
 
