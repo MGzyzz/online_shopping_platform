@@ -17,7 +17,7 @@
             <div class="login-content">
                 <img src="https://via.placeholder.com/80" alt="Logo">
                 <h2 class="text-center">Test Title</h2>
-                <form method="post" action="{% url 'login' %}">
+                <form method="post" action="{% url 'login' %}" id="loginForm">
                     {% csrf_token %}
                     <div class="form-group mt-4">
                         <label for="loginEmail">Email Address</label>
@@ -42,9 +42,10 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="{% static 'js/token.js' %}"></script>
 </body>
 
 </html>
