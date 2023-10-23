@@ -10,7 +10,7 @@ class Home(TemplateView):
 
 class ShopCreateView(CreateView):
     model = Shop
-    template_name = 'shop_create_update.html'
+    template_name = 'shop/shop_create_update.html'
     form_class = ShopModelForm
 
     def form_valid(self, form):
@@ -23,7 +23,7 @@ class ShopCreateView(CreateView):
 
 class ShopUpdateView(UpdateView):
     model = Shop
-    template_name = 'shop_update.html'
+    template_name = 'shop/shop_update.html'
     form_class = ShopModelForm
     context_object_name = 'shop'
     pk_url_kwarg = 'id'
@@ -33,7 +33,7 @@ class ShopUpdateView(UpdateView):
 
 
 class ShopListView(ListView):
-    template_name = 'shop_list_view.html'
+    template_name = 'shop/shop_list_view.html'
     model = Shop
     context_object_name = 'shops'
     paginate_by = 5

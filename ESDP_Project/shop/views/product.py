@@ -1,5 +1,7 @@
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
+from django.utils import timezone
 from django.views.generic import CreateView, UpdateView, ListView, DeleteView
 from shop.forms import ProductForm, ImagesForm
 from shop.models import Images, Category, Product, Shop
@@ -57,7 +59,7 @@ class ProductCreateView(CreateView):
 
 
 class ProductListView(ListView):
-    template_name = 'shop_templates/shop_view.html'
+    template_name = 'shop/shop_view.html'
     model = Product
     context_object_name = 'products'
     paginate_by = 5
@@ -110,7 +112,7 @@ class EditProduct(UpdateView):
 
 
 class DeleteProduct(DeleteView):
-    template_name = 'shop_templates/shop_view.html'
+    template_name = 'shop/shop_view.html'
     context_object_name = 'product'
     model = Product
     pk_url_kwarg = 'id'
