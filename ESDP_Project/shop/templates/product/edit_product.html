@@ -1,69 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Редактирование товара</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    {% block script %}
+        <script src="{% static 'js/new_category.js' %}" defer></script>
+    {% endblock %}
 </head>
 
 <body>
 
 <div class="container mt-5">
     <h2 class="mb-4">Редактирование товара</h2>
-    <form action="#" method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group">
             <label for="productName">Название товара:</label>
-            <input type="text" class="form-control" id="productName" name="name" value="{{ product.name }}" placeholder="Введите название">
+            {{ form.name }}
+            {% if form.name.errors %}
+                <div class="alert alert-danger mt-3">
+                    {{ form.name.errors }}
+                </div>
+            {% endif %}
         </div>
 
         <div class="form-group">
             <label for="productDescription">Описание:</label>
-            <textarea class="form-control" id="productDescription" name="description" rows="4" placeholder="Введите описание">{{ product.description }}</textarea>
+            {{ form.description }}
+            {% if form.description.errors %}
+                <div class="alert alert-danger mt-3">
+                    {{ form.description.errors }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_name" class="form-label">Категория</label>
+            {{ form.category }}
+            <small class="mt-2">Нет подходящей категории?
+                <button type="button" class="btn border-secondary p-1 mt-1" style="font-size: 14px"
+                        id="category-btn">Добавить
+                </button>
+            </small>
+            {% if form.category.errors %}
+                <div class="alert alert-danger mt-3">
+                    {{ form.category.errors }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="mb-3" hidden id="div-new-category">
+            <label for="id_new_category" class="form-label">Новая категория</label>
+            <input type="text" class="form-control custom-input" id="id_new_category" name="new_category">
         </div>
 
         <div class="form-group">
             <label for="productPrice">Цена:</label>
-            <input type="number" class="form-control" id="productPrice" name="price" value="{{ product.price }}" placeholder="Введите цену">
+            {{ form.price }}
         </div>
 
         <div class="form-group">
             <label for="productVendorCode">Артикул:</label>
-            <input type="number" class="form-control" id="productVendorCode" name="vendor_code" value="{{ product.vendor_code }}" placeholder="Введите артикул">
+            {{ form.vendor_code }}
         </div>
 
         <div class="form-group">
             <label for="productQuantity">Количество:</label>
-            <input type="number" class="form-control" id="productQuantity" name="quantity" value="{{ product.quantity }}" placeholder="Введите количество">
+            {{ form.quantity }}
         </div>
 
-        <div class="row">
-            {% for image in product.images.all %}
-            <div class="col-md-4 mb-4">
-                <div class="form-group">
-                    <label for="productPhoto{{ forloop.counter }}">Фотография {{ forloop.counter }}:</label>
-                    <input type="file" class="form-control-file" id="productPhoto{{ forloop.counter }}" name="photo_{{ forloop.counter }}">
-                    {% if image.image %}
-                    <img src="{{ image.image.url }}" width="100" alt="Фото {{ forloop.counter }}" class="mt-2">
-                    {% endif %}
+        <div class="form-group mb-3">
+            <label for="productDiscount">Скидка (%):</label>
+            {{ form.discount }}
+        </div>
+        <div class="d-flex">
+            {% for image in images %}
+                <div>
+                    <img src="/media/{{ image.image }}" alt="Изображение продукта"
+                         style="width:15rem; height: 15rem; object-fit: cover">
+                    <input type="file" class="form-control me-3" style="width: 15rem" name="{{ image.id }}">
                 </div>
-            </div>
             {% endfor %}
         </div>
-
-        <div class="form-group">
-            <label for="productDiscount">Скидка (%):</label>
-            <input type="number" class="form-control" id="productDiscount" name="discount" value="{{ product.discount }}" placeholder="Введите скидку">
+        <div class="form-group mt-3">
+            <label for="productTags">Теги:</label>
+            {{ form.tags }}
+            <small class="form-text text-muted">
+                Теги используются для обозначения подкатегорий. Введите теги, разделяя
+                их точкой с запятой. Например: зимняя одежда; куртка;
+                пуховик
+            </small>
         </div>
-
-    <div class="form-group">
-    <label for="productTags">Теги:</label>
-    <input type="text" class="form-control" id="productTags" name="tags" value="{% for tag in product.tags.all %}{{ tag.name }}{% if not forloop.last %}; {% endif %}{% endfor %}" placeholder="Введите теги, разделенные точкой с запятой">
-    <small class="form-text text-muted">Введите теги, разделяя их точкой с запятой. Например: тег1; тег2; тег3</small>
-</div>
 
         <button type="submit" class="btn btn-primary">Сохранить</button>
         <a href="#" class="btn btn-secondary">Отмена</a>

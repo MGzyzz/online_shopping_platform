@@ -14,4 +14,4 @@ class Product(models.Model):
     discount = models.PositiveIntegerField(default=0, null=True, blank=True, verbose_name='Скидка')
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, related_name='products',
                                  verbose_name='Категория', null=True)
-    tags = TaggableManager(blank=True, verbose_name='Тэги')
+    tags = TaggableManager(blank=True, verbose_name='Тэги', related_name='products')
