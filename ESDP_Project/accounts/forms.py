@@ -9,7 +9,7 @@ class RegisterForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         fields = [
-            'email', 'first_name', 'last_name', 'surname', 'password1', 'password2',
+            'email', 'first_name', 'last_name', 'password1', 'password2',
             'phone', 'seller'
         ]
 
@@ -22,7 +22,7 @@ class LoginForm(AuthenticationForm):
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
-        fields = ['first_name', 'last_name', 'surname', 'phone']
+        fields = ['first_name', 'last_name', 'phone']
 
 
 class PasswordChangeForm(forms.ModelForm):

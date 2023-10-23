@@ -43,14 +43,13 @@ function checkSmsConfirmValidity() {
 function validateForm() {
     let firstName = document.getElementById('inputFirstName').value;
     let lastName = document.getElementById('inputLastName').value;
-    let sureName = document.getElementById('inputSurname').value;
     let phone = document.getElementById('inputPhone').value;
     let email = document.getElementById('inputEmail').value;
     let pass1 = document.getElementById('inputPassword').value;
     let pass2 = document.getElementById('inputPasswordConfirm').value;
     let sellerCheck = document.getElementById('inputStatus');
 
-    if (!firstName || !lastName || !sureName || !phone || !email || !pass1 || !pass2 ) {
+    if (!firstName || !lastName || !phone || !email || !pass1 || !pass2 ) {
         alert('Пожалуйста, заполните все поля.');
 
         return false;
