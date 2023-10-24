@@ -48,7 +48,7 @@ class ProductCreateView(CreateView):
         for image in images:
             Images.objects.create(product=product, image=image)
 
-        return redirect('home')
+        return redirect('add_attributes', id=product.id)
 
     def new_category(self, product):
         if new_category := self.request.POST['new_category']:
@@ -94,7 +94,7 @@ class EditProduct(UpdateView):
     pk_url_kwarg = 'id'
 
     def get_success_url(self):
-        return reverse('shop_view', kwargs={'shop_id': self.object.shop_id})
+        return reverse('update_attributes', kwargs={'id': self.object.id})
 
     def dispatch(self, request, *args, **kwargs):
         self.image_form = ImagesForm()

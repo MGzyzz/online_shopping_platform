@@ -12,3 +12,7 @@ $('#add-btn').click(function () {
         '</div>'
     )
 });
+
+$('#del-btn').click(function () {
+    $('#attributes-div').children().last().remove();
+})

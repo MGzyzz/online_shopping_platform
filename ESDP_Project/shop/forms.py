@@ -19,7 +19,7 @@ class ProductForm(forms.ModelForm):
         fields = ['name', 'description', 'vendor_code', 'quantity', 'price', 'discount', 'tags']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
-            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'style': 'height: 100px'}),
             'vendor_code': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
             'quantity': forms.NumberInput(attrs={'class': 'form-control', 'required': True}),
             'price': forms.NumberInput(attrs={'class': 'form-control', 'required': True}),
