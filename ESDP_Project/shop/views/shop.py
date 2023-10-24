@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 
 
 class Home(TemplateView):
-    template_name = 'base.html'
+    template_name = 'main.html'
 
 
 class ShopCreateView(CreateView):
