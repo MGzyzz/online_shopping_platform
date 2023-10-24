@@ -89,10 +89,10 @@
                     {% endif %}
                 </div>
              <div class="edit-icons d-flex align-items-center">
-    <a href="{% url 'edit_product' shop.id product.id %}" class="text-secondary btn" title="Редактировать товар">
+    <a href="{% url 'edit_product' product.id %}" class="text-secondary btn" title="Редактировать товар">
         <i class="fas fa-edit"></i>
     </a>
-    <form method="post" action="{% url 'delete_product' shop.id product.id %}">
+    <form method="post" action="{% url 'delete_product' product.id %}">
         {% csrf_token %}
 <button type="button" class="btn text-danger delete-btn" data-product-id="{{ product.id }}" title="Удалить товар">
             <i class="fas fa-trash-alt"></i>

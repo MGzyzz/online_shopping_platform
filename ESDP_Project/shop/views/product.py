@@ -1,8 +1,9 @@
-
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import CreateView, UpdateView, ListView, DeleteView
+from taggit.models import Tag
+
 from shop.forms import ProductForm, ImagesForm
 from shop.models import Images, Category, Product, Shop
 
@@ -36,7 +37,11 @@ class ProductCreateView(CreateView):
         product.category = form.cleaned_data['category']
 
         self.new_category(product)
+
         product.save()
+
+        tags_string = form.cleaned_data['tags']
+        product.tags.set(tags_string)
 
         images = self.image_form.cleaned_data['image']
 
@@ -89,24 +94,62 @@ class EditProduct(UpdateView):
     pk_url_kwarg = 'id'
 
     def get_success_url(self):
-        return reverse('shop_view', kwargs={'shop_id': self.kwargs['shop_id']})
+        return reverse('shop_view', kwargs={'shop_id': self.object.shop_id})
+
+    def dispatch(self, request, *args, **kwargs):
+        self.image_form = ImagesForm()
+        self.images = self.get_object().images.all()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        tags = self.object.tags
+        data = {
+            'name': self.object.name,
+            'description': self.object.description,
+            'vendor_code': self.object.vendor_code,
+            'quantity': self.object.quantity,
+            'price': self.object.price,
+            'discount': self.object.discount,
+            'tags': '; '.join(tag.name for tag in tags.all()) if tags.exists() else '',
+            'category': self.object.category,
+        }
+
+        context['form'] = ProductForm(initial=data)
+        context['images'] = self.images
+
+        return context
+
+    def new_category(self, product):
+        if new_category := self.request.POST['new_category']:
+            new_category = new_category.capitalize()
+
+            if not Category.objects.filter(name=new_category).exists():
+                Category.objects.create(name=new_category)
+
+            product.category = Category.objects.get(name=new_category)
+
+    def remove_all_tags_without_objects(self):
+        for tag in Tag.objects.all():
+            if tag.taggit_taggeditem_items.count() == 0:
+                tag.delete()
 
     def form_valid(self, form):
-        shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
         product = form.save(commit=False)
-        product.shop_id = shop
         product.save()
+
         tags_string = form.cleaned_data['tags']
+        tags_string = [tag[:-1] if tag[-1] == ';' else tag for tag in tags_string]
         product.tags.set(tags_string)
+        self.remove_all_tags_without_objects()
 
-        uploaded_images_count = 0
+        self.new_category(product)
 
-        for i, image_obj in enumerate(product.images.all(), start=1):
-            uploaded_image = self.request.FILES.get(f'photo_{i}')
-            if uploaded_image:
-                image_obj.image = uploaded_image
-                image_obj.save()
-                uploaded_images_count += 1
+        for image_id, image in self.request.FILES.items():
+            old_image = get_object_or_404(Images, id=image_id)
+            old_image.image = image
+            old_image.save()
 
         return redirect(self.get_success_url())
 
@@ -119,5 +162,3 @@ class DeleteProduct(DeleteView):
 
     def get_success_url(self):
         return reverse('shop_view', kwargs={'shop_id': self.object.shop_id})
-
-

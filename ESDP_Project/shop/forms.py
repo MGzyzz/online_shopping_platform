@@ -17,6 +17,15 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'description', 'vendor_code', 'quantity', 'price', 'discount', 'tags']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'vendor_code': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control', 'required': True}),
+            'price': forms.NumberInput(attrs={'class': 'form-control', 'required': True}),
+            'discount': forms.NumberInput(attrs={'class': 'form-control'}),
+            'tags': forms.TextInput(attrs={'class': 'form-control'}),
+        }
 
 
 class MultipleImageInput(forms.ClearableFileInput):
