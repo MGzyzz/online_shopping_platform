@@ -136,3 +136,69 @@ body{
     background-color: transparent;
     border: 0
 }
+
+.user-p{
+    padding: 0.5rem 1rem ;
+}
+.card-banner{
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    background-color: #fff;
+    background-size: cover;
+    background-position: center center;
+    border-radius: 0.37rem;
+}
+.card-body.widget-collection {
+    height: 250px;
+}
+.card-banner .card-body {
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    z-index: 10;
+}
+.card-body {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem;
+}
+.card-body.widget-collection .inside-collection-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+    -webkit-transition: 0.3s all;
+    -moz-transition: 0.3s all;
+    -ms-transition: 0.3s all;
+    -o-transition: 0.3s all;
+    transition: 0.3s all;
+}
+img {
+    vertical-align: middle;
+    border-style: none;
+    overflow-clip-margin: content-box;
+    overflow: clip;
+}
+ .card-banner:hover img {
+    transform: scale(1.1); /* You can adjust the scale factor as needed */
+    transition: transform 0.3s ease; /* You can adjust the transition duration and timing function */
+  }
+ .card-banner .text-bottom{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    padding: 7px 20px;
+    padding-top: 30px;
+    border-radius: 0 0 0.37rem 0.37rem;
+    background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(0, 0, 0, 0.5)));
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
+    color: #fff
+ }

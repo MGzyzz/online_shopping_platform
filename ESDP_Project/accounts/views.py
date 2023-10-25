@@ -9,14 +9,14 @@ from accounts.models import User
 
 # Create your views here.
 class LoginView(views.LoginView):
-    template_name = 'login.html'
+    template_name = 'main.html'
     form_class = LoginForm
 
     def get_success_url(self):
         return reverse('home')
 
     def form_invalid(self, form):
-        return render(self.request, 'login.html', {'form': form})
+        return render(self.request, 'main.html', {'form': form})
 
 
 class Logout(views.LogoutView):
