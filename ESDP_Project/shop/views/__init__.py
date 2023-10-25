@@ -1,3 +1,3 @@
-from .shop import ShopCreateView, ShopListView, ShopUpdateView, Home
+from .shop import ShopCreateView, ShopListView, ShopUpdateView
 from .product import ProductCreateView, ProductListView, EditProduct, DeleteProduct
 from .attributes import AttributesCreateView, AttributesUpdateView

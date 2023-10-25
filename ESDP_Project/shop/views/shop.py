@@ -4,10 +4,6 @@ from shop.models import Shop
 from django.urls import reverse_lazy
 
 
-class Home(TemplateView):
-    template_name = 'main.html'
-
-
 class ShopCreateView(CreateView):
     model = Shop
     template_name = 'shop/shop_create_update.html'
@@ -33,7 +29,7 @@ class ShopUpdateView(UpdateView):
 
 
 class ShopListView(ListView):
-    template_name = 'shop/shop_list_view.html'
+    template_name = 'main.html'
     model = Shop
     context_object_name = 'shops'
     paginate_by = 5
