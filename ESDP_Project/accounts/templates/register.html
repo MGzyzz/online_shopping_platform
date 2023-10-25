@@ -8,133 +8,181 @@
     <title>Регистрация</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,400&display=swap"
+          rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200,0,0"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/register.css' %}">
-
+    <script src="{% static 'js/registration.js' %}" defer></script>
 </head>
 
-<body>
+<body class="font-family-sans-serif">
+
+<nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-6 col-md-8 col-sm-10 col-12">
-                <div class="card registration-card">
-                    <div class="card-header text-center">
-                        Предоставить логотип компаний
-                        <img class="mt-5" src="{% static 'img/logo.png' %}" alt="Логотип вашей компании" width="100" height="100">
-                        <h2>Регистрация</h2>
-                    </div>
-
-                    <div class="card-body">
-
-            <form id="registrationForm" method="post" action="{% url 'register' %}">
-                {% csrf_token %}
-                <div class="form-group">
-                <label for="inputFirstName">Имя</label>
-                <input  type="text" class="form-control" id="inputFirstName" placeholder="Введите имя" required name="first_name" value="{{ form.first_name.value|default:''  }}">
-                {% if form.first_name.errors %}
-                    <div class="alert alert-danger mt-3">
-                            {{ form.first_name.errors }}
-                    </div>
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                <label for="inputLastName">Фамилия</label>
-                <input type="text" class="form-control" id="inputLastName" placeholder="Введите фамилию" required name="last_name" value="{{ form.last_name.value|default:''  }}">
-                {% if form.last_name.errors %}
-                    <div class="alert alert-danger mt-3">
-                            {{ form.last_name.errors }}
-                    </div>
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                <label for="inputPhone">Телефон</label>
-                <input type="tel" class="form-control" id="inputPhone" placeholder="Введите номер телефона" required name="phone" value="{{ form.phone.value|default:''  }}">
-                {% if form.phone.errors %}
-                    <div class="alert alert-danger mt-3">
-                            {{ form.phone.errors }}
-                    </div>
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                <label for="inputEmail">Email</label>
-                <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="Введите email" name="email" value="{{ form.email.value|default:''  }}">
-                {% if form.email.errors %}
-                    <div class="alert alert-danger mt-3">
-                            {{ form.email.errors }}
-                    </div>
-                {% endif %}
-                <small id="emailHelp" class="form-text text-muted">Мы никогда не передадим ваш email третьим лицам.</small>
-            </div>
-
-            <div class="form-group">
-                <label for="inputPassword">Пароль</label>
-                <input type="password" class="form-control" id="inputPassword" placeholder="Пароль" name="password1" value="{{ form.password1.value|default:''  }}">
-                {% if form.password1.errors %}
-                   <div class="alert alert-danger mt-3">
-                            {{ form.password1.errors }}
-                    </div>
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                <label for="inputPasswordConfirm">Подтверждение пароля</label>
-                <input type="password" class="form-control" id="inputPasswordConfirm" placeholder="Подтвердите пароль" name="password2" value="{{ form.password2.value|default:''  }}">
-                {% if form.password2.errors %}
-                   <div class="alert alert-danger mt-3">
-                            {{ form.password2.errors }}
-                    </div>
-                {% endif %}
-            <div style="display: flex; align-items: center;">
-                <input  style="height: 25px; width: 45px; margin-right: 0.5rem" type="checkbox" role="switch" class="form_check_input form-control " id="inputStatus"  name="seller" value="{{ form.seller.value|yesno:"1,0"}}">
-                 <label for="inputStatus" class="mt-3 text-dark">Вы являетесь продавцом?</label>
-                {% if form.seller.errors %}
-                   <div class="alert alert-danger mt-3">
-                            {{ form.password2.errors }}
-                    </div>
-                    {% endif %}
-
-                </div>
-
-                </div>
-                    <button id="registrationButton" type="button" class="btn btn-primary btn-block" data-bs-target="#staticBackdrop">Зарегестрироваться</button>
-                        </form>
-                    </div>
-                </div>
-                </div>
-        <!-- Модальное окно -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-<div class="modal-dialog">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">Пожалуйста введите код из смс</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div>
+            <a href="{% url 'home' %}" class="brand-wrap"> <img class="logo" src="{% static 'img/logo-social.png' %}"
+                                                                alt="logo"> </a>
         </div>
+        <div class="navbar" id="navbarNavDropdown">
+            <ul class="navbar-nav flex-row justify-content-end">
+                <li class='nav-item me-3'>
+                    <a class="nav-link-color" href="{% url 'shop_create' %}">Создать магазин</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link-color active" aria-current="page" href="#">О нас</a>
+                </li>
+            </ul>
 
-        <div class="modal-body">
-            <input id="smsConfirm" class="form-control" type='number' >
         </div>
+    </div>
+</nav>
+<div class="container mt-5 mb-2 register-container" >
+    <div class="d-flex register-main">
 
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button id="registrationDone" type="button" class="btn btn-primary" disabled>Подтвердить</button>
+        <div class="w-50 my-auto mx-5 register-text">
+            <h2 class="mb-5">Присоединяйтесь к #Название компании.</h2>
+            <p class="d-flex align-items-center fs-5">
+            <span class="material-symbols-outlined fs-1 me-2" style="color: #3167EB">
+                store
+            </span>
+                Открытие собственного магазина
+            </p>
+            <p class="d-flex align-items-center fs-5">
+            <span class="material-symbols-outlined fs-1 me-2" style="color: #3167EB">
+                analytics
+            </span>
+                Просмотр статистики продаж и управление заказами
+            </p>
+            <p class="d-flex align-items-center fs-5">
+            <span class="material-symbols-outlined fs-1 me-2" style="color: #3167EB">
+                payments
+            </span>
+                Интернет-эквайринг
+            </p>
+            <p class="d-flex align-items-center fs-5">
+                <img src="{% static 'img/telegram.png' %}" class="me-2" width="35px" alt="telegram">
+                Подключение Telegram бот
+            </p>
+            <p class="d-flex align-items-center fs-5">
+                <img src="{% static 'img/kaspy.png' %}" class="me-2" width="35px" alt="telegram">
+                Интеграция с <a href="https://kaspi.kz/" class="ms-2 link link-dark"> Kaspi.kz</a>
+            </p>
+        </div>
+        <div class="row justify-content-center w-50 register-card">
+        <div class="card-title">
+            <h1 class="register-title">Присоединяйтесь к #Название компании.</h1>
+            <h5 class="slogan">Слоган компании</h5>
+        </div>
+            <div class="card registration-card">
+                <div class="card-body">
+                    <form id="registrationForm" method="post" action="{% url 'register' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="inputFirstName">Имя</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                                <div class="alert alert-danger mt-3">
+                                    {{ form.first_name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputLastName">Фамилия</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                                <div class="alert alert-danger mt-3">
+                                    {{ form.last_name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputPhone">Телефон</label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                                <div class="alert alert-danger mt-3">
+                                    {{ form.phone.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputEmail">Email</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="alert alert-danger mt-3">
+                                    {{ form.email.errors }}
+                                </div>
+                            {% endif %}
+                            <small id="emailHelp" class="form-text text-muted">Мы никогда не передадим ваш email
+                                третьим
+                                лицам.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputPassword">Пароль</label>
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
+                                <div class="alert alert-danger mt-3">
+                                    {{ form.password1.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputPasswordConfirm">Подтверждение пароля</label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                                <div class="alert alert-danger mt-3">
+                                    {{ form.password2.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <button id="registrationButton" type="button" class="btn btn-primary btn-block mt-3"
+                                data-bs-target="#staticBackdrop">Зарегестрироваться
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-</div>
-{#    END#}
+
+<footer>
+    <small><a target="_blank" class="link-dark" href="https://icons8.com/icon/TCnKnYZFoOzM/телеграмма-app">Телеграмм App</a> icon by <a target="_blank" class="link-dark" href="https://icons8.com">Icons8</a></small>
+</footer>
+<!-- Модальное окно -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Пожалуйста введите код из смс</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <input id="smsConfirm" class="form-control" type='number'>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="registrationDone" type="button" class="btn btn-primary" disabled>Подтвердить
+                </button>
             </div>
         </div>
+    </div>
+</div>
 
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'js/registration.js' %}" defer></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
+
 
 </body>
 </html>
