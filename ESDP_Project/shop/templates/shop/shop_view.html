@@ -53,6 +53,7 @@
         {% if products %}
             {% for product in products %}
             <div class="product-card mt-5">
+            <a href="{% url 'detail_product' id=product.id %}">
                   <div id="carousel-{{ product.id }}" class="carousel slide">
                         <div class="carousel-inner">
                             {% for image in product.images.all %}
@@ -70,6 +71,7 @@
                             <span class="sr-only">Next</span>
                         </a>
                     </div>
+            </a>
                 <div class="product-info">
                     <h4>{{ product.name }}</h4>
 
