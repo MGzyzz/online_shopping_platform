@@ -41,10 +41,68 @@
         <div class="row mt-4 text-marg">
             <div class="col-md-6">
             <a href="{% url 'edit_product' id=product.id %}" class="btn btn-primary">Изменить продукт</a>
-            <form method="post" action="{% url 'delete_product' product.id %}">
+             <form method="post" action="{% url 'delete_product' product.id %}">
         {% csrf_token %}
                 <button type="button" class="btn btn-danger mt-2 delete-btn" data-product-id="{{ product.id }}">Удалить товар</button>
             </form>
+
+
+                <input type="hidden" id="product" value="{{ product.id }}" name="product">
+                <button type="button" class="btn btn-success add-discount mt-3" >
+                Добавить временную скидку
+            </button>
+            <div class="modal" id="exampleModal" tabindex="-1" style="display: none">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Добавление временной скидки</h5>
+                    <button type="button" class="close-btn" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        <label for="date">Начало скидки: </label>
+                        <input class="form-control" required type="datetime-local" id="start_date" name="start_date"/>
+                        <label for="date">Конец скидки: </label>
+                        <input class="form-control" required type="datetime-local" id="end_date" name="end_date"/>
+                         <label for="percent">Скидка в процентах:</label>
+                        <input class="form-control" required type="number" id="percent" name="percent" min="1" max="100">
+                    </form>
+                    <div id="error-messages" class="alert alert-danger mt-2" style="display: none;"></div>
+                </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-danger close-btn" data-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-success" id="make_sale" >Применить скидку</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+
+                <button type="button" class="btn btn-danger mt-3" id="delete-btn" style="display: none">
+                Убрать временную скидку
+            </button>
+             <div class="modal" id="delete_modal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Удаление временной скидки</h5>
+                    <button type="button" class="close-btn" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h2>Вы уверены что хотите удалить скидку?</h2>
+                </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-danger close-btn" data-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-success" id="delete_sale" >Удалить скидку</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+
             <div class="d-flex">
                 {% for tag in product.tags.all %}
                     <p class="text-primary mx-1">#{{ tag }}</p>
@@ -71,11 +129,13 @@
                     </p>
                     <p class="text-success fw-700">Скидка: {{ product.discount }}%</p>
                     {% else %}
-                        {% if product.time_discount and product.time_discount.start_date <= now %}
-                            <p class="fw-700">Цена: {{ product.time_discount.discounted_price }}</p>
+                    {% if product.time_discount and product.time_discount.start_date <= now %}
+                        <p class="fw-700">Цена: <del>{{ product.price }}</del> {{ product.time_discount.discounted_price }}</p>
                             <p class="text-success fw-700">Скидка: {{ product.time_discount.discount }}%</p>
                         {% else %}
-                            <p class="fw-700">Цена: {{ product.price }}</p>
+                        <div id="priceDiscount">
+                            <p id="price" class="fw-700">Цена: {{ product.price }}</p>
+                        </div>
                         {% endif %}
                     {% endif %}
                 <p>Количество: {{ product.quantity }} </p>
@@ -84,6 +144,7 @@
             </div>
         </div>
     </div>
+
 
     <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -108,5 +169,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="{% static 'js/shop.js' %}"></script>
+    <script src="{% static 'js/time_sale.js' %}"></script>
 </body>
 </html>
