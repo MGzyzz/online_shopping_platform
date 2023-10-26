@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import CreateView, UpdateView, ListView, DeleteView
+from django.views.generic import CreateView, UpdateView, ListView, DeleteView, DetailView
 from taggit.models import Tag
 
 from shop.forms import ProductForm, ImagesForm
@@ -162,3 +162,11 @@ class DeleteProduct(DeleteView):
 
     def get_success_url(self):
         return reverse('shop_view', kwargs={'shop_id': self.object.shop_id})
+
+
+class DetailProduct(DetailView):
+    template_name = 'product/detail_product.html'
+    context_object_name = 'product'
+    model = Product
+    pk_url_kwarg = 'id'
+
