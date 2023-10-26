@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    let registrationButton = document.getElementById('registrationButton');
+    let registrationButton = $('#registrationButton');
     let myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
-    let smsConfirmInput = document.getElementById('smsConfirm');
-    let registrationDoneButton = document.getElementById('registrationDone');
+    let smsConfirmInput = $('#smsConfirm');
+    let registrationDoneButton = $('#registrationDone');
 
-    registrationButton.addEventListener('click', function (event) {
+    registrationButton.click(function (event) {
         event.preventDefault();
         if (validateForm()) {
             myModal.show();
@@ -16,45 +16,44 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('open');
     });
 
-    registrationDoneButton.addEventListener('click', function () {
-        if (smsConfirmInput.value === '4444') {
-            document.getElementById('registrationForm').submit();
+    registrationDoneButton.click(function () {
+        if (smsConfirmInput.val() === '4444') {
+            $('#registrationForm').submit();
         } else {
             alert('Неверный код!');
         }
     });
 
-    smsConfirmInput.addEventListener('input', function () {
+    smsConfirmInput.on('input',function () {
         checkSmsConfirmValidity();
     });
 });
 
 function checkSmsConfirmValidity() {
-    let smsConfirmInput = document.getElementById('smsConfirm');
-    let registrationDoneButton = document.getElementById('registrationDone');
+    let smsConfirmInput = $('#smsConfirm');
+    let registrationDoneButton = $('#registrationDone');
 
-    if (smsConfirmInput.value.length === 4) {
-        registrationDoneButton.removeAttribute('disabled'); // Активируем кнопку
+    if (smsConfirmInput.val().length === 4) {
+        registrationDoneButton.prop('disabled', false); // Активируем кнопку
     } else {
-        registrationDoneButton.setAttribute('disabled', 'disabled'); // Деактивируем кнопку
+        registrationDoneButton.prop('disabled', true); // Деактивируем кнопку
     }
 }
 
 function validateForm() {
-    let firstName = document.getElementById('inputFirstName').value;
-    let lastName = document.getElementById('inputLastName').value;
-    let phone = document.getElementById('inputPhone').value;
-    let email = document.getElementById('inputEmail').value;
-    let pass1 = document.getElementById('inputPassword').value;
-    let pass2 = document.getElementById('inputPasswordConfirm').value;
-    let sellerCheck = document.getElementById('inputStatus');
+    let firstName = $('#id_first_name').val();
+    let lastName = $('#id_last_name').val();
+    let phone = $('#id_phone').val();
+    let email = $('#id_email').val();
+    let pass1 = $('#id_password1').val();
+    let pass2 = $('#id_password2').val();
 
-    if (!firstName || !lastName || !phone || !email || !pass1 || !pass2 ) {
+    if (!firstName || !lastName || !phone || !email || !pass1 || !pass2) {
         alert('Пожалуйста, заполните все поля.');
 
         return false;
     }
-     let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         alert('Пожалуйста, введите корректный email.');
 
@@ -68,14 +67,10 @@ function validateForm() {
     // }
 
     if (pass1 !== pass2) {
-    alert('Пароли не совпадают.');
+        alert('Пароли не совпадают.');
 
-    return false;
+        return false;
     }
-
-    // if (sellerCheck.checked && !confirm('Вы уверены, что являетесь продавцом?')) {
-    //     return false;
-    // }
 
     return true;
 }

@@ -23,19 +23,21 @@
     <header class="section-header">
         <section class="header-top-light bg d-none d-lg-block">
                 <div class="container">
-                    <nav class="d-flex flex-colum flex-md-row">
-                        <ul class="nav">
-                            <li class="nav-item" > <a href="" class="nav-link pl-0" >Условия обмена и возврата</a></li>
-                            <li class="nav-item"> <a href=""  class="nav-link pl-0">Блог</a></li>
-                            <li class="nav-item"> <a href=""  class="nav-link pl-0">Обратная связь</a></li>
-                        </ul>
-                        <ul class="nav">
-                            <li class="nav-item"> <a href="" class="nav-link px-2"> <i class="fa-brands fa-vk"></i> </a></li>
-                            <li class="nav-item"> <a href="" class="nav-link px-2"> <i class="fa-brands fa-youtube"></i> </a></li>
-                            <li class="nav-item"> <a href="" class="nav-link px-2"> <i class="fa-brands fa-telegram"></i> </a> </li>
-                        </ul>
-                    </nav>
-                </div>
+                <nav class="d-flex flex-colum flex-md-row">
+                    <ul class="nav">
+                        <li class="nav-item"><a href="" class="nav-link pl-0">Условия обмена и возврата</a></li>
+                        <li class="nav-item"><a href="" class="nav-link pl-0">Блог</a></li>
+                        <li class="nav-item"><a href="" class="nav-link pl-0">Обратная связь</a></li>
+                    </ul>
+                    <ul class="nav">
+                        <li class="nav-item"><a href="" class="nav-link px-2"> <i class="fa-brands fa-vk"></i> </a></li>
+                        <li class="nav-item"><a href="" class="nav-link px-2"> <i class="fa-brands fa-youtube"></i> </a>
+                        </li>
+                        <li class="nav-item"><a href="" class="nav-link px-2"> <i class="fa-brands fa-telegram"></i>
+                        </a></li>
+                    </ul>
+                </nav>
+            </div>
 
         </section>
 
@@ -98,63 +100,80 @@
                                     </div>
 
 
-                          <ul class="navbar-nav ml-auto">
+                           <ul class="navbar-nav ml-auto">
                                 {% if user.is_authenticated %}
-                                <li class="nav-item dropdown widget-header ">
-                                    <a class="user-p icon-text decor dropdown-toggle " href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fa-regular fa-user"></i> {{ request.user.email }}
-                                    </a>
-                                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                        <a class="dropdown-item" href="#">Профиль</a>
-                                        <a class="dropdown-item" href="#">Настройки</a>
-                                        <a class="dropdown-item" href="{% url 'update_user' id=request.user.id %}">Изменение пользователя</a>
-                                        <a class="dropdown-item" href="{% url 'change_password' id=request.user.id %}">Изменить пароль</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Выйти</a>
-                                    </div>
-                                </li>
-                            </ul>
-                        {% else %}
-                                <div class="widget-header dropdown">
-                                     <a href="" class="ml-3 icon-text decor" data-toggle="dropdown" data-offset="20, 10" aria-expanded="true">
-                                    <div class="icon">
-                                        <i class="fa fa-lg fa-user-circle"></i>
-                                    </div>
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
+                                           role="button" data-toggle="dropdown" aria-haspopup="true"
+                                           aria-expanded="false">
+                                            {{ request.user.email }}
+                                        </a>
+                                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                            <a class="dropdown-item" href="#">Профиль</a>
+                                            <a class="dropdown-item" href="#">Настройки</a>
+                                            <a class="dropdown-item" href="{% url 'update_user' id=request.user.id %}">Изменение
+                                                пользователя</a>
+                                            <a class="dropdown-item"
+                                               href="{% url 'change_password' id=request.user.id %}">Изменить пароль</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="{% url 'logout' %}"><i
+                                                    class="bi bi-box-arrow-right"></i> Выйти</a>
+                                        </div>
+                                    </li>
+                                    </ul>
+                                {% else %}
+                                    <div class="widget-header dropdown">
+                                    <a href="" class="ml-3 icon-text decor" data-toggle="dropdown" data-offset="20, 10"
+                                       aria-expanded="true">
+                                        <div class="icon">
+                                            <i class="fa fa-lg fa-user-circle"></i>
+                                        </div>
 
-                                     <div class="text">
-                                         <small class="text-muted">Войти\Новый</small>
-                                         <br>
-                                         <span>
+                                        <div class="text">
+                                            <small class="text-muted">Войти\Новый</small>
+                                            <br>
+                                            <span>
                                          Аккаунт
                                              <i class="fa fa-caret-down"></i>
                                          </span>
-                                     </div>
-                                </a>
-                           <div class="dropdown-menu dropdown-menu-right" style="position: absolute; will-change: transform;">
-                            <form method="post" action="{% url 'login' %}" id="loginForm" class="px-4 py-4">
-                                {% csrf_token %}
-                                <div class="form-group ">
-                                    <label >Email</label>
-                                    <input type="email" class="form-control" name="username" id="loginEmail" value="{{ form.username.value|default:''  }}"
-                                           placeholder="email@example.com">
+                                        </div>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right {{ request.session.dropdown }}"
+                                         style="position: absolute; will-change: transform;">
+                                        <form method="post" action="{% url 'login' %}" id="loginForm" class="px-4 py-4">
+                                            {% csrf_token %}
+                                            <div class="form-group ">
+                                                <label>Email</label>
+                                                {{ form.username }}
+                                                {% if form.username.errors %}
+                                                <div class="alert alert-danger mt-5">
+                                                    {{ form.username.errors }}
+                                                </div>
+                                            {% endif %}
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Пароль</label>
+                                                {{ form.password }}
+                                                {% if form.password.errors %}
+                                                <div class="alert alert-danger mt-5">
+                                                    {{ form.password.errors }}
+                                                </div>
+                                            {% endif %}
+                                            </div>
+                                            {% if form.non_field_errors %}
+                                                <div class="alert alert-danger mt-5">
+                                                    {{ form.non_field_errors }}
+                                                </div>
+                                            {% endif %}
+                                            <button type="submit" class="btn btn-primary mt-2 form-control">Вход
+                                            </button>
+                                        </form>
+                                        <hr class="dropdown-divider">
+                                        <a href="{% url 'register' %}" class="dropdown-item">Зарегистрироваться</a>
+                                        <a href="" class="dropdown-item"> Забыли пароль?</a>
+                                    </div>
+                                {% endif %}
                                 </div>
-                                <div class="form-group">
-                                    <label>Пароль</label>
-                                    <input type="password" class="form-control" name="password" id="loginPassword" value="{{ form.password.value|default:''  }}" placeholder="********">
-                                </div>
-                          {% if form.non_field_errors %}
-                                <div class="alert alert-danger mt-5">
-                                    {{ form.non_field_errors }}
-                                </div>
-                            {% endif %}
-                            <button type="submit" class="btn btn-primary mt-2 form-control">Вход</button>
-                            </form>
-                               <hr class="dropdown-divider">
-                               <a href="{% url 'register' %}" class="dropdown-item">Зарегистрироваться</a>
-                               <a href="" class="dropdown-item"> Забыли пароль?</a>
-                        </div>
-                    {% endif %}
-            </div>
         </div>
     </div>
 </div>
@@ -317,6 +336,7 @@
         </div>
     </footer>
 
+    <script {% static 'js/token.js' %}></script>
     <script src="https://kit.fontawesome.com/465e448dc1.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

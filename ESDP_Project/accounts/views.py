@@ -16,6 +16,7 @@ class LoginView(views.LoginView):
         return reverse('home')
 
     def form_invalid(self, form):
+        self.request.session['dropdown'] = 'show'
         return render(self.request, 'main.html', {'form': form})
 
 
