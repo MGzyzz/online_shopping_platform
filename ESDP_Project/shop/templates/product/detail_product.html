@@ -42,6 +42,64 @@
             <div class="col-md-6">
             <a href="{% url 'edit_product' id=product.id %}" class="btn btn-primary">Изменить продукт</a>
             <a href="{% url 'delete_product' id=product.id %}" class="btn btn-danger">Удалить продукт</a>
+
+                <input type="hidden" id="product" value="{{ product.id }}" name="product">
+                <button type="button" class="btn btn-success add-discount mt-3" >
+                Добавить временную скидку
+            </button>
+            <div class="modal" id="exampleModal" tabindex="-1" style="display: none">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Добавление временной скидки</h5>
+                    <button type="button" class="close-btn" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        <label for="date">Начало скидки: </label>
+                        <input class="form-control" required type="datetime-local" id="start_date" name="start_date"/>
+                        <label for="date">Конец скидки: </label>
+                        <input class="form-control" required type="datetime-local" id="end_date" name="end_date"/>
+                         <label for="percent">Скидка в процентах:</label>
+                        <input class="form-control" required type="number" id="percent" name="percent" min="1" max="100">
+                    </form>
+                    <div id="error-messages" class="alert alert-danger mt-2" style="display: none;"></div>
+                </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-danger close-btn" data-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-success" id="make_sale" >Применить скидку</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+
+                <button type="button" class="btn btn-danger mt-3" id="delete-btn" style="display: none">
+                Убрать временную скидку
+            </button>
+             <div class="modal" id="delete_modal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Удаление временной скидки</h5>
+                    <button type="button" class="close-btn" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h2>Вы уверены что хотите удалить скидку?</h2>
+                </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-danger close-btn" data-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-success" id="delete_sale" >Удалить скидку</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+
             <div class="d-flex">
                 {% for tag in product.tags.all %}
                     <p class="text-primary mx-1">#{{ tag }}</p>
@@ -82,7 +140,9 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="{% static 'js/time_sale.js' %}"></script>
 </body>
 </html>
