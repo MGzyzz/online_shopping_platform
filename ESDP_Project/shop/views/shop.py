@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import TemplateView, CreateView, UpdateView, ListView
 
 from accounts.forms import LoginForm
@@ -19,12 +20,15 @@ class ShopCreateView(CreateView):
         return reverse_lazy('home')
 
 
-class ShopUpdateView(UpdateView):
+class ShopUpdateView(PermissionRequiredMixin, UpdateView):
     model = Shop
     template_name = 'shop/shop_update.html'
     form_class = ShopModelForm
     context_object_name = 'shop'
     pk_url_kwarg = 'id'
+
+    def has_permission(self):
+        return self.object.user == self.request.user
 
     def get_success_url(self):
         return reverse_lazy('home')

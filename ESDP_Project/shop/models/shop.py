@@ -16,7 +16,7 @@ class Shop(models.Model):
     user = models.ForeignKey(
         'accounts.User',
         on_delete=models.CASCADE,
-        related_name='shop_user'
+        related_name='shop'
     )
     name = models.CharField(
         max_length=255,

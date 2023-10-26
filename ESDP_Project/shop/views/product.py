@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -8,13 +9,16 @@ from shop.forms import ProductForm, ImagesForm
 from shop.models import Images, Category, Product, Shop
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(PermissionRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'product/create_product.html'
     extra_context = {
         'image_form': ImagesForm()
     }
+
+    def has_permission(self):
+        return Shop.objects.get(id=self.kwargs['shop_id']).user == self.request.user
 
     def dispatch(self, request, *args, **kwargs):
         self.image_form = ImagesForm()
@@ -41,8 +45,8 @@ class ProductCreateView(CreateView):
         product.save()
 
         tags_string = form.cleaned_data['tags']
-        product.tags.set(tags_string)
-
+        tags = [tag[:-1] if tag[-1] == ';' else tag for tag in tags_string]
+        product.tags.set(tags)
         images = self.image_form.cleaned_data['image']
 
         for image in images:
@@ -86,12 +90,15 @@ class ProductListView(ListView):
         return context
 
 
-class EditProduct(UpdateView):
+class EditProduct(PermissionRequiredMixin, UpdateView):
     template_name = 'product/edit_product.html'
     context_object_name = 'product'
     model = Product
     form_class = ProductForm
     pk_url_kwarg = 'id'
+
+    def has_permission(self):
+        return Product.objects.get(id=self.kwargs['id']).shop.user == self.request.user
 
     def get_success_url(self):
         return reverse('update_attributes', kwargs={'id': self.object.id})
@@ -154,11 +161,14 @@ class EditProduct(UpdateView):
         return redirect(self.get_success_url())
 
 
-class DeleteProduct(DeleteView):
+class DeleteProduct(PermissionRequiredMixin, DeleteView):
     template_name = 'shop/shop_view.html'
     context_object_name = 'product'
     model = Product
     pk_url_kwarg = 'id'
+
+    def has_permission(self):
+        return self.object.shop.user == self.request.user
 
     def get_success_url(self):
         return reverse('shop_view', kwargs={'shop_id': self.object.shop_id})

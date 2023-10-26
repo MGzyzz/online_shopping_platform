@@ -100,7 +100,7 @@
                 <input type="text" class="form-control custom-input" id="id_tags" name="tags"
                        placeholder="Введите теги, разделяя их точкой или точкой с запятой"
                        value="{{ product.tags.all|join:'; '|default:'' }}">
-                <small class="form-text text-muted">Введите теги, разделяя их точкой или точкой с запятой. Например:
+                <small class="form-text text-muted">Введите теги, разделяя их точкой или точкой с запятой, без пробелов. Например:
                     тег1; тег2; тег3 или тег1. тег2. тег3.</small>
                 {% if form.tags.errors %}
                     <div class="alert alert-danger mt-3">
