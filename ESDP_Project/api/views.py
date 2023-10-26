@@ -1,11 +1,25 @@
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.views import APIView
+
 from shop.models import TimeDiscount
 from .serializers import TimeDiscountSerializer
 from datetime import datetime
+
+
+class LogoutView(APIView):
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        if user.is_authenticated:
+            user.auth_token.delete()
+        return JsonResponse({
+            'status': 200
+        })
 
 
 class TimeDiscountViewSet(viewsets.ModelViewSet):
@@ -21,7 +35,7 @@ class TimeDiscountViewSet(viewsets.ModelViewSet):
             time_discount = serializer.save()
 
             discounted_price = time_discount.product.price - (
-                        time_discount.product.price * (time_discount.discount / 100))
+                    time_discount.product.price * (time_discount.discount / 100))
             time_discount.discounted_price = discounted_price
 
             time_discount.save()
