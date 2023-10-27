@@ -26,10 +26,16 @@ class TimeDiscountSerializer(serializers.ModelSerializer):
     )
 
     discount = serializers.IntegerField(
-        required=True,
+        required=False,
         error_messages={
-            'required': 'Поле "Скидка в процентах" обязательно для заполнения.',
             'invalid': 'Введите корректные данные в поле "Скидка в процентах"'
+        }
+    )
+
+    discount_in_currency = serializers.IntegerField(
+        required=False,
+        error_messages={
+            'invalid': 'Введите корректные данные в поле "Скидка в денежном эквиваленте"'
         }
     )
 
@@ -37,8 +43,9 @@ class TimeDiscountSerializer(serializers.ModelSerializer):
 
     def validate_start_date(self, value):
         current_datetime = timezone.now()
+        current_datetime_without = current_datetime.replace(microsecond=0, second=0)
 
-        if value < current_datetime:
+        if current_datetime_without > value:
             raise serializers.ValidationError("Дата и время начала скидки должна быть в будущем или настоящем ")
 
         return value
@@ -60,9 +67,19 @@ class TimeDiscountSerializer(serializers.ModelSerializer):
     def validate(self, data):
         start_date = data.get('start_date')
         end_date = data.get('end_date')
+        discount = data.get('discount')
+        discount_in_currency = data.get('discount_in_currency')
 
         if start_date and end_date and start_date >= end_date:
             raise serializers.ValidationError("Дата и время начала должна быть меньше даты и времени окончания.")
+
+        if not discount and not discount_in_currency:
+            raise serializers.ValidationError(
+                "Должно быть заполнено хотя бы одно из полей: 'discount' или 'discount_in_currency'.")
+
+        if discount and discount_in_currency:
+            raise serializers.ValidationError(
+                "Заполнено оба поля: 'discount' и 'discount_in_currency', оставьте только одно поле заполненным.")
 
         return data
 
