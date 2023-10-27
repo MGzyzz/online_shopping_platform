@@ -36,6 +36,11 @@ class ProductCreateView(CreateView):
         product.shop = shop
         product.category = form.cleaned_data['category']
 
+        if product.discount:
+
+            if product.discount != 0:
+                product.discounted_price = product.price - (product.price * (product.discount / 100))
+
         self.new_category(product)
 
         product.save()
@@ -137,10 +142,17 @@ class EditProduct(UpdateView):
 
     def form_valid(self, form):
         product = form.save(commit=False)
+
+        if product.discount:
+
+            if product.discount > 0:
+                product.discounted_price = product.price - (product.price * (product.discount / 100))
+
         product.save()
 
         tags_string = form.cleaned_data['tags']
         tags_string = [tag[:-1] if tag[-1] == ';' else tag for tag in tags_string]
+
         product.tags.set(tags_string)
         self.remove_all_tags_without_objects()
 
