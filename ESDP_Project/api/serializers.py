@@ -69,17 +69,24 @@ class TimeDiscountSerializer(serializers.ModelSerializer):
         end_date = data.get('end_date')
         discount = data.get('discount')
         discount_in_currency = data.get('discount_in_currency')
+        product = data.get('product')
 
         if start_date and end_date and start_date >= end_date:
             raise serializers.ValidationError("Дата и время начала должна быть меньше даты и времени окончания.")
 
         if not discount and not discount_in_currency:
             raise serializers.ValidationError(
-                "Должно быть заполнено хотя бы одно из полей: 'discount' или 'discount_in_currency'.")
+                "Должно быть заполнено хотя бы одно из полей: 'Скидка в процентах' или 'Скидка в денежном эквиваленте'."
+            )
 
         if discount and discount_in_currency:
             raise serializers.ValidationError(
-                "Заполнено оба поля: 'discount' и 'discount_in_currency', оставьте только одно поле заполненным.")
+                "Заполнено оба поля: 'Скидка в процентах' и 'Скидка в денежном эквиваленте', "
+                "оставьте только одно поле заполненным."
+            )
+
+        if product.price <= discount_in_currency:
+            raise serializers.ValidationError("Скидка не может быть больше или равна цене продукта")
 
         return data
 

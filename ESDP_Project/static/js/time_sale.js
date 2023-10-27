@@ -21,7 +21,8 @@ $('#make_sale').click(function () {
         let startDate = startDateInp.val()
         let endDate = endDateInp.val()
         let product = $('#product').val()
-        let discount = $('#percent').val()
+        let discountPercent = $('#percent').val()
+        let discountCurrency = $('#currency').val()
 
         $.ajax({
             url: `http://localhost:8000/api/time_discount/`,
@@ -30,7 +31,8 @@ $('#make_sale').click(function () {
                 product: product,
                 start_date: startDate,
                 end_date: endDate,
-                discount: discount,
+                discount: discountPercent,
+                discount_in_currency: discountCurrency
             },
             headers: {
                 'Authentication': `Token ${token}`
@@ -56,6 +58,9 @@ $('#make_sale').click(function () {
                 }
                 if (error.responseJSON.non_field_errors) {
                     errorMessages.push(error.responseJSON.non_field_errors[0])
+                }
+                if (error.responseJSON.discount_in_currency) {
+                    errorMessages.push(error.responseJSON.discount_in_currency[0])
                 }
                 if (errorMessages.length > 0) {
                     let errorDiv = $('#error-messages')
