@@ -85,8 +85,9 @@ class TimeDiscountSerializer(serializers.ModelSerializer):
                 "оставьте только одно поле заполненным."
             )
 
-        if product.price <= discount_in_currency:
-            raise serializers.ValidationError("Скидка не может быть больше или равна цене продукта")
+        if discount_in_currency:
+            if product.price <= discount_in_currency:
+                raise serializers.ValidationError("Скидка не может быть больше или равна цене продукта")
 
         return data
 

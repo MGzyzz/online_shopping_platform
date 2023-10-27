@@ -124,18 +124,18 @@
                     {% endif %}
                 {% endfor %}
                 <p>Код поставщика: {{ product.vendor_code }}</p>
-                {% if product.discount %}
-                    <p class="text-danger">
-                        <del>{{ product.price }}</del>
-                        Цена: {{ product.discounted_price }}
-                    </p>
-                    <p class="text-success fw-700">Скидка: {{ product.discount }}%</p>
-                    {% else %}
-                    {% if product.time_discount and product.time_discount.start_date <= now %}
+               {% if product.time_discount and product.time_discount.start_date <= now %}
                         <p class="fw-700">Цена: <del>{{ product.price }}</del> {{ product.time_discount.discounted_price }}</p>
                             {% if product.time_discount.discount %}
                             <p class="text-success fw-700">Скидка: {{ product.time_discount.discount }}%</p>
                                 {% endif %}
+                    {% else %}
+                         {% if product.discount %}
+                            <p class="text-danger">
+                            <del>{{ product.price }}</del>
+                                {{ product.discounted_price }}
+                            </p>
+                            <p class="text-success fw-700">Скидка: {{ product.discount }}%</p>
                         {% else %}
                         <div id="priceDiscount">
                             <p id="price" class="fw-700">Цена: {{ product.price }}</p>

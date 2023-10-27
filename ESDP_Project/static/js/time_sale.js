@@ -157,3 +157,4 @@ setInterval(function (){
     checkSale(productId)
 }, 10000)
 
+
