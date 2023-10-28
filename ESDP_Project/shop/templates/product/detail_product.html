@@ -131,8 +131,8 @@
                                 {% endif %}
                     {% else %}
                          {% if product.discount %}
-                            <p class="text-danger">
-                            <del>{{ product.price }}</del>
+                            <p >
+                            <del class="text-danger">{{ product.price }}</del>
                                 {{ product.discounted_price }}
                             </p>
                             <p class="text-success fw-700">Скидка: {{ product.discount }}%</p>
