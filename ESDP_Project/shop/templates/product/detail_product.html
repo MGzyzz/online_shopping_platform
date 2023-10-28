@@ -67,7 +67,9 @@
                         <label for="date">Конец скидки: </label>
                         <input class="form-control" required type="datetime-local" id="end_date" name="end_date"/>
                          <label for="percent">Скидка в процентах:</label>
-                        <input class="form-control" required type="number" id="percent" name="percent" min="1" max="100">
+                        <input class="form-control"  type="number" id="percent" name="percent" min="1" max="100">
+                        <label for="percent">Скидка в денежном эквиваленте:</label>
+                        <input class="form-control"  type="number" id="currency" name="currency" min="1" max="{{ product.price }}">
                     </form>
                     <div id="error-messages" class="alert alert-danger mt-2" style="display: none;"></div>
                 </div>
@@ -122,16 +124,18 @@
                     {% endif %}
                 {% endfor %}
                 <p>Код поставщика: {{ product.vendor_code }}</p>
-                {% if product.discount %}
-                    <p class="text-danger">
-                        <del>{{ product.price }}</del>
-                        Цена: {{ product.discounted_price }}
-                    </p>
-                    <p class="text-success fw-700">Скидка: {{ product.discount }}%</p>
-                    {% else %}
-                    {% if product.time_discount and product.time_discount.start_date <= now %}
+               {% if product.time_discount and product.time_discount.start_date <= now %}
                         <p class="fw-700">Цена: <del>{{ product.price }}</del> {{ product.time_discount.discounted_price }}</p>
+                            {% if product.time_discount.discount %}
                             <p class="text-success fw-700">Скидка: {{ product.time_discount.discount }}%</p>
+                                {% endif %}
+                    {% else %}
+                         {% if product.discount %}
+                            <p class="text-danger">
+                            <del>{{ product.price }}</del>
+                                {{ product.discounted_price }}
+                            </p>
+                            <p class="text-success fw-700">Скидка: {{ product.discount }}%</p>
                         {% else %}
                         <div id="priceDiscount">
                             <p id="price" class="fw-700">Цена: {{ product.price }}</p>
