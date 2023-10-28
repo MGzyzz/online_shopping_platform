@@ -1,6 +1,12 @@
 from rest_framework import serializers
-from shop.models import TimeDiscount
+from shop.models import TimeDiscount, Product
 from django.utils import timezone
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
 
 
 class TimeDiscountSerializer(serializers.ModelSerializer):
@@ -90,5 +96,6 @@ class TimeDiscountSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Скидка не может быть больше или равна цене продукта")
 
         return data
+
 
 
