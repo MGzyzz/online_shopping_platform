@@ -38,7 +38,7 @@ class ProductCreateView(CreateView):
 
         if product.discount:
 
-            if product.discount != 0:
+            if product.discount > 0:
                 product.discounted_price = product.price - (product.price * (product.discount / 100))
 
         self.new_category(product)
