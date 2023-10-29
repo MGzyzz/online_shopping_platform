@@ -18,6 +18,45 @@
 <body>
 {% block header %}
 
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            {% if user.is_authenticated %}
+            <a href="{% url "shop_create" %}">Create shop</a>
+            <a href="{% url "create_product" shop_id=1 %}" class="mx-3 btn btn-info shadow">Create product test</a>
+{#                <a href="{% url 'shop_list' user_id=request.user.id %}" class="btn btn-light shadow">Your shops</a>#}
+
+            {% else %}
+            {% endif %}
+
+            <ul class="navbar-nav ml-auto">
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ request.user.email }}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Профиль</a>
+                        <a class="dropdown-item" href="#">Настройки</a>
+                        <a class="dropdown-item" href="{% url 'update_user' id=request.user.id %}">Изменение пользователя</a>
+                        <a class="dropdown-item" href="{% url 'change_password' id=request.user.id %}">Изменить пароль</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Выйти</a>
+                    </div>
+                </li>
+                    {% else %}
+                    <li class="nav-item">
+                    <a class="nav-link btn btn-register" href="{% url 'register' %}">Регистрация</a>
+                </li>
+                <li class="nav-item ml-2">
+                    <a class="nav-link btn btn-outline-light btn-login" href="{% url 'login' %}">Вход</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
 {% endblock %}
 
 {% block content%}

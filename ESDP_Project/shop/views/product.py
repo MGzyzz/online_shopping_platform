@@ -1,24 +1,20 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import CreateView, UpdateView, ListView, DeleteView
+from django.views.generic import CreateView, UpdateView, ListView, DeleteView, DetailView
 from taggit.models import Tag
 
 from shop.forms import ProductForm, ImagesForm
 from shop.models import Images, Category, Product, Shop
 
 
-class ProductCreateView(PermissionRequiredMixin, CreateView):
+class ProductCreateView(CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'product/create_product.html'
     extra_context = {
         'image_form': ImagesForm()
     }
-
-    def has_permission(self):
-        return Shop.objects.get(id=self.kwargs['shop_id']).user == self.request.user
 
     def dispatch(self, request, *args, **kwargs):
         self.image_form = ImagesForm()
@@ -40,13 +36,18 @@ class ProductCreateView(PermissionRequiredMixin, CreateView):
         product.shop = shop
         product.category = form.cleaned_data['category']
 
+        if product.discount:
+
+            if product.discount > 0:
+                product.discounted_price = product.price - (product.price * (product.discount / 100))
+
         self.new_category(product)
 
         product.save()
 
         tags_string = form.cleaned_data['tags']
-        tags = [tag[:-1] if tag[-1] == ';' else tag for tag in tags_string]
-        product.tags.set(tags)
+        product.tags.set(tags_string)
+
         images = self.image_form.cleaned_data['image']
 
         for image in images:
@@ -90,15 +91,12 @@ class ProductListView(ListView):
         return context
 
 
-class EditProduct(PermissionRequiredMixin, UpdateView):
+class EditProduct(UpdateView):
     template_name = 'product/edit_product.html'
     context_object_name = 'product'
     model = Product
     form_class = ProductForm
     pk_url_kwarg = 'id'
-
-    def has_permission(self):
-        return Product.objects.get(id=self.kwargs['id']).shop.user == self.request.user
 
     def get_success_url(self):
         return reverse('update_attributes', kwargs={'id': self.object.id})
@@ -144,10 +142,17 @@ class EditProduct(PermissionRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         product = form.save(commit=False)
+
+        if product.discount:
+
+            if product.discount > 0:
+                product.discounted_price = product.price - (product.price * (product.discount / 100))
+
         product.save()
 
         tags_string = form.cleaned_data['tags']
         tags_string = [tag[:-1] if tag[-1] == ';' else tag for tag in tags_string]
+
         product.tags.set(tags_string)
         self.remove_all_tags_without_objects()
 
@@ -155,20 +160,19 @@ class EditProduct(PermissionRequiredMixin, UpdateView):
 
         for image_id, image in self.request.FILES.items():
             old_image = get_object_or_404(Images, id=image_id)
+            storage, path = old_image.image.storage, old_image.image.path
+            storage.delete(path)
             old_image.image = image
             old_image.save()
 
         return redirect(self.get_success_url())
 
 
-class DeleteProduct(PermissionRequiredMixin, DeleteView):
+class DeleteProduct(DeleteView):
     template_name = 'shop/shop_view.html'
     context_object_name = 'product'
     model = Product
     pk_url_kwarg = 'id'
-
-    def has_permission(self):
-        return self.object.shop.user == self.request.user
 
     def dispatch(self, request, *args, **kwargs):
         self.product = get_object_or_404(Product, id=self.kwargs['id'])
@@ -183,3 +187,16 @@ class DeleteProduct(PermissionRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse('shop_view', kwargs={'shop_id': self.object.shop_id})
+
+
+class DetailProduct(DetailView):
+    template_name = 'product/detail_product.html'
+    context_object_name = 'product'
+    model = Product
+    pk_url_kwarg = 'id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['now'] = timezone.now()
+
+        return context

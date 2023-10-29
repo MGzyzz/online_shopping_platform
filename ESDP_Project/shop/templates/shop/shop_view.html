@@ -14,7 +14,7 @@
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" style="box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); background-color: {% if shop.theme == 'Light' %} white  {% elif shop.theme == 'Dark' %}black {% elif shop.theme == 'Red' %}red {% endif %}">
         <img class="navbar-brand" src="{{ shop.logo.url }}" width="30" height="30" alt="{{ shop.name }}">
         <div class="mr-5">{{ shop.name }}</div>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,6 +53,7 @@
         {% if products %}
             {% for product in products %}
             <div class="product-card mt-5">
+            <a href="{% url 'detail_product' id=product.id %}">
                   <div id="carousel-{{ product.id }}" class="carousel slide">
                         <div class="carousel-inner">
                             {% for image in product.images.all %}
@@ -70,21 +71,26 @@
                             <span class="sr-only">Next</span>
                         </a>
                     </div>
+            </a>
                 <div class="product-info">
                     <h4>{{ product.name }}</h4>
 
-                    {% if product.discount %}
-                    <p class="text-danger">
-                        <del>{{ product.price }}</del>
-                        {{ product.discounted_price }}
-                    </p>
-                    <p class="text-success fw-700">Скидка: {{ product.discount }}%</p>
-                    {% else %}
-                        {% if product.time_discount and product.time_discount.start_date <= now %}
-                            <p class="fw-700">{{ product.time_discount.discounted_price }}</p>
+                     {% if product.time_discount and product.time_discount.start_date <= now %}
+                        <p class="fw-700">Цена: <del>{{ product.price }}</del> {{ product.time_discount.discounted_price }}</p>
+                            {% if product.time_discount.discount %}
                             <p class="text-success fw-700">Скидка: {{ product.time_discount.discount }}%</p>
+                                {% endif %}
+                    {% else %}
+                         {% if product.discount %}
+                            <p>
+                            <del class="text-danger">{{ product.price }}</del>
+                                {{ product.discounted_price }}
+                            </p>
+                            <p class="text-success fw-700">Скидка: {{ product.discount }}%</p>
                         {% else %}
-                            <p class="fw-700">{{ product.price }}</p>
+                        <div id="priceDiscount">
+                            <p id="price" class="fw-700">Цена: {{ product.price }}</p>
+                        </div>
                         {% endif %}
                     {% endif %}
                 </div>

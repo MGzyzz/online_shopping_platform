@@ -21,7 +21,8 @@ $('#make_sale').click(function () {
         let startDate = startDateInp.val()
         let endDate = endDateInp.val()
         let product = $('#product').val()
-        let discount = $('#percent').val()
+        let discountPercent = $('#percent').val()
+        let discountCurrency = $('#currency').val()
 
         $.ajax({
             url: `http://localhost:8000/api/time_discount/`,
@@ -30,7 +31,8 @@ $('#make_sale').click(function () {
                 product: product,
                 start_date: startDate,
                 end_date: endDate,
-                discount: discount,
+                discount: discountPercent,
+                discount_in_currency: discountCurrency
             },
             headers: {
                 'Authentication': `Token ${token}`
@@ -41,6 +43,7 @@ $('#make_sale').click(function () {
             let discountBtn =  $('.add-discount')
             discountBtn.hide()
             $('#delete-btn').show()
+            checkTimeDiscountField(product)
         }).catch(function (error){
             console.log(error)
             if (error.responseJSON){
@@ -56,6 +59,9 @@ $('#make_sale').click(function () {
                 }
                 if (error.responseJSON.non_field_errors) {
                     errorMessages.push(error.responseJSON.non_field_errors[0])
+                }
+                if (error.responseJSON.discount_in_currency) {
+                    errorMessages.push(error.responseJSON.discount_in_currency[0])
                 }
                 if (errorMessages.length > 0) {
                     let errorDiv = $('#error-messages')
@@ -109,12 +115,57 @@ $('#delete_sale').click(function (){
                     $('#delete_modal').hide()
                     $('#delete-btn').hide()
                     $('.add-discount').show()
+                    checkConstantSale(productId)
                 })
             } else {
                 alert('Скидка не найдена для данного продукта.')
             }
         })
 })
+
+function checkConstantSale(productId){
+     $.ajax({
+        url: `http://localhost:8000/api/product/${productId}/`,
+        method: 'GET',
+        headers: {
+            'Authentication': `Token ${token}`
+        }
+    }).then(function (data){
+        if (data.discount && data.discount > 0) {
+                $('#productPrice').html(`<p>Цена: <del class="text-danger">${data.price}</del> ${data.discounted_price}</p><p class="text-success fw-700">Скидка: ${data.discount}</p>`)
+        }
+        else {
+            $('#productPrice').html(`<div id="priceDiscount">\n` +
+                `                            <p id="price" class="fw-700">Цена: ${data.price}</p>\n` +
+                `                        </div>`)
+        }
+
+     })
+}
+
+
+function checkTimeDiscountField(productId) {
+    getSaleId(productId).then(function (data) {
+        let discountId = data.discount_id;
+        let productPrice = $('#somePrice').val()
+        if (discountId) {
+            $.ajax({
+                url: `http://localhost:8000/api/time_discount/${discountId}/`,
+                method: "GET",
+                headers: {
+                    'Authentication': `Token ${token}`
+                }
+            }).then(function (data) {
+                if (data.discount) {
+                    $('#productPrice').html(`<p>Цена: <del class="text-danger">${productPrice}</del> ${data.discounted_price}</p><p class="text-success fw-700">Скидка: ${data.discount}%</p>`);
+                } else if (data.discount_in_currency) {
+                    $('#productPrice').html(`<p>Цена: <del class="text-danger">${productPrice}</del> ${data.discounted_price}</p>`);
+                }
+            });
+        }
+    });
+}
+
 
 $('.close-btn').click(function (){
      $('#exampleModal').hide()
@@ -132,13 +183,16 @@ function checkSale(productId){
                         'Authentication': `Token ${token}`
                     },
                 }).then(function (data){
+
                     if (data.expired) {
                         $('#delete-btn').hide()
                         $('.add-discount').show()
+                        checkConstantSale(productId)
                     }
                     else {
                         $('#delete-btn').show()
                         $('.add-discount').hide()
+                        checkTimeDiscountField(productId)
                     }
                 })
             } else {
@@ -151,3 +205,5 @@ setInterval(function (){
     let productId = $('#product').val()
     checkSale(productId)
 }, 10000)
+
+

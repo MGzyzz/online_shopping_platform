@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 
-from shop.models import TimeDiscount
-from .serializers import TimeDiscountSerializer
+from shop.models import TimeDiscount, Product
+from .serializers import TimeDiscountSerializer, ProductSerializer
 from datetime import datetime
 
 
@@ -34,10 +34,17 @@ class TimeDiscountViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             time_discount = serializer.save()
 
-            discounted_price = time_discount.product.price - (
-                    time_discount.product.price * (time_discount.discount / 100))
-            time_discount.discounted_price = discounted_price
+            if time_discount.discount:
+                discounted_price = time_discount.product.price - (
+                        time_discount.product.price * (time_discount.discount / 100))
 
+            elif time_discount.discount_in_currency:
+                discounted_price = time_discount.product.price - time_discount.discount_in_currency
+
+            else:
+                discounted_price = 0
+
+            time_discount.discounted_price = discounted_price
             time_discount.save()
 
             return Response(serializer.data)
@@ -68,3 +75,10 @@ class TimeDiscountViewSet(viewsets.ModelViewSet):
             return Response({'discount_id': discount.id})
         except TimeDiscount.DoesNotExist:
             return Response({'error': 'Discount not found for the product'}, status=404)
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_url_kwarg = 'id'
+    lookup_field = 'id'
