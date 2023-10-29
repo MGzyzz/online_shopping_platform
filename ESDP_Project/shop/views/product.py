@@ -170,5 +170,16 @@ class DeleteProduct(PermissionRequiredMixin, DeleteView):
     def has_permission(self):
         return self.object.shop.user == self.request.user
 
+    def dispatch(self, request, *args, **kwargs):
+        self.product = get_object_or_404(Product, id=self.kwargs['id'])
+        self.images = self.product.images.all()
+        return super().dispatch(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        for image in self.images:
+            storage, path = image.image.storage, image.image.path
+            storage.delete(path)
+        return super().delete(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse('shop_view', kwargs={'shop_id': self.object.shop_id})
