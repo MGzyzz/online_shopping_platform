@@ -48,6 +48,7 @@
 
 
                 <input type="hidden" id="product" value="{{ product.id }}" name="product">
+                <input type="hidden" id="somePrice" value="{{ product.price }}" >
                 <button type="button" class="btn btn-success add-discount mt-3" >
                 Добавить временную скидку
             </button>
@@ -124,6 +125,7 @@
                     {% endif %}
                 {% endfor %}
                 <p>Код поставщика: {{ product.vendor_code }}</p>
+            <div id="productPrice">
                {% if product.time_discount and product.time_discount.start_date <= now %}
                         <p class="fw-700">Цена: <del>{{ product.price }}</del> {{ product.time_discount.discounted_price }}</p>
                             {% if product.time_discount.discount %}
@@ -131,8 +133,8 @@
                                 {% endif %}
                     {% else %}
                          {% if product.discount %}
-                            <p >
-                            <del class="text-danger">{{ product.price }}</del>
+                            <p>
+                             Цена: <del class="text-danger">{{ product.price }}</del>
                                 {{ product.discounted_price }}
                             </p>
                             <p class="text-success fw-700">Скидка: {{ product.discount }}%</p>
@@ -142,6 +144,7 @@
                         </div>
                         {% endif %}
                     {% endif %}
+            </div>
                 <p>Количество: {{ product.quantity }} </p>
                 <p>Магазин: {{ product.shop.name }}</p>
                 <button class="btn btn-success">Добавить в корзину</button>
