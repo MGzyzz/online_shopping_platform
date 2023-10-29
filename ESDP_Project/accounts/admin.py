@@ -8,9 +8,19 @@ class ShopInline(admin.StackedInline):
     model = Shop
 
 
-class UserAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name', 'phone', ]
-    inlines = [ShopInline]
+class MultiModelAdmin(admin.ModelAdmin):
+    list_display = ['name', 'get_name', 'get_phone']
+
+    def get_name(self, obj):
+        user = obj.user
+        return user.first_name + ' ' + user.last_name
+
+    def get_phone(self, obj):
+        user = obj.user
+        return user.phone
+
+    get_name.short_description = 'Имя'
+    get_phone.short_description = 'Телефон'
 
 
-admin.site.register(User, UserAdmin)
+admin.site.register(Shop, MultiModelAdmin)
