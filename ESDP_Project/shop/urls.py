@@ -3,7 +3,7 @@ from .views import *
 from .views.product import DetailProduct
 
 urlpatterns = [
-    path('create', ShopCreateView.as_view(), name='shop_create'),
+    path('create/', ShopCreateView.as_view(), name='shop_create'),
     path('update/<int:id>', ShopUpdateView.as_view(), name='shop_update'),
     path('<int:shop_id>/create_product/', ProductCreateView.as_view(), name='create_product'),
     path('', ShopListView.as_view(), name='home'),
