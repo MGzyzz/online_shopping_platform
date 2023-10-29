@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, CreateView, UpdateView, ListView
 
@@ -8,7 +8,7 @@ from shop.models import Shop
 from django.urls import reverse_lazy
 
 
-class ShopCreateView(CreateView):
+class ShopCreateView(LoginRequiredMixin, CreateView):
     model = Shop
     template_name = 'shop/shop_create_update.html'
     form_class = ShopModelForm
