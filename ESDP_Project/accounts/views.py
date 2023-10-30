@@ -1,7 +1,7 @@
 from django.contrib.auth import views, login, get_user_model
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, TemplateView
 
 from accounts.forms import RegisterForm, LoginForm, UserUpdateForm, PasswordChangeForm
 from accounts.models import User
@@ -31,13 +31,24 @@ class RegisterView(CreateView):
     form_class = RegisterForm
 
     def form_valid(self, form):
-        user = form.save()
-        login(self.request, user)
-        return redirect('home')
+        user = form.save(commit=False)
+        phone_number = form.cleaned_data.get('phone')
+        self.request.session['phone'] = phone_number
+        print(phone_number)
+        # login(self.request, user)
+        return redirect('sms-verification')
 
     def form_invalid(self, form):
         return render(self.request, 'register.html', {'form': form})
 
+class Sms_Verification(TemplateView):
+    template_name = 'sms.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        phone_number = self.request.session.get('phone', 'Неизвестный номер')
+        context['phone_number'] = phone_number
+        return context
 
 class UserUpdate(UpdateView):
     model = get_user_model()
