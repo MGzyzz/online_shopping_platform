@@ -7,9 +7,9 @@ from taggit.managers import TaggableManager
 
 
 class Themes(TextChoices):
-    DARK = 'Dark', 'Темная'
-    LIGHT = 'Light', 'Светлая'
-    RED = 'Red', 'Красная'
+    DARK = 'black', 'Темная'
+    LIGHT = 'white', 'Светлая'
+    BLUE = 'blue', 'Синяя'
 
 
 class Shop(models.Model):

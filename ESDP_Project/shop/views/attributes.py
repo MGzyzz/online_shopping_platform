@@ -16,13 +16,18 @@ class AttributesCreateView(PermissionRequiredMixin, CreateView):
     def has_permission(self):
         return self.product.shop.user == self.request.user
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['shop'] = self.product.shop
+        return context
+
     def post(self, request, *args, **kwargs):
         data = dict(zip(request.POST.getlist('name'), request.POST.getlist('value')))
 
         for name, value in data.items():
             Attributes.objects.create(product=self.product, name=name, value=value)
 
-        return redirect('shop_view', shop_id=self.product.shop_id)
+        return redirect('shop_products', shop_id=self.product.shop_id)
 
 
 class AttributesUpdateView(PermissionRequiredMixin, UpdateView):
@@ -62,7 +67,7 @@ class AttributesUpdateView(PermissionRequiredMixin, UpdateView):
 
         self.delete_unused_attributes(data)
 
-        return redirect('shop_view', shop_id=self.product.shop_id)
+        return redirect('shop_products', shop_id=self.product.shop_id)
 
     def delete_unused_attributes(self, data):
         for attribute in self.get_queryset():

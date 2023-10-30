@@ -96,14 +96,12 @@
                             </span>
                         </a>
                         <div class="w-100 m-0 d-flex rounded-1">
-                            <a href="{% url 'shop_update' id=shop.id %}" class="btn rounded-0 w-25">Изменить магазин</a>
-                            <form method="post" action="{% url 'shop_delete' id=shop.id %}" style="display: contents">
+                            <a href="{% url 'shop_update' id=shop.id %}" class="btn rounded-0" style="width: 33.4%">Изменить магазин</a>
+                            <form method="post" action="{% url 'shop_delete' id=shop.id %}" style="display: contents;">
                                 {% csrf_token %}
-                                <button type="button" class="btn rounded-0 w-25 delete-btn">Удалить магазин</button>
+                                <button type="button" class="btn rounded-0 delete-btn" style="width: 33.4%;">Удалить магазин</button>
                             </form>
-                            <a href="{% url 'shop_view' shop_id=shop.id %}" class="btn rounded-0 w-25">Открыть
-                                магазин</a>
-                            <a href="{% url 'shop_products' id=shop.id %}" class="btn rounded-0 w-25">Список товаров</a>
+                            <a href="{% url 'shop_products' id=shop.id %}" class="btn rounded-0" style="width: 33.4%">Список товаров</a>
                         </div>
                     </div>
                 {% endfor %}

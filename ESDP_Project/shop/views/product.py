@@ -228,4 +228,10 @@ class ShopProductView(PermissionRequiredMixin, ListView):
     def get_queryset(self):
         return self.shop.products.all()
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['shop'] = self.shop
+        print(Product.objects.get(id=1).tags)
+        return context
+
 

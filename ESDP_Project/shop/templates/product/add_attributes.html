@@ -34,7 +34,7 @@
                 </button>
             </small>
             <button type="submit" class="btn btn-submit">Добавить к товару</button>
-            <a type="button" href="{% url 'home' %}" class="btn btn-light border py-2">Добавить позже</a>
+            <a type="button" href="{% url 'shop_products' id=shop.id %}" class="btn btn-light border py-2">Добавить позже</a>
         </form>
     </div>
 {% endblock %}
