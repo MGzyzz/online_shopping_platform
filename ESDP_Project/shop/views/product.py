@@ -210,3 +210,22 @@ class DetailProduct(DetailView):
         context['now'] = timezone.now()
 
         return context
+
+
+class ShopProductView(PermissionRequiredMixin, ListView):
+    template_name = 'profile/profile_product_list.html'
+    context_object_name = 'products'
+    model = Product
+    pk_url_kwarg = 'id'
+
+    def has_permission(self):
+        return self.shop.user == self.request.user
+
+    def dispatch(self, request, *args, **kwargs):
+        self.shop = get_object_or_404(Shop, id=self.kwargs['id'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return self.shop.products.all()
+
+

@@ -1,4 +1,4 @@
-from .shop import ShopCreateView, ShopListView, ShopUpdateView
-from .product import ProductCreateView, ProductListView, EditProduct, DeleteProduct
+from .shop import ShopCreateView, ShopListView, ShopUpdateView, ShopDeleteView
+from .product import ProductCreateView, ProductListView, EditProduct, DeleteProduct, ShopProductView
 from .attributes import AttributesCreateView, AttributesUpdateView
 from .profile import Profile

@@ -100,7 +100,7 @@
     </a>
     <form method="post" action="{% url 'delete_product' product.id %}">
         {% csrf_token %}
-<button type="button" class="btn text-danger delete-btn" data-product-id="{{ product.id }}" title="Удалить товар">
+        <button type="button" class="btn text-danger delete-btn" data-product-id="{{ product.id }}" title="Удалить товар">
             <i class="fas fa-trash-alt"></i>
         </button>
     </form>
