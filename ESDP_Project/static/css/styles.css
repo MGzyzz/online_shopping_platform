@@ -202,3 +202,29 @@ img {
     background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
     color: #fff
  }
+
+.card-product-grid{
+    height: 100%;
+    justify-content: space-between;
+ }
+
+.img-wrap{
+    text-align: center;
+    display: block;
+}
+.card-product-grid .topbar {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+    left: 0;
+    text-align: initial;
+    padding: 10px 15px;
+}
+
+.card-product-grid .info-wrap {
+    /* margin-top: -10px; */
+    overflow: hidden;
+    background: #fff;
+    padding: 0px 20px 18px 20px;
+}

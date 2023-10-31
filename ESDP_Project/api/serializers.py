@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from shop.models import TimeDiscount
+from shop.models import TimeDiscount, Product, Bucket
 from django.utils import timezone
 
 
@@ -67,3 +67,13 @@ class TimeDiscountSerializer(serializers.ModelSerializer):
         return data
 
 
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+
+class BucketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bucket
+        fields = ['product', 'quantity', 'ip_address', 'user']
