@@ -27,7 +27,7 @@ class ProductCreateView(PermissionRequiredMixin, CreateView):
     def post(self, request, *args, **kwargs):
         self.image_form = ImagesForm(request.POST, request.FILES)
 
-        if self.image_form.is_valid():
+        if self.image_form.is_valid() and self.get_form().is_valid():
             return self.form_valid(self.get_form())
 
         return render(self.request, 'product/create_product.html',
@@ -35,7 +35,6 @@ class ProductCreateView(PermissionRequiredMixin, CreateView):
 
     def form_valid(self, form):
         shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
-
         product = form.save(commit=False)
         product.shop = shop
         product.category = form.cleaned_data['category']
@@ -196,7 +195,7 @@ class DeleteProduct(PermissionRequiredMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 
     def get_success_url(self):
-        return reverse('shop_view', kwargs={'shop_id': self.object.shop_id})
+        return reverse('shop_products', kwargs={'id': self.object.shop_id})
 
 
 class DetailProduct(DetailView):
@@ -231,7 +230,6 @@ class ShopProductView(PermissionRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['shop'] = self.shop
-        print(Product.objects.get(id=1).tags)
         return context
 
 
