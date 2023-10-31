@@ -1,0 +1,25 @@
+{% extends 'main.html' %}
+
+{% block content%}
+    <div class="container pb-4">
+    <hr>
+
+
+        {% for item in bucket %}
+            <a href="" style="text-decoration: none">
+        <table class="table table-hover" >
+          <tbody>
+            <tr>
+              <th scope="row" class="fix-text" style="width: 250px">{{ item.product.name }}</th>
+                <td style="width: 350px">{{ item.product.category }}</td>
+                <td style="width: 350px">{{ them.user.username }}</td>
+              <td style="width: 350px">Price: {{ item.product.price }} </td>
+              <td style="width: 350px">Price: asd </td>
+            </tr>
+          </tbody>
+        </table>
+    </a>
+    {% endfor %}
+    </div>
+
+{% endblock %}

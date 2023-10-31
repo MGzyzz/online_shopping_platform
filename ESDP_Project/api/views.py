@@ -108,7 +108,7 @@ class BucketViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(created)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
 
     def get_client_ip(self, request):
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')

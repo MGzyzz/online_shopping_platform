@@ -2,7 +2,7 @@ from django.views.generic import TemplateView, CreateView, UpdateView, ListView
 
 from accounts.forms import LoginForm
 from shop.forms import ShopModelForm
-from shop.models import Shop
+from shop.models import Shop, Product
 from django.urls import reverse_lazy
 
 
@@ -36,5 +36,6 @@ class ShopListView(ListView):
     context_object_name = 'shops'
     paginate_by = 5
     extra_context = {
-        'form': LoginForm()
+        'form': LoginForm(),
+        "products": Product.objects.all()
     }

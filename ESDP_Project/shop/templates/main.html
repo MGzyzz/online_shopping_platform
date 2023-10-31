@@ -85,7 +85,7 @@
                                 </div>
 
                                 <div class="widget-header me-3">
-                                    <a href="#" class=" ml-3 icon-text decor">
+                                    <a href="{% url 'bucket' %}" class=" ml-3 icon-text decor">
                                         <div class="icon">
                                             <i class="fa-solid fa-cart-shopping"></i>
                                         </div>
@@ -269,7 +269,9 @@
       </div>
     </div>
   </section>
+
 <section>
+{% for product in products %}
 <div class="container pb-4">
     <div class="row align-items-start">
         <div class="col-lg-3 col-md-4 col-sm-6 col-6 mb-2 mb-sm-4 product_card-cell">
@@ -280,33 +282,31 @@
                             <i class="fa fa-heart"></i>
                         </a>
                     </span>
+                    {% for image in product.images.all %}
                         <a href="" class="img-wrap">
-                            <img src="" alt="">
+                            <img class="product-img-size" src="{{ image.image.url }}" alt="">
                         </a>
+                        {% endfor %}
 
                     <figcaption class="info-wrap pt-2" data-show_hover>
                         <a href="" class="title">
-                            description
+                            {{ product.description }}
                         </a>
                         <div>
                             <input type='hidden'>
-                            <h5> price</h5>
-                            <a id="cart-btn" href="#" class="relative btn btn-sm btn-outline-primary float-right">
+                            <h5> {{ product.price }} тг.</h5>
+                            <a id="cart-btn" href="#" class="cart-btn relative btn btn-sm btn-outline-primary float-right" data-product-id="{{product.id}}">
                                 <span>В корзину</span>
                                 <i class="fa fa-shopping-cart"></i>
                             </a>
-
                         </div>
-
                     </figcaption>
-
                 </figure>
             </form>
-
         </div>
-
     </div>
 </div>
+    {% endfor %}
 </section>
 {% endblock %}
 
@@ -374,12 +374,13 @@
         </div>
     </footer>
 
-    <script {% static 'js/token.js' %} defer></script>
-    <script {% static 'js/bucket.js' %} defer></script>
+
     <script src="https://kit.fontawesome.com/465e448dc1.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/token.js' %}"></script>
+    <script src="{% static 'js/bucket.js' %}"></script>
 </body>
 </html>

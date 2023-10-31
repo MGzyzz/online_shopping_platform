@@ -228,3 +228,16 @@ img {
     background: #fff;
     padding: 0px 20px 18px 20px;
 }
+.card-product-grid .img-wrap img.img-cover {
+    object-fit: cover;
+}
+.product-img-size{
+    height: 100%;
+    max-width: 100%;
+    display: inline-block;
+}
+.card-product-grid:hover {
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
