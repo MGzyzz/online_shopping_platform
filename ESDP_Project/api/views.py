@@ -36,10 +36,17 @@ class TimeDiscountViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             time_discount = serializer.save()
 
-            discounted_price = time_discount.product.price - (
-                    time_discount.product.price * (time_discount.discount / 100))
-            time_discount.discounted_price = discounted_price
+            if time_discount.discount:
+                discounted_price = time_discount.product.price - (
+                        time_discount.product.price * (time_discount.discount / 100))
 
+            elif time_discount.discount_in_currency:
+                discounted_price = time_discount.product.price - time_discount.discount_in_currency
+
+            else:
+                discounted_price = 0
+
+            time_discount.discounted_price = discounted_price
             time_discount.save()
 
             return Response(serializer.data)

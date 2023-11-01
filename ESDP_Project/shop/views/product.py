@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -8,13 +9,16 @@ from shop.forms import ProductForm, ImagesForm
 from shop.models import Images, Category, Product, Shop
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(PermissionRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'product/create_product.html'
     extra_context = {
         'image_form': ImagesForm()
     }
+
+    def has_permission(self):
+        return Shop.objects.get(id=self.kwargs['shop_id']).user == self.request.user
 
     def dispatch(self, request, *args, **kwargs):
         self.image_form = ImagesForm()
@@ -35,6 +39,11 @@ class ProductCreateView(CreateView):
         product = form.save(commit=False)
         product.shop = shop
         product.category = form.cleaned_data['category']
+
+        if product.discount:
+
+            if product.discount > 0:
+                product.discounted_price = product.price - (product.price * (product.discount / 100))
 
         self.new_category(product)
 
@@ -86,12 +95,15 @@ class ProductListView(ListView):
         return context
 
 
-class EditProduct(UpdateView):
+class EditProduct(PermissionRequiredMixin, UpdateView):
     template_name = 'product/edit_product.html'
     context_object_name = 'product'
     model = Product
     form_class = ProductForm
     pk_url_kwarg = 'id'
+
+    def has_permission(self):
+        return Product.objects.get(id=self.kwargs['id']).shop.user == self.request.user
 
     def get_success_url(self):
         return reverse('update_attributes', kwargs={'id': self.object.id})
@@ -137,10 +149,17 @@ class EditProduct(UpdateView):
 
     def form_valid(self, form):
         product = form.save(commit=False)
+
+        if product.discount:
+
+            if product.discount > 0:
+                product.discounted_price = product.price - (product.price * (product.discount / 100))
+
         product.save()
 
         tags_string = form.cleaned_data['tags']
         tags_string = [tag[:-1] if tag[-1] == ';' else tag for tag in tags_string]
+
         product.tags.set(tags_string)
         self.remove_all_tags_without_objects()
 
@@ -156,11 +175,14 @@ class EditProduct(UpdateView):
         return redirect(self.get_success_url())
 
 
-class DeleteProduct(DeleteView):
+class DeleteProduct(PermissionRequiredMixin, DeleteView):
     template_name = 'shop/shop_view.html'
     context_object_name = 'product'
     model = Product
     pk_url_kwarg = 'id'
+
+    def has_permission(self):
+        return self.product.shop.user == self.request.user
 
     def dispatch(self, request, *args, **kwargs):
         self.product = get_object_or_404(Product, id=self.kwargs['id'])

@@ -1,30 +1,39 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.views.generic import CreateView, UpdateView
 from shop.models import Attributes, Product
 
 
-class AttributesCreateView(CreateView):
+class AttributesCreateView(PermissionRequiredMixin, CreateView):
     model = Attributes
     template_name = 'product/add_attributes.html'
     fields = ['name', 'value']
 
+    def dispatch(self, request, *args, **kwargs):
+        self.product = get_object_or_404(Product, id=self.kwargs['id'])
+        return super().dispatch(request, *args, **kwargs)
+    def has_permission(self):
+        return self.product.shop.user == self.request.user
+
     def post(self, request, *args, **kwargs):
-        product = get_object_or_404(Product, id=self.kwargs['id'])
         data = dict(zip(request.POST.getlist('name'), request.POST.getlist('value')))
 
         for name, value in data.items():
-            Attributes.objects.create(product=product, name=name, value=value)
+            Attributes.objects.create(product=self.product, name=name, value=value)
 
-        return redirect('shop_view', shop_id=product.shop_id)
+        return redirect('shop_view', shop_id=self.product.shop_id)
 
 
-class AttributesUpdateView(UpdateView):
+class AttributesUpdateView(PermissionRequiredMixin, UpdateView):
     model = Attributes
     template_name = 'product/edit_attributes.html'
     fields = ['name', 'value']
     pk_url_kwarg = 'id'
     object = None
+
+    def has_permission(self):
+        return self.product.shop.user == self.request.user
 
     def dispatch(self, request, *args, **kwargs):
         self.product = get_object_or_404(Product, id=self.kwargs['id'])
