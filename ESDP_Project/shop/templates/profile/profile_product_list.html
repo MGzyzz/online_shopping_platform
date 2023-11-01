@@ -37,15 +37,17 @@
 </nav>
 
 <div class="container my-3">
-      <form class="d-flex my-3" method="GET">
-        <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Search" id="search" name="search">
+    <form class="d-flex my-3" method="GET">
+        <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Search" id="search"
+               name="search">
         <button class="btn text-{% if shop.theme == 'white' %}black{% else %}white{% endif %}"
-                               style="background:
-                                       {% if shop.theme != 'blue' %}{{ shop.theme }}{% else %}#0d6efd{% endif %};
-                                       {% if shop.theme == 'white' %}
-                                           border-color: #AEAAAC
-                                       {% endif %}" type="submit">Поиск</button>
-      </form>
+                style="background:
+                        {% if shop.theme != 'blue' %}{{ shop.theme }}{% else %}#0d6efd{% endif %};
+                        {% if shop.theme == 'white' %}
+                            border-color: #AEAAAC
+                        {% endif %}" type="submit">Поиск
+        </button>
+    </form>
     {% for product in products %}
         <div class="card mb-3" style="">
             <div class="row g-0">
@@ -84,9 +86,11 @@
                                            border-color: #AEAAAC
                                        {% endif %}"
                                href="{% url 'edit_product' id=product.id %}">Изменить</a>
-                            <form method="post" action="{% url 'delete_product' id=product.id %}" style="display: contents;">
+                            <form method="post" action="{% url 'delete_product' id=product.id %}"
+                                  style="display: contents;">
                                 {% csrf_token %}
-                                <button type="button" class="btn delete-btn text-{% if shop.theme == 'white' %}black{% else %}white{% endif %}"
+                                <button type="button"
+                                        class="btn delete-btn text-{% if shop.theme == 'white' %}black{% else %}white{% endif %}"
                                         style="background:
                                                 {% if shop.theme != 'blue' %}{{ shop.theme }}{% else %}#0d6efd{% endif %};
                                                 {% if shop.theme == 'white' %}
@@ -107,6 +111,8 @@
             </div>
         </div>
     {% endfor %}
+    {% include 'partial/pagination.html' %}
+
 </div>
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
      aria-hidden="true">

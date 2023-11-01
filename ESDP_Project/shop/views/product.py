@@ -217,6 +217,7 @@ class ShopProductView(PermissionRequiredMixin, ListView):
     context_object_name = 'products'
     model = Product
     pk_url_kwarg = 'id'
+    paginate_by = 20
 
     def has_permission(self):
         return self.shop.user == self.request.user
