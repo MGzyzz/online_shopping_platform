@@ -13,5 +13,6 @@ urlpatterns = [
     path('product/<int:id>/attributes/add/', AttributesCreateView.as_view(), name='add_attributes'),
     path('product/<int:id>/attributes/update/', AttributesUpdateView.as_view(), name='update_attributes'),
     path('product/<int:id>', DetailProduct.as_view(), name='detail_product'),
-    path('profile/<int:id>/', Profile.as_view(), name='profile')
+    path('profile/<int:id>/', Profile.as_view(), name='profile'),
+    path('bucket/', BucketListView.as_view(), name='bucket')
 ]
