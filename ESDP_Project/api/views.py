@@ -1,14 +1,16 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 
-from shop.models import TimeDiscount, Product
-from .serializers import TimeDiscountSerializer, ProductSerializer
+from shop.models import TimeDiscount, Product, Bucket
+from .serializers import TimeDiscountSerializer, BucketSerializer
 from datetime import datetime
+
+
 
 
 class LogoutView(APIView):
@@ -77,8 +79,48 @@ class TimeDiscountViewSet(viewsets.ModelViewSet):
             return Response({'error': 'Discount not found for the product'}, status=404)
 
 
-class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    lookup_url_kwarg = 'id'
-    lookup_field = 'id'
+class BucketViewSet(viewsets.ModelViewSet):
+    queryset = Bucket.objects.all()
+    serializer_class = BucketSerializer
+
+    @action(detail=False, methods=['POST'])
+    def add_to_cart(self, request, *args, **kwargs):
+        product_id = request.data.get('product')
+        quantity = request.data.get('quantity', 1)
+        ip_address = self.get_client_ip(request)
+        user = request.data.get("user")
+
+        if user:
+            user_id = request.data.get('user')
+            # Попытка получить объект корзины пользователя
+            created = Bucket.objects.filter(user_id=user_id, product_id=product_id).first()
+            if created:
+                # Обновление количества товара
+                created.quantity += int(quantity)
+                created.save()
+            else:
+                # Создание нового объекта корзины
+                created = Bucket.objects.create(user_id=user_id, product_id=product_id, quantity=quantity)
+
+        else:
+            # Попытка получить объект корзины по IP-адресу
+            created = Bucket.objects.filter(ip_address=ip_address, product_id=product_id).first()
+            if created:
+                # Обновление количества товара
+                created.quantity += int(quantity)
+                created.save()
+            else:
+                # Создание нового объекта корзины
+                created = Bucket.objects.create(ip_address=ip_address, product_id=product_id, quantity=quantity)
+
+        serializer = self.get_serializer(created)
+
+        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+
+    def get_client_ip(self, request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
