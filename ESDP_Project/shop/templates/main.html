@@ -93,7 +93,7 @@
                                             <small class="text-muted"> Корзина</small>
                                             <br>
                                             <span>
-                                                0 тг.
+                                                {{ total_price }} тг.
                                             </span>
                                         </div>
                                     </a>
@@ -270,8 +270,8 @@
     </div>
   </section>
 
-<section>
 {% for product in products %}
+<section>
 <div class="container pb-4">
     <div class="row align-items-start">
         <div class="col-lg-3 col-md-4 col-sm-6 col-6 mb-2 mb-sm-4 product_card-cell">
@@ -287,18 +287,24 @@
                             <img class="product-img-size" src="{{ image.image.url }}" alt="">
                         </a>
                         {% endfor %}
-
                     <figcaption class="info-wrap pt-2" data-show_hover>
                         <a href="" class="title">
                             {{ product.description }}
                         </a>
                         <div>
-                            <input type='hidden'>
                             <h5> {{ product.price }} тг.</h5>
-                            <a id="cart-btn" href="#" class="cart-btn relative btn btn-sm btn-outline-primary float-right" data-product-id="{{product.id}}">
-                                <span>В корзину</span>
+                            {% if user.is_authenticated %}
+                                <a id="cart-btn" href="#" class="cart-btn-user relative btn btn-sm btn-outline-primary float-right" data-product-id="{{product.id}}" data-user-id="{{ request.user.id }}">
+                                    <span>В корзину</span>
+                                <i class="fa fa-shopping-cart"></i>
+                                </a>
+
+                                {% else %}
+                                <a id="cart-btn" href="#" class="cart-btn relative btn btn-sm btn-outline-primary float-right" data-product-id="{{product.id}}">
+                                    <span>В корзину</span>
                                 <i class="fa fa-shopping-cart"></i>
                             </a>
+                            {% endif %}
                         </div>
                     </figcaption>
                 </figure>
@@ -306,8 +312,9 @@
         </div>
     </div>
 </div>
-    {% endfor %}
 </section>
+    {% endfor %}
+
 {% endblock %}
 
   <footer class="section-footer border-top">
