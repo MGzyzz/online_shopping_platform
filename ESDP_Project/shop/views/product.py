@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -225,11 +226,21 @@ class ShopProductView(PermissionRequiredMixin, ListView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        return self.shop.products.all()
+        queryset = self.shop.products.all()
+        if query := self.request.GET.get('search'):
+            capitalized_query = query.capitalize()
+            query = (Q(name__icontains=query) |
+                     Q(description__icontains=query) |
+                     Q(category__name__icontains=query) |
+                     Q(tags__name__icontains=query) |
+                     Q(name__icontains=capitalized_query) |
+                     Q(description__icontains=capitalized_query) |
+                     Q(category__name__icontains=capitalized_query) |
+                     Q(tags__name__icontains=query))
+            queryset = queryset.filter(query).distinct()
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['shop'] = self.shop
         return context
-
-

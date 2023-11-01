@@ -37,8 +37,8 @@
 </nav>
 
 <div class="container my-3">
-      <form class="d-flex my-3">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+      <form class="d-flex my-3" method="GET">
+        <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Search" id="search" name="search">
         <button class="btn text-{% if shop.theme == 'white' %}black{% else %}white{% endif %}"
                                style="background:
                                        {% if shop.theme != 'blue' %}{{ shop.theme }}{% else %}#0d6efd{% endif %};
