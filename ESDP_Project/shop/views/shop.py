@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, CreateView, UpdateView, ListView, DeleteView
@@ -46,7 +48,7 @@ class ShopUpdateView(PermissionRequiredMixin, UpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('home')
+        return reverse_lazy('profile', kwargs={'id': self.request.user.id})
 
 
 class ShopListView(ListView):
@@ -92,3 +94,28 @@ class ShopDeleteView(PermissionRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('profile', kwargs={'id': self.request.user.id})
+
+
+class ShopMainView(ListView):
+    template_name = 'shop/shop_main.html'
+    model = Product
+    context_object_name = 'products'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        products = self.shop.products.all()
+        categories = set([products.category for products in products])
+        category_product = {}
+
+        context['shop'] = self.shop
+        context['products'] = products[:3]
+
+        for category in categories:
+            category_product[category] = products.filter(category=category)[:3]
+        context['category_product'] = category_product
+
+        return context
