@@ -79,7 +79,7 @@ class UserUpdate(UpdateView):
         return self.request.user == self.get_object()
 
     def get_success_url(self):
-        return reverse_lazy('home')
+        return reverse_lazy('profile', kwargs={'id': self.request.user.id})
 
 
 class PasswordChangeView(UpdateView):
@@ -90,4 +90,4 @@ class PasswordChangeView(UpdateView):
     pk_url_kwarg = 'id'
 
     def get_success_url(self):
-        return reverse('home')
+        return reverse('profile', kwargs={'id': self.request.user.id})

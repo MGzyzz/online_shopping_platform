@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -27,7 +28,7 @@ class ProductCreateView(PermissionRequiredMixin, CreateView):
     def post(self, request, *args, **kwargs):
         self.image_form = ImagesForm(request.POST, request.FILES)
 
-        if self.image_form.is_valid():
+        if self.image_form.is_valid() and self.get_form().is_valid():
             return self.form_valid(self.get_form())
 
         return render(self.request, 'product/create_product.html',
@@ -35,7 +36,6 @@ class ProductCreateView(PermissionRequiredMixin, CreateView):
 
     def form_valid(self, form):
         shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
-
         product = form.save(commit=False)
         product.shop = shop
         product.category = form.cleaned_data['category']
@@ -196,7 +196,7 @@ class DeleteProduct(PermissionRequiredMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 
     def get_success_url(self):
-        return reverse('shop_view', kwargs={'shop_id': self.object.shop_id})
+        return reverse('shop_products', kwargs={'id': self.object.shop_id})
 
 
 class DetailProduct(DetailView):
@@ -209,4 +209,39 @@ class DetailProduct(DetailView):
         context = super().get_context_data(**kwargs)
         context['now'] = timezone.now()
 
+        return context
+
+
+class ShopProductView(PermissionRequiredMixin, ListView):
+    template_name = 'profile/profile_product_list.html'
+    context_object_name = 'products'
+    model = Product
+    pk_url_kwarg = 'id'
+    paginate_by = 20
+
+    def has_permission(self):
+        return self.shop.user == self.request.user
+
+    def dispatch(self, request, *args, **kwargs):
+        self.shop = get_object_or_404(Shop, id=self.kwargs['id'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        queryset = self.shop.products.all()
+        if query := self.request.GET.get('search'):
+            capitalized_query = query.capitalize()
+            query = (Q(name__icontains=query) |
+                     Q(description__icontains=query) |
+                     Q(category__name__icontains=query) |
+                     Q(tags__name__icontains=query) |
+                     Q(name__icontains=capitalized_query) |
+                     Q(description__icontains=capitalized_query) |
+                     Q(category__name__icontains=capitalized_query) |
+                     Q(tags__name__icontains=query))
+            queryset = queryset.filter(query).distinct()
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['shop'] = self.shop
         return context
