@@ -132,7 +132,7 @@ function checkConstantSale(productId){
         }
     }).then(function (data){
         if (data.discount && data.discount > 0) {
-                $('#productPrice').html(`<p>Цена: <del class="text-danger">${data.price}</del> ${data.discounted_price}</p><p class="text-success fw-700">Скидка: ${data.discount}</p>`)
+                $('#productPrice').html(`<p>Цена: <del class="text-danger">${data.price}</del> ${data.discounted_price}</p><p class="text-success fw-700">Скидка: ${data.discount}%</p>`)
         }
         else {
             $('#productPrice').html(`<div id="priceDiscount">\n` +
@@ -200,29 +200,19 @@ $('.close-btn').click(function (){
 
 function checkSale(productId){
     getSaleId(productId).then(function (data) {
-            let discountId = data.discount_id
-            if (discountId) {
-                $.ajax({
-                    url: `http://localhost:8000/api/time_discount/${discountId}/check-expiration/`,
-                    method: 'GET',
-                    headers: {
-                        'Authentication': `Token ${token}`
-                    },
-                }).then(function (data){
-
-                    if (data.expired) {
-                        $('#delete-btn').hide()
-                        $('.add-discount').show()
-                        checkConstantSale(productId)
-                    }
-                    else {
-                        $('#delete-btn').show()
-                        $('.add-discount').hide()
-                        checkTimeDiscountField(productId)
-                    }
-                })
-            }
-        })
+        if (data.error){
+            $('#delete-btn').hide()
+        $('.add-discount').show()
+        checkConstantSale(productId)
+        }
+        else {
+            $('#delete-btn').show()
+            $('.add-discount').hide()
+            checkTimeDiscountField(productId)
+        }
+    }).catch(function (error){
+         console.log(error)
+    })
 }
 
 setInterval(function (){

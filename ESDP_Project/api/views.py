@@ -51,19 +51,13 @@ class TimeDiscountViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=400)
 
-    @action(detail=True, methods=['get'], url_path='check-expiration')
-    def check_expiration(self, request, id=None):
-        discount = self.get_object()
-
-        end_date = discount.end_date.astimezone(timezone.get_current_timezone())
-        now = timezone.now()
-
-        if now >= end_date:
-            discount.delete()
-
-            return Response({'expired': True})
-        else:
-            return Response({'expired': False})
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        except TimeDiscount.DoesNotExist:
+            return Response({'error': 'Not found'})
 
     @action(detail=False, methods=['GET'], url_path='get-discount-by-product')
     def get_discount_by_product(self, request):
