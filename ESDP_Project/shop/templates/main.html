@@ -270,8 +270,8 @@
     </div>
   </section>
 
-{% for product in products %}
 <section>
+{% for product in products %}
 <div class="container pb-4">
     <div class="row align-items-start">
         <div class="col-lg-3 col-md-4 col-sm-6 col-6 mb-2 mb-sm-4 product_card-cell">
@@ -312,8 +312,9 @@
         </div>
     </div>
 </div>
+{% endfor %}
+
 </section>
-    {% endfor %}
 
 {% endblock %}
 

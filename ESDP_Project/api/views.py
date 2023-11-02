@@ -83,6 +83,7 @@ class BucketViewSet(viewsets.ModelViewSet):
     queryset = Bucket.objects.all()
     serializer_class = BucketSerializer
 
+
     @action(detail=False, methods=['POST'])
     def add_to_cart(self, request, *args, **kwargs):
         product_id = request.data.get('product')
@@ -119,8 +120,16 @@ class BucketViewSet(viewsets.ModelViewSet):
 
     def get_client_ip(self, request):
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+
         if x_forwarded_for:
             ip = x_forwarded_for.split(',')[0]
         else:
             ip = request.META.get('REMOTE_ADDR')
+
         return ip
+
+    @action(detail=True, methods=['DELETE'])
+    def remove_from_cart(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+
