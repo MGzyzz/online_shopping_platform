@@ -12,29 +12,29 @@ services:
                       python manage.py migrate --noinput && 
                       python manage.py runserver 0.0.0.0:8000"
 
-#  redis:
-#    image: redis
-#
-#  celery:
-#    build:
-#      dockerfile: docker/Dockerfile
-#    command: celery -A core/celery.py worker -l info
-#    volumes:
-#      - .:/usr/src/app
-#    depends_on:
-#      - postgres
-#      - redis
-#    environment:
-#      - TZ=Asia/Almaty
-#
-#  celery-beat:
-#    build:
-#      dockerfile: docker/Dockerfile
-#    command: celery -A core/celery.py beat -l info
-#    volumes:
-#      - .:/usr/src/app
-#    depends_on:
-#      - postgres
-#      - redis
-#    environment:
-#      - TZ=Asia/Almaty
+  redis:
+     image: redis:5.0.1
+     ports:
+       - "6379:6379"
+
+  celery:
+    build:
+      dockerfile: docker/Dockerfile
+    command: celery -A core.celery worker -l info
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - redis
+    environment:
+      - TZ=Asia/Almaty
+
+  celery-beat:
+    build:
+      dockerfile: docker/Dockerfile
+    command: celery -A core.celery beat -l info
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - redis
+    environment:
+      - TZ=Asia/Almaty
