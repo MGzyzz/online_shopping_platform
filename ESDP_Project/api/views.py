@@ -7,10 +7,8 @@ from rest_framework.decorators import action
 from rest_framework.views import APIView
 
 from shop.models import TimeDiscount, Product, Bucket
-from .serializers import TimeDiscountSerializer, BucketSerializer
+from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer
 from datetime import datetime
-
-
 
 
 class LogoutView(APIView):
@@ -76,7 +74,20 @@ class TimeDiscountViewSet(viewsets.ModelViewSet):
 
             return Response({'discount_id': discount.id})
         except TimeDiscount.DoesNotExist:
-            return Response({'error': 'Discount not found for the product'}, status=404)
+            return Response({'error': 'Discount not found for the product'})
+
+    @action(detail=True, methods=['get'], url_path='check-start')
+    def check_start(self, request, id=None):
+        discount = self.get_object()
+
+        start_date = discount.start_date.astimezone(timezone.get_current_timezone())
+        now = timezone.now()
+
+        if now >= start_date:
+            return Response({'started': True})
+
+        else:
+            return Response({'started': False})
 
 
 class BucketViewSet(viewsets.ModelViewSet):
@@ -87,6 +98,7 @@ class BucketViewSet(viewsets.ModelViewSet):
     def add_to_cart(self, request, *args, **kwargs):
         product_id = request.data.get('product')
         quantity = request.data.get('quantity', 1)
+
         ip_address = self.get_client_ip(request)
         user = request.data.get("user")
 
@@ -105,6 +117,7 @@ class BucketViewSet(viewsets.ModelViewSet):
         else:
             # Попытка получить объект корзины по IP-адресу
             created = Bucket.objects.filter(ip_address=ip_address, product_id=product_id).first()
+
             if created:
                 # Обновление количества товара
                 created.quantity += int(quantity)
@@ -119,8 +132,18 @@ class BucketViewSet(viewsets.ModelViewSet):
 
     def get_client_ip(self, request):
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+
         if x_forwarded_for:
             ip = x_forwarded_for.split(',')[0]
+
         else:
             ip = request.META.get('REMOTE_ADDR')
+
         return ip
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_url_kwarg = 'id'
+    lookup_field = 'id'
