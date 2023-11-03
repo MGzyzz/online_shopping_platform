@@ -6,7 +6,6 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('shop', '0023_alter_shop_user'),
         ('shop', '0025_alter_bucket_ip_address'),
     ]
 
