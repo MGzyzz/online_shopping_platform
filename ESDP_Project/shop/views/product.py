@@ -209,9 +209,14 @@ class DetailProduct(DetailView):
     model = Product
     pk_url_kwarg = 'id'
 
+    def dispatch(self, request, *args, **kwargs):
+        self.product = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['now'] = timezone.now()
+        context['shop'] = self.product.shop
+        context['attributes'] = self.product.attributes.all()
 
         return context
 
