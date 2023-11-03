@@ -1,6 +1,6 @@
-from django.views.generic import ListView
+from django.views.generic import ListView, DeleteView
 
-from shop.models import Bucket, Shop
+from shop.models import Bucket, Shop, Product
 
 
 class BucketListView(ListView):
@@ -8,7 +8,7 @@ class BucketListView(ListView):
     model = Bucket
     context_object_name = 'bucket'
     extra_context = {
-        'shops': Shop.objects.all()
+        'shops': Shop.objects.all(),
     }
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -43,3 +43,6 @@ class BucketListView(ListView):
             ip = request.META.get('REMOTE_ADDR')
 
         return ip
+
+
+

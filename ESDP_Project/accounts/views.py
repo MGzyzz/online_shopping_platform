@@ -1,7 +1,7 @@
 from django.contrib.auth import views, login, get_user_model
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, TemplateView
 
 from accounts.forms import RegisterForm, LoginForm, UserUpdateForm, PasswordChangeForm
 from accounts.models import User
@@ -31,12 +31,41 @@ class RegisterView(CreateView):
     form_class = RegisterForm
 
     def form_valid(self, form):
-        user = form.save()
-        login(self.request, user)
-        return redirect('home')
+        phone_number = form.cleaned_data.get('phone')
+        self.request.session['phone'] = phone_number
+        self.request.session['user_data'] = form.cleaned_data
+
+        return redirect('sms-verification')
 
     def form_invalid(self, form):
         return render(self.request, 'register.html', {'form': form})
+
+class Sms_Verification(TemplateView):
+    template_name = 'sms.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        phone_number = self.request.session.get('phone', 'Неизвестный номер')
+        context['phone_number'] = phone_number
+        return context
+
+    def post(self, request, *args, **kwargs):
+        code_1 = request.POST.get('code_1')
+        code_2 = request.POST.get('code_2')
+        code_3 = request.POST.get('code_3')
+        code_4 = request.POST.get('code_4')
+
+        input_code = f"{code_1}{code_2}{code_3}{code_4}"
+        if input_code == '4444':
+            user_data = self.request.session.get('user_data')
+            password = user_data.pop('password1')
+            user_data.pop('password2', None)
+            user = User(**user_data)
+            user.set_password(password)
+            user.save()
+            login(self.request, user)
+
+        return redirect('home')
 
 
 class UserUpdate(UpdateView):

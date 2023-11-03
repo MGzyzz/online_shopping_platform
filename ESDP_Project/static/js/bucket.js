@@ -1,23 +1,10 @@
-// function getCSRFToken() {
-//     let cookies = document.cookie.split(';');
-//     for (let i = 0; i < cookies.length; i++) {
-//         let cookie = cookies[i].trim();
-//         if (cookie.indexOf('csrftoken=') === 0) {
-//             return cookie.substring('csrftoken='.length, cookie.length);
-//         }
-//     }
-//     return null;
-// }
-
-// console.log("===", getCSRFToken())
-
 function toCart() {
     $('.cart-btn').click(function (event){
         event.preventDefault();
         let productId = $(this).data('product-id');
 
         $.ajax({
-            url: 'http://127.0.0.1:8000/api/bucket/add_to_cart/',
+            url: 'http://localhost:8000/api/bucket/add_to_cart/',
             type: 'POST',
             data: {
                 product: productId,
@@ -40,7 +27,7 @@ function toCartUser() {
         let userId = $(this).data('user-id')
 
         $.ajax({
-            url: 'http://127.0.0.1:8000/api/bucket/add_to_cart/',
+            url: 'http://localhost:8000/api/bucket/add_to_cart/',
             type: 'POST',
 
             data: {
@@ -59,6 +46,28 @@ function toCartUser() {
     })
 }
 
+function deleteFromBucket(){
+    $('.delete-from-bucket').click(function (event){
+        event.preventDefault()
+        let itemId = $(this).data('item-id')
+        $.ajax(
+            {
+                url: `http://localhost:8000/api/bucket/${itemId}/remove_from_cart/`,
+                type: 'DELETE',
+                success: function (response){
+                    console.log('Successful deleted',response)
+                },
+                error: function (error){
+                    console.log('Error', error)
+                }
+
+            }
+
+        )
+    })
+}
+
+deleteFromBucket()
 toCartUser()
 
 toCart()

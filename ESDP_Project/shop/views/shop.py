@@ -6,7 +6,7 @@ from django.views.generic import TemplateView, CreateView, UpdateView, ListView,
 
 from accounts.forms import LoginForm
 from shop.forms import ShopModelForm
-from shop.models import Shop, Product
+from shop.models import Shop, Product, Bucket
 from django.urls import reverse_lazy
 
 from shop.models.bucket import Bucket

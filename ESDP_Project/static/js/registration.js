@@ -5,28 +5,28 @@ document.addEventListener('DOMContentLoaded', function () {
     let smsConfirmInput = $('#smsConfirm');
     let registrationDoneButton = $('#registrationDone');
 
-    registrationButton.click(function (event) {
-        event.preventDefault();
-        if (validateForm()) {
-            myModal.show();
-        }
-    });
+    // registrationButton.click(function (event) {
+    //     event.preventDefault();
+    //     if (validateForm()) {
+    //         myModal.show();
+    //     }
+    // });
 
-    myModal._element.addEventListener('show.bs.modal', function () {
-        console.log('open');
-    });
+    // myModal._element.addEventListener('show.bs.modal', function () {
+    //     console.log('open');
+    // });
+    //
+    // registrationDoneButton.click(function () {
+    //     if (smsConfirmInput.val() === '4444') {
+    //         $('#registrationForm').submit();
+    //     } else {
+    //         alert('Неверный код!');
+    //     }
+    // });
 
-    registrationDoneButton.click(function () {
-        if (smsConfirmInput.val() === '4444') {
-            $('#registrationForm').submit();
-        } else {
-            alert('Неверный код!');
-        }
-    });
-
-    smsConfirmInput.on('input',function () {
-        checkSmsConfirmValidity();
-    });
+    // smsConfirmInput.on('input',function () {
+    //     checkSmsConfirmValidity();
+    // });
 });
 
 function checkSmsConfirmValidity() {

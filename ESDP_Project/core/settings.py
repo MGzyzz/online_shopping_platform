@@ -149,3 +149,6 @@ AUTH_USER_MODEL = 'accounts.User'
 
 PRODUCT_IMG_UPLOAD_PATH = 'product_images'
 LOGO_IMG_UPLOAD_PATH = 'logos'
+
+CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_RESULT_BACKEND = "redis://redis:6379/0"
