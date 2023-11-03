@@ -3,16 +3,15 @@
 {% block content%}
 <section class="section-content padding-y bg">
     <div class="container">
+     {% for shop, total in total_price_by_shop.items %}
+    {% for item in bucket %}
+    {% if item.product.shop.name == shop %}
         <form class="card" action="" method="post">
             <div class="row no-gutters">
                 <aside class="col-md-8 col-lg-9 cart-items-wrapper">
                     <article class="card-body">
-                         {% for shop, total in total_price_by_shop.items %}
-                              Магазин: {{ shop }}
-                             <hr>
-                        {% for item in bucket %}
-                        {% if item.product.shop.name == shop %}
-
+                      Магазин: {{ shop }}
+                     <hr>
                         <div class="row align-items-center">
                             <div class="col-md-7">
                                 <figure class="media">
