@@ -84,7 +84,7 @@ $('#delete-btn').click(function (){
             if (discountId) {
                 $('#delete_modal').show()
             } else {
-                alert('Скидка не найдена для данного продукта.')
+                alert('Скидка уже удалена')
             }
         })
 })
@@ -118,7 +118,7 @@ $('#delete_sale').click(function (){
                     checkConstantSale(productId)
                 })
             } else {
-                alert('Скидка не найдена для данного продукта.')
+                alert('Скидка уже удалена')
             }
         })
 })
@@ -210,8 +210,6 @@ function checkSale(productId){
             $('.add-discount').hide()
             checkTimeDiscountField(productId)
         }
-    }).catch(function (error){
-         console.log(error)
     })
 }
 
