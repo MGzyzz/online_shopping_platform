@@ -7,10 +7,8 @@ from rest_framework.decorators import action
 from rest_framework.views import APIView
 
 from shop.models import TimeDiscount, Product, Bucket
-from .serializers import TimeDiscountSerializer, BucketSerializer
+from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer
 from datetime import datetime
-
-
 
 
 class LogoutView(APIView):
@@ -53,19 +51,13 @@ class TimeDiscountViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=400)
 
-    @action(detail=True, methods=['get'], url_path='check-expiration')
-    def check_expiration(self, request, id=None):
-        discount = self.get_object()
-
-        end_date = discount.end_date.astimezone(timezone.get_current_timezone())
-        now = timezone.now()
-
-        if now >= end_date:
-            discount.delete()
-
-            return Response({'expired': True})
-        else:
-            return Response({'expired': False})
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        except TimeDiscount.DoesNotExist:
+            return Response({'error': 'Not found'})
 
     @action(detail=False, methods=['GET'], url_path='get-discount-by-product')
     def get_discount_by_product(self, request):
@@ -76,7 +68,20 @@ class TimeDiscountViewSet(viewsets.ModelViewSet):
 
             return Response({'discount_id': discount.id})
         except TimeDiscount.DoesNotExist:
-            return Response({'error': 'Discount not found for the product'}, status=404)
+            return Response({'error': 'Discount not found for the product'})
+
+    @action(detail=True, methods=['get'], url_path='check-start')
+    def check_start(self, request, id=None):
+        discount = self.get_object()
+
+        start_date = discount.start_date.astimezone(timezone.get_current_timezone())
+        now = timezone.now()
+
+        if now >= start_date:
+            return Response({'started': True})
+
+        else:
+            return Response({'started': False})
 
 
 class BucketViewSet(viewsets.ModelViewSet):
@@ -88,6 +93,7 @@ class BucketViewSet(viewsets.ModelViewSet):
     def add_to_cart(self, request, *args, **kwargs):
         product_id = request.data.get('product')
         quantity = request.data.get('quantity', 1)
+
         ip_address = self.get_client_ip(request)
         user = request.data.get("user")
 
@@ -106,6 +112,7 @@ class BucketViewSet(viewsets.ModelViewSet):
         else:
             # Попытка получить объект корзины по IP-адресу
             created = Bucket.objects.filter(ip_address=ip_address, product_id=product_id).first()
+
             if created:
                 # Обновление количества товара
                 created.quantity += int(quantity)
@@ -123,6 +130,7 @@ class BucketViewSet(viewsets.ModelViewSet):
 
         if x_forwarded_for:
             ip = x_forwarded_for.split(',')[0]
+
         else:
             ip = request.META.get('REMOTE_ADDR')
 
@@ -133,3 +141,8 @@ class BucketViewSet(viewsets.ModelViewSet):
         return self.destroy(request, *args, **kwargs)
 
 
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_url_kwarg = 'id'
+    lookup_field = 'id'

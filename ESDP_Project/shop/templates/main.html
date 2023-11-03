@@ -109,7 +109,7 @@
                                             {{ request.user.email }}
                                         </a>
                                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                            <a class="dropdown-item" href="#">Профиль</a>
+                                            <a class="dropdown-item" href="{% url 'profile' id=request.user.id %}">Профиль</a>
                                             <a class="dropdown-item" href="#">Настройки</a>
                                             <a class="dropdown-item" href="{% url 'update_user' id=request.user.id %}">Изменение
                                                 пользователя</a>

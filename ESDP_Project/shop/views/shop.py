@@ -1,11 +1,13 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView, CreateView, UpdateView, ListView
+from django.views.generic import TemplateView, CreateView, UpdateView, ListView, DeleteView
 
 from accounts.forms import LoginForm
 from shop.forms import ShopModelForm
 from shop.models import Shop, Product, Bucket
 from django.urls import reverse_lazy
+
+from shop.models.bucket import Bucket
 
 
 class ShopCreateView(LoginRequiredMixin, CreateView):
@@ -18,7 +20,7 @@ class ShopCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('home')
+        return reverse_lazy('profile', kwargs={'id': self.request.user.id})
 
 
 class ShopUpdateView(PermissionRequiredMixin, UpdateView):
@@ -69,3 +71,24 @@ class ShopListView(ListView):
         context['total_price'] = total_price
 
         return context
+
+
+class ShopDeleteView(PermissionRequiredMixin, DeleteView):
+    model = Shop
+    pk_url_kwarg = 'id'
+
+    def has_permission(self):
+        return self.shop.user == self.request.user
+
+    def dispatch(self, request, *args, **kwargs):
+        self.shop = get_object_or_404(Shop, id=self.kwargs['id'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        old_logo = self.shop.logo
+        storage, path = old_logo.storage, old_logo.path
+        storage.delete(path)
+        return super().delete(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy('profile', kwargs={'id': self.request.user.id})
