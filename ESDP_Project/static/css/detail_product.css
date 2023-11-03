@@ -1,0 +1,33 @@
+.main-images{
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+}
+
+a{
+    text-decoration: none;
+}
+
+.black-accordion{
+    background-color: white !important;
+    color: black !important;
+}
+
+@media screen and (width < 1200px){
+    .sale{
+        display: none;
+    }
+}
+
+@media screen and (width < 1000px) {
+    .product-card{
+        display: block !important;
+    }
+    .slide{
+        width: 100% !important;
+    }
+    .product-info{
+        margin-left: 0  !important;
+        margin-top: 10px;
+    }
+}

@@ -27,7 +27,7 @@ class AttributesCreateView(PermissionRequiredMixin, CreateView):
         for name, value in data.items():
             Attributes.objects.create(product=self.product, name=name, value=value)
 
-        return redirect('shop_products', shop_id=self.product.shop_id)
+        return redirect('shop_products', id=self.product.shop_id)
 
 
 class AttributesUpdateView(PermissionRequiredMixin, UpdateView):
@@ -67,7 +67,7 @@ class AttributesUpdateView(PermissionRequiredMixin, UpdateView):
 
         self.delete_unused_attributes(data)
 
-        return redirect('shop_products', shop_id=self.product.shop_id)
+        return redirect('shop_products', id=self.product.shop_id)
 
     def delete_unused_attributes(self, data):
         for attribute in self.get_queryset():

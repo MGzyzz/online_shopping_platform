@@ -67,6 +67,7 @@ class ProductCreateView(PermissionRequiredMixin, CreateView):
                 Category.objects.create(name=new_category)
 
             product.category = Category.objects.get(name=new_category)
+            product.save()
 
     def form_invalid(self, form):
         return render(self.request, 'product/create_product.html', {'form': form})
@@ -147,14 +148,24 @@ class EditProduct(PermissionRequiredMixin, UpdateView):
             if tag.taggit_taggeditem_items.count() == 0:
                 tag.delete()
 
+    def save_images(self):
+        for image_id, image in self.request.FILES.items():
+            old_image = get_object_or_404(Images, id=image_id)
+            storage, path = old_image.image.storage, old_image.image.path
+            storage.delete(path)
+            old_image.image = image
+            old_image.save()
+
     def form_valid(self, form):
         product = form.save(commit=False)
+        product.category = form.cleaned_data['category']
 
         if product.discount:
 
             if product.discount > 0:
                 product.discounted_price = product.price - (product.price * (product.discount / 100))
 
+        self.new_category(product)
         product.save()
 
         tags_string = form.cleaned_data['tags']
@@ -163,14 +174,7 @@ class EditProduct(PermissionRequiredMixin, UpdateView):
         product.tags.set(tags_string)
         self.remove_all_tags_without_objects()
 
-        self.new_category(product)
-
-        for image_id, image in self.request.FILES.items():
-            old_image = get_object_or_404(Images, id=image_id)
-            storage, path = old_image.image.storage, old_image.image.path
-            storage.delete(path)
-            old_image.image = image
-            old_image.save()
+        self.save_images()
 
         return redirect(self.get_success_url())
 
@@ -205,9 +209,14 @@ class DetailProduct(DetailView):
     model = Product
     pk_url_kwarg = 'id'
 
+    def dispatch(self, request, *args, **kwargs):
+        self.product = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['now'] = timezone.now()
+        context['shop'] = self.product.shop
+        context['attributes'] = self.product.attributes.all()
 
         return context
 
