@@ -14,15 +14,15 @@
 <nav class="navbar navbar-expand-lg navbar-light fixed-top px-3 {% if shop.theme == 'blue' %} bg-primary {% endif %}"
      style="box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); background-color: {{ shop.theme }}">
     <a class="d-flex align-items-center link" href="{% url 'shop_view' shop_id=shop.id %}">
-        <img class="rounded-circle mr-3" style="object-fit: cover" src="{{ shop.logo.url }}" width="50" height="50"
+        <img class="rounded-circle me-3" style="object-fit: cover" src="{{ shop.logo.url }}" width="50" height="50"
              alt="{{ shop.name }}">
         <div class="mr-3"
              style="color: {% if shop.theme == 'white' %} black {% else %} white {% endif %}">{{ shop.name }}</div>
     </a>
-    <button class="navbar-toggler me-4 {% if shop.theme == 'white' %}{% else %} border-white{% endif %}" type="button"
-            data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon color-white"></span>
+    <button class="navbar-toggler {% if shop.theme == 'white' %}{% else %} border-white{% endif %}" type="button"
+            data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+            aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse justify-content-end me-5" id="navbarNav">
         <ul class="navbar-nav">
@@ -68,14 +68,14 @@
                     </div>
                 {% endfor %}
             </div>
-            <a class="carousel-control-prev" href="#carousel-{{ product.id }}" role="button"
-               data-slide="prev">
+            <button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ product.id }}"
+                    data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            </a>
-            <a class="carousel-control-next" href="#carousel-{{ product.id }}" role="button"
-               data-slide="next">
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ product.id }}"
+                    data-bs-slide="next">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            </a>
+            </button>
         </div>
         <div class="ms-5 d-flex flex-column justify-content-between product-info">
             <div>
@@ -114,7 +114,8 @@
         <div class="accordion" id="accordionPanelsStayOpenExample">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                    <button class="accordion-button {% if shop.theme != 'blue' %}black-accordion{% endif %} collapsed" type="button" data-bs-toggle="collapse"
+                    <button class="accordion-button {% if shop.theme != 'blue' %}black-accordion{% endif %} collapsed"
+                            type="button" data-bs-toggle="collapse"
                             data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false"
                             aria-controls="panelsStayOpen-collapseOne">
                         Характеристики
@@ -125,8 +126,8 @@
                     <div class="accordion-body">
                         {% for attribute in attributes %}
                             <div class="d-flex justify-content-between">
-                            <p class="m-0">{{ attribute.name }}</p>
-                            <p class="m-0">{{ attribute.value }}</p>
+                                <p class="m-0">{{ attribute.name }}</p>
+                                <p class="m-0">{{ attribute.value }}</p>
                             </div>
                             <hr class="m-0 mb-3">
                         {% endfor %}
@@ -135,7 +136,8 @@
             </div>
             <div class="accordion-item">
                 <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-                    <button class="accordion-button {% if shop.theme != 'blue' %}black-accordion{% endif %} collapsed" type="button" data-bs-toggle="collapse"
+                    <button class="accordion-button {% if shop.theme != 'blue' %}black-accordion{% endif %} collapsed"
+                            type="button" data-bs-toggle="collapse"
                             data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
                             aria-controls="panelsStayOpen-collapseTwo">
                         Описание
