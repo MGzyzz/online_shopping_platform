@@ -1,5 +1,5 @@
+from django.db.models import Q
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -8,7 +8,6 @@ from rest_framework.views import APIView
 
 from shop.models import TimeDiscount, Product, Bucket
 from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer
-from datetime import datetime
 
 
 class LogoutView(APIView):
@@ -88,14 +87,15 @@ class BucketViewSet(viewsets.ModelViewSet):
     queryset = Bucket.objects.all()
     serializer_class = BucketSerializer
 
-
     @action(detail=False, methods=['POST'])
     def add_to_cart(self, request, *args, **kwargs):
         product_id = request.data.get('product')
         quantity = request.data.get('quantity', 1)
 
         ip_address = self.get_client_ip(request)
+        print(ip_address)
         user = request.data.get("user")
+        print(user)
 
         if user:
             user_id = request.data.get('user')
@@ -139,6 +139,27 @@ class BucketViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['DELETE'])
     def remove_from_cart(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+    @action(detail=True, methods=['PUT'])
+    def update_quantity(self, request, *args, **kwargs):
+        try:
+            item_id = self.kwargs.get('pk')
+            new_quantity = int(request.data.get('new_quantity'))
+            item = Bucket.objects.get(id=item_id)
+            item.quantity = new_quantity
+            item.save()
+
+            bucket_all = Bucket.objects.filter(Q(user_id=item.user.id) | Q(ip_address=item.ip_address))
+            print(bucket_all)
+            total_price = 0
+            for i in bucket_all:
+                if i.product.shop.name == item.product.shop.name:
+                    total_price += i.product.price * i.quantity
+            name = item.product.shop.name
+
+            return JsonResponse({'success': True, "total_price": total_price, 'name': name}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProductViewSet(viewsets.ModelViewSet):
