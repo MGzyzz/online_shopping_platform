@@ -74,24 +74,43 @@ class ProductCreateView(PermissionRequiredMixin, CreateView):
 
 
 class ProductListView(ListView):
-    template_name = 'shop/shop_view.html'
+    template_name = 'shop/products.html'
     model = Product
     context_object_name = 'products'
-    paginate_by = 5
+    paginate_by = 10
+    ordering = ['-created']
+
+    def dispatch(self, request, *args, **kwargs):
+        self.shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
+        self.products = self.shop.products.all()
+        return super().dispatch(request, *args, **kwargs)
 
     def get_allow_empty(self):
         allow_empty = True
         return allow_empty
 
     def get_queryset(self):
-        shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
-        return Product.objects.filter(shop_id=shop)
+        if query := self.request.GET.get('search'):
+            capitalized_query = query.capitalize()
+            query = (Q(name__icontains=query) |
+                     Q(description__icontains=query) |
+                     Q(category__name__icontains=query) |
+                     Q(tags__name__icontains=query) |
+                     Q(name__icontains=capitalized_query) |
+                     Q(description__icontains=capitalized_query) |
+                     Q(category__name__icontains=capitalized_query) |
+                     Q(tags__name__icontains=query))
+            queryset = self.products.filter(query).distinct()
+            return queryset
+        if category_id := self.request.GET.get('category'):
+            return self.shop.products.filter(category_id=category_id)
+        return self.products
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
-        context['shop'] = shop
+        context['shop'] = self.shop
         context['now'] = timezone.now()
+        context['categories'] = set([products.category for products in self.products])
 
         return context
 
@@ -180,7 +199,6 @@ class EditProduct(PermissionRequiredMixin, UpdateView):
 
 
 class DeleteProduct(PermissionRequiredMixin, DeleteView):
-    template_name = 'shop/shop_view.html'
     context_object_name = 'product'
     model = Product
     pk_url_kwarg = 'id'
@@ -212,6 +230,7 @@ class DetailProduct(DetailView):
     def dispatch(self, request, *args, **kwargs):
         self.product = self.get_object()
         return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['now'] = timezone.now()

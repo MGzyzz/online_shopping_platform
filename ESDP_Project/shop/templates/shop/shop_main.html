@@ -20,7 +20,7 @@
     <div class="d-flex align-items-center">
         <img class="rounded-circle mr-3" style="object-fit: cover" src="{{ shop.logo.url }}" width="50" height="50"
              alt="{{ shop.name }}">
-        <div class="mr-3"
+        <div class="ms-3"
              style="color: {% if shop.theme == 'white' %} black {% else %} white {% endif %}">{{ shop.name }}</div>
     </div>
     <button class="navbar-toggler me-4 {% if shop.theme == 'white' %}{% else %} border-white{% endif %}" type="button"
@@ -42,7 +42,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
-                   href="{% url 'shop_view' shop_id=shop.id %}">Все товары</a>
+                   href="{% url 'shop_products' shop_id=shop.id %}">Все товары</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
@@ -55,7 +55,7 @@
 
 <div class="my-5">
     <div class="pt-5 pb-4">
-            <h1 class="text-center">{{ shop.name }}</h1>
+        <h1 class="text-center">{{ shop.name }}</h1>
     </div>
     <div>
         <img class="main-img" src="{{ shop.logo.url }}" alt="Логотип магазина">
@@ -125,13 +125,15 @@
                     {% endfor %}
                 </div>
             {% endfor %}
-            {% if is_paginated %}
-                {% include 'partial/pagination.html' %}
-            {% endif %}
-
         {% else %}
             <h1 class="mt-5">Товары отсутствуют</h1>
         {% endif %}
+        <div class="row product-card w-100 p-5 mt-3">
+            {% if shop.description %}
+                <h2>Интернет-магазин {{ shop.name }}</h2>
+                <p>{{ shop.description }}</p>
+            {% endif %}
+        </div>
     </div>
 </div>
 
