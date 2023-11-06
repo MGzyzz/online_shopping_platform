@@ -109,4 +109,3 @@ function decrementQuantity(itemId){
         updateQuantity(itemId, newQuantity)
     }
 }
-
