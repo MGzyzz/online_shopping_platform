@@ -1,7 +1,7 @@
 from django.db import models
 
 from accounts.models import User
-from shop.models import Product
+from shop.models import Product, Shop
 
 
 class Bucket(models.Model):

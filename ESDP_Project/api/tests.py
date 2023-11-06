@@ -14,7 +14,7 @@ class BucketViewSetTest(TestCase):
     def test_add_to_cart(self):
         client = APIClient()
 
-        response = client.post('/api/bucket/add_to_cart/',{
+        response = client.post('/api/bucket/',{
             'product': self.product.id,
             'quantity': 2,
             'user': self.user.id,
@@ -28,7 +28,7 @@ class BucketViewSetTest(TestCase):
     def test_add_to_cart_no_user(self):
         client = APIClient()
 
-        response = client.post('/api/bucket/add_to_cart/',{
+        response = client.post('/api/bucket/',{
             'product': self.product.id,
             'quantity': 3,
         }, format='json')
