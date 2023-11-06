@@ -7,6 +7,7 @@
     <div class="product-upload-container" style="max-width: 1000px">
         <h2 class="form-title">Изменить атрибуты товара</h2>
         <p>Здесь вы можете изменить атрибуты к своему товару. Такие как: цвет, материал, модель и т.д.</p>
+        <p>Если атрибут имеет несколько значений, то разделяйте их запятой. Например, цвет: Синий, Чёрный</p>
         <form method="post" class="product-form">
             {% csrf_token %}
             <div class="mb-3" id="attributes-div">

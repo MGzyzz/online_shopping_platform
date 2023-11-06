@@ -52,8 +52,11 @@
     <div>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a class="link-dark" href="{% url 'shop_products' shop_id=shop.id %}">Все товары</a></li>
-                <li class="breadcrumb-item"><a class="link-dark" href="{% url 'shop_products' shop_id=shop.id %}?category={{ product.category.id }}">{{ product.category }}</a></li>
+                <li class="breadcrumb-item"><a class="link-dark" href="{% url 'shop_products' shop_id=shop.id %}">Все
+                    товары</a></li>
+                <li class="breadcrumb-item"><a class="link-dark"
+                                               href="{% url 'shop_products' shop_id=shop.id %}?category={{ product.category.id }}">{{ product.category }}</a>
+                </li>
                 <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
             </ol>
         </nav>
@@ -103,6 +106,19 @@
                         <p id="price" class="fs-3">{{ product.price }} ₸</p>
                     </div>
                 {% endif %}
+            </div>
+            <div>
+                {% for name, values in parameters.items %}
+                    <h5>{{ name }}</h5>
+                    <div>
+                        <form class="form-radio-btn mb-3">
+                            {% for value in values %}
+                                <input id="radio-{{ value }}" name="parameter" type="radio" value="{{ name }},{{ value }}">
+                                <label for="radio-{{ value }}">{{ value }}</label>
+                            {% endfor %}
+                        </form>
+                    </div>
+                {% endfor %}
             </div>
             <button class="btn text-{% if shop.theme == 'white' %}dark{% else %}white{% endif %}"
                     style="background-color: {% if shop.theme == 'blue' %}#0D6EFD{% else %}{{ shop.theme }}{% endif %}">

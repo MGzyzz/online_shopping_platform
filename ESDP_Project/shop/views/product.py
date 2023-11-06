@@ -236,7 +236,11 @@ class DetailProduct(DetailView):
         context['now'] = timezone.now()
         context['shop'] = self.product.shop
         context['attributes'] = self.product.attributes.all()
-
+        parameters = {}
+        for attribute in context['attributes']:
+            if ',' in attribute.value:
+                parameters[attribute.name] = attribute.value.split(',')
+        context['parameters'] = parameters
         return context
 
 
