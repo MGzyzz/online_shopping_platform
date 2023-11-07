@@ -6,7 +6,8 @@
 {% block content %}
     <div class="product-upload-container" style="max-width: 1000px">
         <h2 class="form-title">Добавить атрибуты товара</h2>
-        <p>Здесь вы можете добавить атрибуты к своему товару. Такие как: цвет, материал, модель и т.д.</p>
+        <p>Здесь вы можете изменить атрибуты к своему товару. Такие как: цвет, материал, модель и т.д.</p>
+        <p>Если атрибут имеет несколько значений, то разделяйте их запятой. Например, цвет: Синий, Чёрный</p>
         <form method="post" class="product-form">
             {% csrf_token %}
             <div class="mb-3" id="attributes-div">
@@ -34,7 +35,8 @@
                 </button>
             </small>
             <button type="submit" class="btn btn-submit">Добавить к товару</button>
-            <a type="button" href="{% url 'shop_products' id=shop.id %}" class="btn btn-light border py-2">Добавить позже</a>
+            <a type="button" href="{% url 'shop_products' id=shop.id %}" class="btn btn-light border py-2">Добавить
+                позже</a>
         </form>
     </div>
 {% endblock %}

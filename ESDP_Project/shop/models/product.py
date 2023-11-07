@@ -16,3 +16,9 @@ class Product(models.Model):
                                  verbose_name='Категория', null=True)
     discounted_price = models.PositiveIntegerField(default=0, null=True, blank=True, verbose_name='Цена со скдикой')
     tags = TaggableManager(blank=True, verbose_name='Тэги', related_name='products')
+
+    class Meta:
+        verbose_name = 'Товар'
+        verbose_name_plural = 'Товары'
+        ordering = ['-id']
+
