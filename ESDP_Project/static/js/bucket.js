@@ -87,7 +87,7 @@ function updateQuantity(itemId, newQuantity){
             }
         },
         error: function (response){
-            console.log('Error Quantity update',response.error)
+            console.log('Error Quantity update', response.error)
         }
     })
 }

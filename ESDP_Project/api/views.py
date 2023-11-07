@@ -150,7 +150,6 @@ class BucketViewSet(viewsets.ModelViewSet):
             item.save()
 
             bucket_all = Bucket.objects.filter(Q(user_id=item.user.id) | Q(ip_address=item.ip_address))
-            print(bucket_all)
             total_price = 0
             for i in bucket_all:
                 if i.product.shop.name == item.product.shop.name:
