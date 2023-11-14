@@ -40,6 +40,7 @@ class RegisterView(CreateView):
     def form_invalid(self, form):
         return render(self.request, 'register.html', {'form': form})
 
+
 class Sms_Verification(TemplateView):
     template_name = 'sms.html'
 
