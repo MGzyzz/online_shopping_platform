@@ -1,9 +1,10 @@
 from django.db.models import When, Case
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import CreateView
 
 from shop.forms import OrderForm
-from shop.models import Bucket, Shop, Order, Product, TimeDiscount
+from shop.models import Bucket, Shop, Order, Product, TimeDiscount, OrderProducts
 
 
 class BucketListView(CreateView):
@@ -11,27 +12,31 @@ class BucketListView(CreateView):
     model = Order
     form_class = OrderForm
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        shop_id = self.kwargs['shop_id']
+    def dispatch(self, request, *args, **kwargs):
+        self.user = self.request.user
+        self.shop_id = self.kwargs['shop_id']
 
-        if user.is_authenticated:
-            bucket_items = Bucket.objects.filter(user=user.id, shop_id=shop_id)
+        if self.user.is_authenticated:
+            self.bucket_items = Bucket.objects.filter(user=self.user.id, shop_id=self.shop_id)
         else:
             ip_address = self.get_client_ip(self.request)
-            bucket_items = Bucket.objects.filter(ip_address=ip_address, shop_id=shop_id)
+            self.bucket_items = Bucket.objects.filter(ip_address=ip_address, shop_id=self.shop_id)
 
-        bucket_ids = bucket_items.values_list('product_id', flat=True)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        bucket_ids = self.bucket_items.values_list('product_id', flat=True)
         order_conditions = [When(id=id_val, then=pos) for pos, id_val in enumerate(bucket_ids, start=1)]
         products = Product.objects.filter(id__in=bucket_ids).order_by(Case(*order_conditions))
 
-        self.get_discount(bucket_items)
-        self.check_quantity(bucket_items)
+        self.get_discount(self.bucket_items)
+        self.check_quantity(self.bucket_items)
 
-        context['total_price'] = sum(item.unit_price for item in bucket_items)
-        context['shop'] = Shop.objects.get(id=shop_id)
-        context['products'] = dict(zip(products, bucket_items))
+        context['total_price'] = sum(item.unit_price for item in self.bucket_items)
+        context['shop'] = Shop.objects.get(id=self.shop_id)
+        context['products'] = dict(zip(products, self.bucket_items))
         return context
 
     def check_quantity(self, bucket_items):
@@ -52,6 +57,8 @@ class BucketListView(CreateView):
                 time_discount = TimeDiscount.objects.get(product=product)
                 item.unit_price = time_discount.discounted_price * item.quantity
 
+            item.save()
+
     def get_client_ip(self, request) -> str:
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
 
@@ -61,3 +68,28 @@ class BucketListView(CreateView):
             ip = request.META.get('REMOTE_ADDR')
 
         return ip
+
+    def form_valid(self, form):
+        order = form.save(commit=False)
+        if self.request.user.is_authenticated:
+            order.user = self.request.user
+
+        order.shop = Shop.objects.get(id=self.kwargs['shop_id'])
+        order.total = self.request.POST.get('total')
+        order.save()
+
+        self.get_discount(self.bucket_items)
+
+        for item in self.bucket_items:
+            OrderProducts.objects.create(
+                order=order,
+                product=item.product,
+                quantity=item.quantity,
+                price_per_product=item.unit_price,
+            )
+            item.delete()
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('payment', kwargs={'order_id': self.object.id})

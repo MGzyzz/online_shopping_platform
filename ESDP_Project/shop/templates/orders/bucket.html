@@ -87,11 +87,12 @@
                 </div>
             </form>
         {% endfor %}
-    <div class="d-flex justify-content-between mb-4">
-        <h1>Итого:</h1><h3 id="total">{{ total_price }}₸</h3>
+        <div class="d-flex justify-content-between mb-4">
+            <h1>Итого:</h1>
+            <h3 id="total">{{ total_price }}₸</h3>
+        </div>
     </div>
-    </div>
-    <div class="card">
+    <div class="card mb-4">
         <h2 class="my-3 text-center">Введите свои данные для оформления заказа</h2>
         <div class="card-body">
             <form method="post">
@@ -102,7 +103,9 @@
                         {{ field }}
                     </div>
                 {% endfor %}
-                <button type="submit" class="btn btn-primary" id="checkout">Оформить</button>
+                <input id="form-total" hidden name="total" value="{{ total_price }}">
+                <input hidden name="products" value="{{ products }}">
+                <button type="submit" class="btn btn-primary float-end" id="checkout">Оформить</button>
             </form>
         </div>
     </div>

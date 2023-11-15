@@ -99,6 +99,7 @@ function updateQuantity(itemId, newQuantity) {
                 console.log(response)
                 parseInt($('#price-'+ response.product_id ).text(response.unit_price))
                 $('#total').text(response.total_price+'₸')
+                $('#form-total').val(response.total_price)
             }
         },
         error: function (response) {

@@ -21,6 +21,12 @@ class Bucket(models.Model):
         default=0,
         verbose_name='Количество'
     )
+    unit_price = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        default=0,
+        verbose_name='Цена за единицу'
+    )
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
