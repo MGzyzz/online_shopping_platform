@@ -29,7 +29,7 @@
             {% if shop.user == request.user %}
                 <li class="nav-item">
                     <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
-                       href="{% url 'profile' shop.user.id %}">Личный кабинет</a>
+                       href="{% url 'profile' id=shop.user.id %}">Личный кабинет</a>
                 </li>
             {% endif %}
             <li class="nav-item">
@@ -38,11 +38,11 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
-                   href="{% url 'shop_products' shop.id %}">Все товары</a>
+                   href="{% url 'shop_products' shop_id=shop.id %}">Все товары</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
-                   href="{% url 'bucket' shop.id %}">Корзина</a>
+                   href="{% url 'bucket' shop_id=shop.id %}">Корзина</a>
             </li>
 
         </ul>
@@ -61,6 +61,9 @@
             </ol>
         </nav>
     </div>
+    {% if product.quantity == 0 %}
+        <h1 class="text-center">Нет в наличии</h1>
+    {% endif %}
     <div class="d-flex product-card">
         <div id="carousel-{{ product.id }}" class="carousel slide w-75 h-100">
             <div class="carousel-inner">
@@ -85,21 +88,15 @@
                 <h1>{{ product.name }}</h1>
                 <small>АРТ: {{ product.vendor_code }}</small>
                 {% if product.time_discount and product.time_discount.start_date <= now %}
-                    <del>{{ product.price }} ₸</del>
-                    <p class="fw-700">
+                    <del class="text-secondary fs-4">{{ product.price }} ₸</del>
+                    <p class="fs-3 m-0 ps-2" style="font-weight: 500">
                         {{ product.time_discount.discounted_price }} ₸</p>
-                    {% if product.time_discount.discount %}
-                        <p class="text-success fw-700">
-                            Скидка: {{ product.time_discount.discount }}%</p>
-                    {% endif %}
                 {% elif product.discount %}
                     <div class="d-flex align-items-center">
                         <del class="text-secondary fs-4">{{ product.price }} ₸</del>
                         <p class="fs-3 m-0 ps-2" style="font-weight: 500">
                             {{ product.discounted_price }} ₸
                         </p>
-                        <small class="sale text-danger fw-700 ms-2 border border-dark border-2 rounded px-2 py-1"
-                               style="font-size: 18px"> -{{ product.discount }}%</small>
                     </div>
                 {% else %}
                     <div id="priceDiscount">
@@ -122,6 +119,7 @@
                 {% endfor %}
             </div>
             <button class="btn text-{% if shop.theme == 'white' %}dark{% else %}white{% endif %}"
+                    {% if product.quantity == 0 %} disabled {% endif %}
                     style="background-color: {% if shop.theme == 'blue' %}#0D6EFD{% else %}{{ shop.theme }}{% endif %}"
                     data-product-id="{{ product.id }}" data-shop-id="{{ shop.id }}"
                     {% if user.is_authenticated %}id="cart-btn-user" data-user-id="{{ request.user.id }}"

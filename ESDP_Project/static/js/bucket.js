@@ -68,6 +68,7 @@ function deleteFromBucket() {
                 type: 'DELETE',
                 success: function (response) {
                     console.log('Successful deleted', response)
+                    window.location.reload()
                 },
                 error: function (error) {
                     console.log('Error', error)

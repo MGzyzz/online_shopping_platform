@@ -46,7 +46,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
-                   href="{% url 'bucket' shop.id %}">Корзина</a>
+                   href="{% url 'bucket' shop_id=shop.id %}">Корзина</a>
             </li>
 
         </ul>

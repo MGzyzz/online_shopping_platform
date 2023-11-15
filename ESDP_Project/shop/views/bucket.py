@@ -1,3 +1,4 @@
+from django.db.models import When, Case
 from django.utils import timezone
 from django.views.generic import CreateView
 
@@ -21,14 +22,22 @@ class BucketListView(CreateView):
             ip_address = self.get_client_ip(self.request)
             bucket_items = Bucket.objects.filter(ip_address=ip_address, shop_id=shop_id)
 
-        products = Product.objects.filter(id__in=bucket_items.values_list('product_id')).order_by('product_in_bucket')
+        bucket_ids = bucket_items.values_list('product_id', flat=True)
+        order_conditions = [When(id=id_val, then=pos) for pos, id_val in enumerate(bucket_ids, start=1)]
+        products = Product.objects.filter(id__in=bucket_ids).order_by(Case(*order_conditions))
 
         self.get_discount(bucket_items)
+        self.check_quantity(bucket_items)
 
         context['total_price'] = sum(item.unit_price for item in bucket_items)
-        context['shop'] = Shop.objects.get(id=self.kwargs['shop_id'])
+        context['shop'] = Shop.objects.get(id=shop_id)
         context['products'] = dict(zip(products, bucket_items))
         return context
+
+    def check_quantity(self, bucket_items):
+        for item in bucket_items:
+            if item.product.quantity == 0:
+                item.delete()
 
     @staticmethod
     def get_discount(bucket_items) -> None:

@@ -82,7 +82,7 @@ class ProductListView(ListView):
 
     def dispatch(self, request, *args, **kwargs):
         self.shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
-        self.products = self.shop.products.all()
+        self.products = self.shop.products.filter(quantity__gt=0)
         return super().dispatch(request, *args, **kwargs)
 
     def get_allow_empty(self):
