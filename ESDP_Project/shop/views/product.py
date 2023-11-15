@@ -150,6 +150,7 @@ class EditProduct(PermissionRequiredMixin, UpdateView):
 
         context['form'] = ProductForm(initial=data)
         context['images'] = self.images
+        context['shop'] = self.object.shop
 
         return context
 

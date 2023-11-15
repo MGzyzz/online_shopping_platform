@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.views import APIView
 
 from shop.models import TimeDiscount, Product, Bucket
+from shop.views.bucket import BucketListView
 from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer
 
 
@@ -32,13 +33,15 @@ class TimeDiscountViewSet(viewsets.ModelViewSet):
 
         if serializer.is_valid():
             time_discount = serializer.save()
+            product = time_discount.product
+            price = product.discounted_price if product.discounted_price else product.price
 
             if time_discount.discount:
-                discounted_price = time_discount.product.price - (
-                        time_discount.product.price * (time_discount.discount / 100))
+                discounted_price = price - (
+                        price * (time_discount.discount / 100))
 
             elif time_discount.discount_in_currency:
-                discounted_price = time_discount.product.price - time_discount.discount_in_currency
+                discounted_price = price - time_discount.discount_in_currency
 
             else:
                 discounted_price = 0
@@ -89,29 +92,29 @@ class BucketViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['POST'])
     def add_to_cart(self, request, *args, **kwargs):
+        shop_id = request.data.get('shop')
         product_id = request.data.get('product')
         quantity = request.data.get('quantity', 1)
 
         ip_address = self.get_client_ip(request)
-        print(ip_address)
         user = request.data.get("user")
-        print(user)
 
         if user:
             user_id = request.data.get('user')
             # Попытка получить объект корзины пользователя
-            created = Bucket.objects.filter(user_id=user_id, product_id=product_id).first()
+            created = Bucket.objects.filter(user_id=user_id, product_id=product_id, shop_id=shop_id).first()
             if created:
                 # Обновление количества товара
                 created.quantity += int(quantity)
                 created.save()
             else:
                 # Создание нового объекта корзины
-                created = Bucket.objects.create(user_id=user_id, product_id=product_id, quantity=quantity)
+                created = Bucket.objects.create(user_id=user_id, product_id=product_id, shop_id=shop_id,
+                                                quantity=quantity)
 
         else:
             # Попытка получить объект корзины по IP-адресу
-            created = Bucket.objects.filter(ip_address=ip_address, product_id=product_id).first()
+            created = Bucket.objects.filter(ip_address=ip_address, product_id=product_id, shop_id=shop_id).first()
 
             if created:
                 # Обновление количества товара
@@ -119,7 +122,8 @@ class BucketViewSet(viewsets.ModelViewSet):
                 created.save()
             else:
                 # Создание нового объекта корзины
-                created = Bucket.objects.create(ip_address=ip_address, product_id=product_id, quantity=quantity)
+                created = Bucket.objects.create(ip_address=ip_address, product_id=product_id, shop_id=shop_id,
+                                                quantity=quantity)
 
         serializer = self.get_serializer(created)
 
@@ -149,16 +153,30 @@ class BucketViewSet(viewsets.ModelViewSet):
             item.quantity = new_quantity
             item.save()
 
-            bucket_all = Bucket.objects.filter(Q(ip_address=item.ip_address)) or Bucket.objects.filter(Q(user_id=item.user))
-            total_price = 0
-            for i in bucket_all:
-                if i.product.shop.name == item.product.shop.name:
-                    total_price += i.product.price * i.quantity
-            name = item.product.shop.name
+            product = item.product
 
-            return JsonResponse({'success': True, "total_price": total_price, 'name': name}, status=status.HTTP_200_OK)
+            bucket_all = Bucket.objects.filter(Q(ip_address=item.ip_address)) or Bucket.objects.filter(
+                Q(user_id=item.user))
+
+            unit_price = product.price * item.quantity
+
+            if discount := product.discounted_price:
+                unit_price = discount * item.quantity
+
+            if TimeDiscount.objects.filter(product=product).exists():
+                time_discount = TimeDiscount.objects.get(product=product)
+                unit_price = time_discount.discounted_price * item.quantity
+
+            BucketListView.get_discount(bucket_all)
+            total_price = sum(item.unit_price for item in bucket_all)
+            print(total_price)
+            product_id = item.product.id
+
+            return JsonResponse({'success': True, "total_price": total_price, 'product_id': product_id,
+                                 'unit_price': unit_price}, status=status.HTTP_200_OK)
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class ProductViewSet(viewsets.ModelViewSet):

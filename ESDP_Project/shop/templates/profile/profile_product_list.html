@@ -80,7 +80,7 @@
                                 Другое
                             {% endif %}</p>
                         <div>
-                            <a class="btn text-{% if shop.theme == 'white' %}black{% else %}white{% endif %}"
+                            <a class="btn mb-1 text-{% if shop.theme == 'white' %}black{% else %}white{% endif %}"
                                style="background:
                                        {% if shop.theme != 'blue' %}{{ shop.theme }}{% else %}#0d6efd{% endif %};
                                        {% if shop.theme == 'white' %}
@@ -91,7 +91,7 @@
                                   style="display: contents;">
                                 {% csrf_token %}
                                 <button type="button"
-                                        class="btn delete-btn text-{% if shop.theme == 'white' %}black{% else %}white{% endif %}"
+                                        class="btn mb-1 delete-btn text-{% if shop.theme == 'white' %}black{% else %}white{% endif %}"
                                         style="background:
                                                 {% if shop.theme != 'blue' %}{{ shop.theme }}{% else %}#0d6efd{% endif %};
                                                 {% if shop.theme == 'white' %}
@@ -99,7 +99,7 @@
                                                 {% endif %}">Удалить
                                 </button>
                             </form>
-                            <a class="btn text-{% if shop.theme == 'white' %}black{% else %}white{% endif %}"
+                            <a class="btn mb-1 text-{% if shop.theme == 'white' %}black{% else %}white{% endif %}"
                                style="background:
                                        {% if shop.theme != 'blue' %}{{ shop.theme }}{% else %}#0d6efd{% endif %};
                                        {% if shop.theme == 'white' %}
@@ -132,10 +132,12 @@
         </div>
     </div>
 </div>
+
+
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="{% static 'js/shop.js' %}"></script>
 <script src="{% static 'js/delete.js' %}"></script>
-{#<script src="{% static 'js/time_sale.js' %}"></script>#}
 </body>
 </html>

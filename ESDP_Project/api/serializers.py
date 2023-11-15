@@ -107,4 +107,4 @@ class ProductSerializer(serializers.ModelSerializer):
 class BucketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bucket
-        fields = ["id", 'product', 'quantity', 'ip_address', 'user']
+        fields = ["id", 'shop', 'product', 'quantity', 'ip_address', 'user']

@@ -38,11 +38,11 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
-                   href="{% url 'shop_products' shop_id=shop.id %}">Все товары</a>
+                   href="{% url 'shop_products' shop.id %}">Все товары</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
-                   href="{% url 'bucket' %}">Корзина</a>
+                   href="{% url 'bucket' shop.id %}">Корзина</a>
             </li>
 
         </ul>
@@ -52,10 +52,10 @@
     <div>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a class="link-dark" href="{% url 'shop_products' shop_id=shop.id %}">Все
+                <li class="breadcrumb-item"><a class="link-dark" href="{% url 'shop_products' shop.id %}">Все
                     товары</a></li>
                 <li class="breadcrumb-item"><a class="link-dark"
-                                               href="{% url 'shop_products' shop_id=shop.id %}?category={{ product.category.id }}">{{ product.category }}</a>
+                                               href="{% url 'shop_products' shop.id %}?category={{ product.category.id }}">{{ product.category }}</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
             </ol>
@@ -113,7 +113,8 @@
                     <div>
                         <form class="form-radio-btn mb-3">
                             {% for value in values %}
-                                <input id="radio-{{ value }}" name="parameter" type="radio" value="{{ name }},{{ value }}">
+                                <input id="radio-{{ value }}" name="parameter" type="radio"
+                                       value="{{ name }},{{ value }}">
                                 <label for="radio-{{ value }}">{{ value }}</label>
                             {% endfor %}
                         </form>
@@ -121,9 +122,16 @@
                 {% endfor %}
             </div>
             <button class="btn text-{% if shop.theme == 'white' %}dark{% else %}white{% endif %}"
-                    style="background-color: {% if shop.theme == 'blue' %}#0D6EFD{% else %}{{ shop.theme }}{% endif %}">
+                    style="background-color: {% if shop.theme == 'blue' %}#0D6EFD{% else %}{{ shop.theme }}{% endif %}"
+                    data-product-id="{{ product.id }}" data-shop-id="{{ shop.id }}"
+                    {% if user.is_authenticated %}id="cart-btn-user" data-user-id="{{ request.user.id }}"
+                    {% else %}id="cart-btn"{% endif %}>
                 Добавить в корзину
             </button>
+            <div class="alert alert-success mt-3 d-none" role="alert">
+                Товар успешно добавлен в корзину
+            </div>
+
         </div>
     </div>
     <div class="my-4">
@@ -176,5 +184,6 @@
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
 <script src="{% static 'js/shop.js' %}"></script>
+<script src="{% static 'js/bucket.js' %}"></script>
 </body>
 </html>

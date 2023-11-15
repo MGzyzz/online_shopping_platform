@@ -1,40 +1,49 @@
-from django.views.generic import ListView, DeleteView
+from django.utils import timezone
+from django.views.generic import CreateView
 
-from shop.models import Bucket, Shop, Product
+from shop.forms import OrderForm
+from shop.models import Bucket, Shop, Order, Product, TimeDiscount
 
 
-class BucketListView(ListView):
-    template_name = 'shop/bucket.html'
-    model = Bucket
-    context_object_name = 'bucket'
-    extra_context = {
-        'shops': Shop.objects.all(),
-    }
+class BucketListView(CreateView):
+    template_name = 'orders/bucket.html'
+    model = Order
+    form_class = OrderForm
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
+        shop_id = self.kwargs['shop_id']
 
         if user.is_authenticated:
-            bucket_items = Bucket.objects.filter(user=user.id)
+            bucket_items = Bucket.objects.filter(user=user.id, shop_id=shop_id)
         else:
             ip_address = self.get_client_ip(self.request)
-            bucket_items = Bucket.objects.filter(ip_address=ip_address)
+            bucket_items = Bucket.objects.filter(ip_address=ip_address, shop_id=shop_id)
 
-        total_price_by_shop = {}
+        products = Product.objects.filter(id__in=bucket_items.values_list('product_id')).order_by('product_in_bucket')
 
-        for item in bucket_items:
-            item.unit_price = item.product.price * item.quantity
-            shop_name = item.product.shop.name
-            total_price_by_shop[shop_name] = total_price_by_shop.get(shop_name, 0) + item.unit_price
+        self.get_discount(bucket_items)
 
         context['total_price'] = sum(item.unit_price for item in bucket_items)
-        context['bucket'] = bucket_items
-        context['total_price_by_shop'] = total_price_by_shop
-
+        context['shop'] = Shop.objects.get(id=self.kwargs['shop_id'])
+        context['products'] = dict(zip(products, bucket_items))
         return context
 
-    def get_client_ip(self, request):
+    @staticmethod
+    def get_discount(bucket_items) -> None:
+        for item in bucket_items:
+            product = item.product
+            item.unit_price = product.price * item.quantity
+
+            if discount := product.discounted_price:
+                item.unit_price = discount * item.quantity
+
+            if TimeDiscount.objects.filter(product=product).exists():
+                time_discount = TimeDiscount.objects.get(product=product)
+                item.unit_price = time_discount.discounted_price * item.quantity
+
+    def get_client_ip(self, request) -> str:
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
 
         if x_forwarded_for:
@@ -43,6 +52,3 @@ class BucketListView(ListView):
             ip = request.META.get('REMOTE_ADDR')
 
         return ip
-
-
-

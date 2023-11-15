@@ -5,6 +5,11 @@ from shop.models import Product, Shop
 
 
 class Bucket(models.Model):
+    shop = models.ForeignKey(
+        Shop,
+        on_delete=models.CASCADE,
+        related_name='shop'
+    )
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,

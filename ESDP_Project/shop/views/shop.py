@@ -2,6 +2,7 @@ import random
 
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.views.generic import TemplateView, CreateView, UpdateView, ListView, DeleteView
 
 from accounts.forms import LoginForm
@@ -110,9 +111,9 @@ class ShopMainView(ListView):
         products = self.shop.products.all()
         categories = set([products.category for products in products])
         category_product = {}
-
         context['shop'] = self.shop
         context['products'] = products[:3]
+        context['now'] = timezone.now()
 
         for category in categories:
             category_product[category] = products.filter(category=category)[:3]

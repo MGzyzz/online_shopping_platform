@@ -46,7 +46,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
-                   href="{% url 'bucket' %}">Корзина</a>
+                   href="{% url 'bucket' shop.id %}">Корзина</a>
             </li>
 
         </ul>
@@ -70,6 +70,7 @@
                         {% endif %}
                     </div>
                     {% for product in products %}
+                        <input type="hidden" id="product" value="{{ product.id }}" name="product">
                         <div class="product-card p-0">
                             <a href="{% url 'detail_product' id=product.id %}">
                                 <div id="carousel-{{ product.id }}" class="carousel slide">
@@ -96,25 +97,19 @@
                             </a>
                             <div class="product-info">
                                 <h4>{{ product.name }}</h4>
-
                                 {% if product.time_discount and product.time_discount.start_date <= now %}
-                                    <del>{{ product.price }} ₸</del>
-                                    <p class="fw-700">
-                                        {{ product.time_discount.discounted_price }} ₸</p>
-                                    {% if product.time_discount.discount %}
-                                        <p class="text-success fw-700">
-                                            Скидка: {{ product.time_discount.discount }}%</p>
-                                    {% endif %}
+                                    <div class="d-flex align-items-center">
+                                        <del class="text-secondary fs-5">{{ product.price }} ₸</del>
+                                        <p class="fs-4 m-0 ps-2" style="font-weight: 500">
+                                            {{ product.time_discount.discounted_price }} ₸</p>
+                                    </div>
                                 {% elif product.discount %}
                                     <div class="d-flex align-items-center">
                                         <del class="text-secondary fs-5">{{ product.price }} ₸</del>
                                         <p class="fs-4 m-0 ps-2" style="font-weight: 500">
                                             {{ product.discounted_price }} ₸
                                         </p>
-                                        <small class="sale text-danger fw-700 ms-2 border border-dark border-2 rounded px-2 py-1"
-                                               style="font-size: 18px"> -{{ product.discount }}%</small>
                                     </div>
-
                                 {% else %}
                                     <div id="priceDiscount">
                                         <p id="price" class="fs-4">{{ product.price }} ₸</p>
@@ -141,6 +136,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="{% static 'js/shop.js' %}"></script>
+<script src="{% static 'js/time_sale.js' %}"></script>
 </body>
 
 </html>
