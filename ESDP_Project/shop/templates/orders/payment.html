@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Оплата</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/payment.css' %}" >
+</head>
+<body>
+<div class="container">
+    <div class="card centered">
+        <div class="card-body">
+            <div>
+
+            </div>
+            <form id="paymentFormSample" autocomplete="off" class="">
+                <input class="form-control" type="text" data-cp="cardNumber" placeholder="Номер карты">
+                <div class="d-flex my-2">
+                    <div class="d-flex w-50 me-3">
+                        <input class="form-control" type="text" data-cp="expDateMonth" placeholder="ММ">
+                        <span class="fs-4 text-secondary">/</span>
+                        <input class="form-control" type="text" data-cp="expDateYear" placeholder="ГГ">
+                    </div>
+                    <div class="w-50">
+                        <input class="form-control" type="text" data-cp="cvv" placeholder="CVC/CVV2">
+                    </div>
+                </div>
+                <button class="btn btn-dark w-100" type="submit">Оплатить {{ order.total }}₸</button>
+            </form>
+            <div class="mt-3">
+                <img src="https://show.cloudpayments.kz/assets/img/svg/pay-systems.svg" alt="Платёжные системы">
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+<script src="https://checkout.cloudpayments.kz/checkout.js"></script>
+</html>
