@@ -7,7 +7,6 @@ from accounts.forms import RegisterForm, LoginForm, UserUpdateForm, PasswordChan
 from accounts.models import User
 
 
-# Create your views here.
 class LoginView(views.LoginView):
     template_name = 'main.html'
     form_class = LoginForm
@@ -39,6 +38,7 @@ class RegisterView(CreateView):
 
     def form_invalid(self, form):
         return render(self.request, 'register.html', {'form': form})
+
 
 class Sms_Verification(TemplateView):
     template_name = 'sms.html'
