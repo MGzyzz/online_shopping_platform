@@ -1,11 +1,28 @@
+import phonenumbers
 from django.contrib.auth import get_user_model, password_validation
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django import forms
-
 from accounts.models import User
+from django.core.exceptions import ValidationError
+
+
+class PhoneNumberInput(forms.CharField):
+    def validate(self, value):
+        try:
+            parse_number = phonenumbers.parse(value, 'KZ')
+
+            if not phonenumbers.is_valid_number(parse_number):
+                raise ValidationError('Номер телефона должен быть в формате: +7XXXXXXXXXX')
+            formatted_number = phonenumbers.format_number(parse_number, phonenumbers.PhoneNumberFormat.E164)
+
+            return formatted_number
+        except phonenumbers.phonenumberutil.NumberParseException:
+
+            raise ValidationError('Invalid phone number format')
 
 
 class RegisterForm(UserCreationForm):
+
     password1 = forms.CharField(
         strip=False,
         widget=forms.PasswordInput(
@@ -24,6 +41,7 @@ class RegisterForm(UserCreationForm):
         strip=False,
         help_text="Enter the same password as before, for verification.",
     )
+    phone = PhoneNumberInput(max_length=12, widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':'+7XXXXXXXXXX '}))
 
     class Meta(UserCreationForm.Meta):
         model = User
@@ -35,7 +53,7 @@ class RegisterForm(UserCreationForm):
             'email': forms.EmailInput(attrs={'class': 'form-control', 'required': True}),
             'first_name': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
             'last_name': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
-            'phone': forms.NumberInput(attrs={'class': 'form-control', 'input': 'tel', 'required': True}),
+            'phone': forms.NumberInput(attrs={'class': 'form-control'}),
             'password1': forms.PasswordInput(attrs={'class': 'form-control', 'required': True}),
             'password2': forms.PasswordInput(attrs={'class': 'form-control', 'required': True}),
         }
@@ -80,4 +98,6 @@ class PasswordChangeForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
         fields = ['password', 'password_confirm', 'old_password']
+
+
 
