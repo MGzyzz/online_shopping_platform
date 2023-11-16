@@ -9,9 +9,14 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
+    networks:
+      - esdp
+
+
 
   app:
     build:
+      context: .
       dockerfile: docker/Dockerfile
     ports:
       - "8000:8000"
@@ -22,11 +27,30 @@ services:
     command: bash -c "python manage.py makemigrations --merge --noinput &&
                       python manage.py migrate --noinput && 
                       python manage.py runserver 0.0.0.0:8000"
+    networks:
+      - esdp
+
+  sms:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "1026:1026"
+    depends_on:
+      - postgres
+    volumes:
+      - .:/usr/src/sms
+    command: bash -c "cd sms-service && python3 main.py"
+    networks:
+      - esdp
+
 
   redis:
      image: redis:5.0.1
      ports:
        - "6379:6379"
+     networks:
+       - esdp
 
   celery:
     build:
@@ -39,6 +63,8 @@ services:
       - redis
     environment:
       - TZ=Asia/Almaty
+    networks:
+      - esdp
 
   celery-beat:
     build:
@@ -51,3 +77,10 @@ services:
       - redis
     environment:
       - TZ=Asia/Almaty
+    networks:
+      - esdp
+
+
+networks:
+  esdp:
+    driver: bridge
