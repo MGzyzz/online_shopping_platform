@@ -15,8 +15,8 @@
             <div>
 
             </div>
-            <form id="paymentFormSample" autocomplete="off" class="">
-                <input class="form-control" type="text" data-cp="cardNumber" placeholder="Номер карты">
+            <form onsubmit="return false" id="paymentFormSample" autocomplete="off" class="">
+                <input id="card-input" class="form-control" type="text" data-cp="cardNumber" placeholder="Номер карты">
                 <div class="d-flex my-2">
                     <div class="d-flex w-50 me-3">
                         <input class="form-control" type="text" data-cp="expDateMonth" placeholder="ММ">
@@ -24,7 +24,7 @@
                         <input class="form-control" type="text" data-cp="expDateYear" placeholder="ГГ">
                     </div>
                     <div class="w-50">
-                        <input class="form-control" type="text" data-cp="cvv" placeholder="CVC/CVV2">
+                        <input class="form-control" type="password" data-cp="cvv" placeholder="CVC/CVV2">
                     </div>
                 </div>
                 <button class="btn btn-dark w-100" type="submit">Оплатить {{ order.total }}₸</button>
@@ -37,5 +37,7 @@
 
 </div>
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://checkout.cloudpayments.kz/checkout.js"></script>
+<script src="{% static 'js/payment.js' %}"></script>
 </html>
