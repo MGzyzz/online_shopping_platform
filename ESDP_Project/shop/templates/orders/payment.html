@@ -12,11 +12,15 @@
 <div class="container">
     <div class="card centered">
         <div class="card-body">
-            <div>
-
+            <div class="d-flex flex-column align-items-center mb-3">
+                <img alt="Лого компании">
+                <h2>Название компании</h2>
+                <h4>Заказ №{{ order.id }}</h4>
+                <h3>{{ order.total}} ₸</h3>
             </div>
             <form onsubmit="return false" id="paymentFormSample" autocomplete="off" class="">
-                <input id="card-input" class="form-control" type="text" data-cp="cardNumber" placeholder="Номер карты">
+                <span id="cardError"></span>
+                <input id="card-input" class="form-control" type="text" maxlength="23" data-cp="cardNumber" placeholder="Номер карты">
                 <div class="d-flex my-2">
                     <div class="d-flex w-50 me-3">
                         <input class="form-control" type="text" data-cp="expDateMonth" placeholder="ММ">
@@ -27,11 +31,8 @@
                         <input class="form-control" type="password" data-cp="cvv" placeholder="CVC/CVV2">
                     </div>
                 </div>
-                <button class="btn btn-dark w-100" type="submit">Оплатить {{ order.total }}₸</button>
+                <button id="pay-btn" class="btn btn-dark w-100" type="submit">Оплатить {{ order.total }}₸</button>
             </form>
-            <div class="mt-3">
-                <img src="https://show.cloudpayments.kz/assets/img/svg/pay-systems.svg" alt="Платёжные системы">
-            </div>
         </div>
     </div>
 

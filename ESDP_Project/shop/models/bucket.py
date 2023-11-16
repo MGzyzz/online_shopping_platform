@@ -21,7 +21,9 @@ class Bucket(models.Model):
         default=0,
         verbose_name='Количество'
     )
-    unit_price = models.PositiveIntegerField(
+    unit_price = models.DecimalField(
+        decimal_places=2,
+        max_digits=13,
         null=True,
         blank=True,
         default=0,
