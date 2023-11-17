@@ -21,5 +21,4 @@ urlpatterns = [
     path('profile/shop/<int:id>/products/', ShopProductView.as_view(), name='shop_products'),
 
     path('shop/<int:shop_id>/cart/', BucketListView.as_view(), name='bucket'),
-    path('shop/<int:order_id>/payment/', PaymentView.as_view(), name='payment'),
 ]

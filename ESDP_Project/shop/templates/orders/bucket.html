@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,500;0,700;1,700&display=swap"
           rel="stylesheet">
+    <script src="https://widget.cloudpayments.kz/bundles/cloudpayments.js"></script>
 
 </head>
 <body>
@@ -20,65 +21,80 @@
 {% include 'partial/shop_nav.html' %}
 
 <div class="container mt-3">
-    <div>
-        {% for product, card_item in products.items %}
-            <form method="post" class="d-flex flex-row card my-1">
-                <div>
-                    <img class="product-img" src="{{ product.images.first.image.url }}" alt="Фото товара">
-                </div>
-                <div class="p-2">
-                    <a class="link link-dark fs-3" href="{% url 'detail_product' product.id %}">{{ product.name }}</a>
-                    <p>Cумма: <span id="price-{{ product.id }}">{{ card_item.unit_price }}</span> ₸</p>
-                    <div class="col-md-5 text-md-right text-right d-flex">
-                        <div class="input-group input-spinner">
-                            <div class="input-group-prepend">
-                                <button class="btn btn-light" type="button" id="button-minus"
-                                        onclick="decrementQuantity('{{ card_item.id }}')">
-                                    -
-                                </button>
+    {% if products %}
+        <div>
+            {% for product, card_item in products.items %}
+                <form method="post" class="d-flex flex-row card my-1">
+                    <div>
+                        <img class="product-img" src="{{ product.images.first.image.url }}" alt="Фото товара">
+                    </div>
+                    <div class="p-2">
+                        <a class="link link-dark fs-3"
+                           href="{% url 'detail_product' product.id %}">{{ product.name }}</a>
+                        <p>Cумма: <span id="price-{{ product.id }}">{{ card_item.unit_price }}</span> ₸</p>
+                        <div class="col-md-5 text-md-right text-right d-flex">
+                            <div class="input-group input-spinner">
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-light rounded" type="button" id="button-minus"
+                                            onclick="decrementQuantity('{{ card_item.id }}')">
+                                        -
+                                    </button>
+                                </div>
+                                <input type="text" id="quantity-{{ card_item.id }}"
+                                       class="text-center form-control mx-2 rounded"
+                                       name="cart-quantity" value="{{ card_item.quantity }}">
+                                <div class="input-group-append">
+                                    <button class="btn btn-light rounded" type="button" id="button-plus"
+                                            onclick="incrementQuantity('{{ card_item.id }}')">
+                                        +
+                                    </button>
+                                </div>
                             </div>
-                            <input type="text" id="quantity-{{ card_item.id }}" class="text-center form-control mx-2"
-                                   name="cart-quantity" value="{{ card_item.quantity }}">
-                            <div class="input-group-append">
-                                <button class="btn btn-light" type="button" id="button-plus"
-                                        onclick="incrementQuantity('{{ card_item.id }}')">
-                                    +
-                                </button>
-                            </div>
+                            <a href="#" class="delete-from-bucket ms-2 btn btn-light rounded" data-item-id="{{ card_item.id }}">
+                                <i
+                                        class="fa fa-trash"></i></a>
                         </div>
-                        <a href="#" class="delete-from-bucket ms-2 btn btn-light" data-item-id="{{ card_item.id }}"> <i
-                                class="fa fa-trash"></i></a>
                     </div>
-                </div>
-            </form>
-        {% endfor %}
-        <div class="d-flex justify-content-between mb-4">
-            <h1>Итого:</h1>
-            <h3 id="total">{{ total_price }}₸</h3>
+                </form>
+            {% endfor %}
+            <div class="d-flex justify-content-between mb-4">
+                <h1>Итого:</h1>
+                <h3 id="total">{{ total_price }}₸</h3>
+            </div>
         </div>
-    </div>
-    <div class="card mb-4">
-        <h2 class="my-3 text-center">Введите свои данные для оформления заказа</h2>
-        <div class="card-body">
-            <form method="post">
-                {% csrf_token %}
-                {% for field in form %}
-                    <div class="mb-3">
-                        <label for="{{ field.id }}" class="form-label">{{ field.label }}</label>
-                        {{ field }}
-                    </div>
-                {% endfor %}
-                <input id="form-total" hidden name="total" value="{{ total_price }}">
-                <input hidden name="products" value="{{ products }}">
-                <button type="submit" class="btn btn-primary float-end" id="checkout">Оформить</button>
-            </form>
+        <div class="card mb-4">
+            <h2 class="my-3 text-center">Введите свои данные для оформления заказа</h2>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id }}" class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                        </div>
+                    {% endfor %}
+                    <input id="form-total" hidden name="total" value="{{ total_price }}">
+                    <input hidden name="products" value="{{ products }}">
+                </form>
+                <button type="button" class="btn btn-primary float-end" id="checkout">Оформить</button>
+            </div>
         </div>
-    </div>
-
+    {% else %}
+        <div class="d-flex flex-column align-items-center">
+            <h1>Корзина пока пуста</h1>
+            <a class="btn text-{% if shop.theme == 'white' %}dark{% else %}white{% endif %}"
+                    {% if product.quantity == 0 %} disabled {% endif %}
+               style="background-color: {% if shop.theme == 'blue' %}#0D6EFD{% else %}{{ shop.theme }}{% endif %}"
+               href="{% url 'shop_products' shop_id=shop.id %}">
+                Найти что-то по вкусу
+            </a>
+        </div>
+    {% endif %}
 </div>
 <script src="https://kit.fontawesome.com/465e448dc1.js" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="{% static 'js/bucket.js' %}"></script>
+<script src="{% static 'js/payment.js' %}"></script>
 </body>
 </html>

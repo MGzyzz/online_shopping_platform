@@ -1,89 +1,34 @@
-const checkout = new cp.Checkout({
-    publicId: 'pk_0992ab759ec4dc1d6119b4d15f1ee',
+var payments = new cp.CloudPayments({
+    language: "ru-RU",
+    email: "",
+    applePaySupport: false,
+    googlePaySupport: false,
+    yandexPaySupport: false,
+    tinkoffInstallmentSupport: false,
 });
-const paymentForm = $('#paymentFormSample');
-const cardNumber = $('#card-input');
-const expDateMonth = $('#expDateMonth');
-const expDateYear = $('#expDateYear');
 
-paymentForm.submit((e) => {
-    e.preventDefault();
-    checkout.container = $('#paymentFormSample');
-    checkout.createPaymentCryptogram().then((cryptogram) => {
-        console.log(cryptogram)
-    }).catch((e) => {
-        console.log(e)
-    })
-})
 
-cardNumber.on('input', formatAndValidateCreditCardNumber)
-cardNumber.on('blur', lunh_validate)
-
-expDateMonth.on('input', FormatDateMonth)
-expDateMonth.on('blur', ValidateDateMonth)
-
-function formatAndValidateCreditCardNumber() {
-    const number = cardNumber.val().replace(/\D/g, '');
-    let formattedNumber = '';
-
-    for (let i = 0; i < number.length; i++) {
-        if (i > 0 && i % 4 === 0) {
-            formattedNumber += ' ';
+this.pay = function () {
+    payments.pay('charge',
+        { //options
+            publicId: 'test_api_00000000000000000000002', //id из личного кабинета
+            description: 'Оплата товаров в example.com', //назначение
+            amount: 100, //сумма
+            currency: 'KZT', //валюта
+            accountId: 'user@example.com', //идентификатор плательщика (необязательно)
+            invoiceId: '1234567', //номер заказа  (необязательно)
+            email: 'user@example.com', //email плательщика (необязательно)
+            skin: "classic", //дизайн виджета (необязательно)
+            data: {
+                myProp: 'myProp value'
+            },
+        }).then(function (widgetResult) {
+            console.log('result', widgetResult);
+        }).catch(function (error) {
+            console.log('error', error);
         }
-        formattedNumber += number[i];
-    }
-
-    const isValid = formattedNumber.length >= 19;
-    $('#pay-btn').prop('disabled', !isValid);
-    cardNumber.val(formattedNumber);
-
+    )
 }
+;
 
-function lunh_validate() {
-    const number = cardNumber.val().replace(/\D/g, '');
-    let sum = 0, len = number.length, parity = len % 2;
-    for (let i = 0; i < len; i++) {
-        let digit = parseInt(number[i]);
-        if (i % 2 === parity) {
-            digit *= 2;
-            if (digit > 9) {
-                digit -= 9;
-            }
-        }
-        sum += digit;
-
-    }
-    if (sum % 10 !== 0) {
-        $('#pay-btn').prop('disabled', true);
-        $('#cardError').text('Некорректный номер карты').addClass('text-danger');
-        cardNumber.addClass('border border-danger');
-    } else {
-        $('#pay-btn').prop('disabled', false);
-        $('#cardError').text('Номер карты').removeClass('text-danger');
-        cardNumber.removeClass('border border-danger');
-    }
-
-}
-
-function FormatDateMonth() {
-    const number = expDateMonth.val().replace(/\D/g, '');
-    if (number.length > 2) {
-        expDateMonth.val(number.substring(0, 2));
-    }
-
-}
-
-function ValidateDateMonth() {
-    const number = expDateMonth.val().replace(/\D/g, '');
-    const min = 1;
-    const max = 12;
-    if (number < min || number > max) {
-        $('#pay-btn').prop('disabled', true);
-        $('#expDateMonthError').text('Неверный месяц').addClass('text-danger');
-        expDateMonth.addClass('border border-danger');
-    } else {
-        $('#pay-btn').prop('disabled', false);
-        $('#expDateMonthError').text('Месяц').removeClass('text-danger');
-        expDateMonth.removeClass('border border-danger');
-    }
-}
+$('#checkout').click(pay);
