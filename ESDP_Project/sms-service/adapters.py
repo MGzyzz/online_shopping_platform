@@ -1,16 +1,21 @@
+import os
+
 import httpx
-import settings
 import dto
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 
 class SMSAdapter:
     @staticmethod
     async def send_request(action: str, method: str = 'get', **kwargs):
         async with httpx.AsyncClient(
-            headers={'Authorization': f'Basic {settings.SMS_SERVICE_API_TOKEN}'},
+            headers={'Authorization': f'Basic {os.getenv("SMS_SERVICE_API_TOKEN")}'},
         ) as client:
             return await client.request(
-                url=f'{settings.SMS_SERVICE_URL}{action}',
+                url=f"{os.getenv('SMS_SERVICE_URL')}{action}",
                 method=method,
                 ** kwargs,
             )

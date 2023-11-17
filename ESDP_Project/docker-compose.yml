@@ -20,6 +20,7 @@ services:
       - "8000:8000"
     depends_on:
       - postgres
+      - sms
     volumes:
       - .:/usr/src/app
     command: bash -c "python manage.py makemigrations --merge --noinput &&
@@ -31,13 +32,11 @@ services:
   sms:
     build:
       context: .
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/Dockerfile-sms
     ports:
       - "1026:1026"
-    depends_on:
-      - postgres
     volumes:
-      - .:/usr/src/app
+      - .:/usr/src/sms
     command: bash -c "cd sms-service && python3 main.py"
     networks:
       - main
