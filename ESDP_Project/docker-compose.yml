@@ -10,9 +10,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - esdp
-
-
+      - main
 
   app:
     build:
@@ -28,7 +26,7 @@ services:
                       python manage.py migrate --noinput && 
                       python manage.py runserver 0.0.0.0:8000"
     networks:
-      - esdp
+      - main
 
   sms:
     build:
@@ -39,18 +37,17 @@ services:
     depends_on:
       - postgres
     volumes:
-      - .:/usr/src/sms
+      - .:/usr/src/app
     command: bash -c "cd sms-service && python3 main.py"
     networks:
-      - esdp
-
+      - main
 
   redis:
      image: redis:5.0.1
      ports:
        - "6379:6379"
      networks:
-       - esdp
+       - main
 
   celery:
     build:
@@ -64,7 +61,7 @@ services:
     environment:
       - TZ=Asia/Almaty
     networks:
-      - esdp
+      - main
 
   celery-beat:
     build:
@@ -78,9 +75,9 @@ services:
     environment:
       - TZ=Asia/Almaty
     networks:
-      - esdp
+      - main
 
 
 networks:
-  esdp:
+  main:
     driver: bridge
