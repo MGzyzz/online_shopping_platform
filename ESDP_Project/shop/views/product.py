@@ -100,10 +100,10 @@ class ProductListView(ListView):
                      Q(description__icontains=capitalized_query) |
                      Q(category__name__icontains=capitalized_query) |
                      Q(tags__name__icontains=query))
-            queryset = self.products.filter(query).distinct()
+            queryset = self.products.filter(query, quantity__gt=0).distinct()
             return queryset
         if category_id := self.request.GET.get('category'):
-            return self.shop.products.filter(category_id=category_id)
+            return self.shop.products.filter(category_id=category_id, quantity__gt=0)
         return self.products
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -178,7 +178,6 @@ class EditProduct(PermissionRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         product = form.save(commit=False)
-        product.category = form.cleaned_data['category']
 
         if product.discount:
 
@@ -260,7 +259,7 @@ class ShopProductView(PermissionRequiredMixin, ListView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        queryset = self.shop.products.all()
+        queryset = self.shop.products.filter(quantity__gt=0)
         if query := self.request.GET.get('search'):
             capitalized_query = query.capitalize()
             query = (Q(name__icontains=query) |

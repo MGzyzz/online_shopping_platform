@@ -3,7 +3,7 @@ const checkout = new cp.Checkout({
 });
 const paymentForm = $('#paymentFormSample');
 const cardNumber = $('#card-input');
-const expDateMonth =$('#expDateMonth');
+const expDateMonth = $('#expDateMonth');
 const expDateYear = $('#expDateYear');
 
 paymentForm.submit((e) => {
@@ -16,15 +16,18 @@ paymentForm.submit((e) => {
     })
 })
 
-cardNumber.on('input',formatAndValidateCreditCardNumber)
-cardNumber.on('blur',lunh_validate)
+cardNumber.on('input', formatAndValidateCreditCardNumber)
+cardNumber.on('blur', lunh_validate)
 
-function formatAndValidateCreditCardNumber(){
+expDateMonth.on('input', FormatDateMonth)
+expDateMonth.on('blur', ValidateDateMonth)
+
+function formatAndValidateCreditCardNumber() {
     const number = cardNumber.val().replace(/\D/g, '');
     let formattedNumber = '';
 
     for (let i = 0; i < number.length; i++) {
-        if (i>0 && i%4 === 0) {
+        if (i > 0 && i % 4 === 0) {
             formattedNumber += ' ';
         }
         formattedNumber += number[i];
@@ -50,12 +53,37 @@ function lunh_validate() {
         sum += digit;
 
     }
-    console.log(sum)
     if (sum % 10 !== 0) {
         $('#pay-btn').prop('disabled', true);
         $('#cardError').text('Некорректный номер карты').addClass('text-danger');
-        $('#card-input').addClass('border border-danger');
+        cardNumber.addClass('border border-danger');
+    } else {
+        $('#pay-btn').prop('disabled', false);
+        $('#cardError').text('Номер карты').removeClass('text-danger');
+        cardNumber.removeClass('border border-danger');
     }
 
 }
 
+function FormatDateMonth() {
+    const number = expDateMonth.val().replace(/\D/g, '');
+    if (number.length > 2) {
+        expDateMonth.val(number.substring(0, 2));
+    }
+
+}
+
+function ValidateDateMonth() {
+    const number = expDateMonth.val().replace(/\D/g, '');
+    const min = 1;
+    const max = 12;
+    if (number < min || number > max) {
+        $('#pay-btn').prop('disabled', true);
+        $('#expDateMonthError').text('Неверный месяц').addClass('text-danger');
+        expDateMonth.addClass('border border-danger');
+    } else {
+        $('#pay-btn').prop('disabled', false);
+        $('#expDateMonthError').text('Месяц').removeClass('text-danger');
+        expDateMonth.removeClass('border border-danger');
+    }
+}

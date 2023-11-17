@@ -91,11 +91,13 @@ class ShopMainView(ListView):
 
     def dispatch(self, request, *args, **kwargs):
         self.shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
+        print(self.shop)
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         products = self.shop.products.filter(quantity__gt=0)
+        print(products)
         categories = set([products.category for products in products])
         category_product = {}
         context['shop'] = self.shop
