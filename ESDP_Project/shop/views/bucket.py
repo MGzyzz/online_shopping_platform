@@ -37,6 +37,8 @@ class BucketListView(CreateView):
         context['total_price'] = sum(item.unit_price for item in self.bucket_items)
         context['shop'] = Shop.objects.get(id=self.shop_id)
         context['products'] = dict(zip(products, self.bucket_items))
+        context['items'] = ', '.join(str(item.id) for item in self.bucket_items)
+
         return context
 
     def check_quantity(self, bucket_items):
@@ -59,7 +61,8 @@ class BucketListView(CreateView):
 
             item.save()
 
-    def get_client_ip(self, request) -> str:
+    @staticmethod
+    def get_client_ip(request) -> str:
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
 
         if x_forwarded_for:
@@ -68,28 +71,6 @@ class BucketListView(CreateView):
             ip = request.META.get('REMOTE_ADDR')
 
         return ip
-
-    def form_valid(self, form):
-        order = form.save(commit=False)
-        if self.request.user.is_authenticated:
-            order.user = self.request.user
-
-        order.shop = Shop.objects.get(id=self.kwargs['shop_id'])
-        order.total = self.request.POST.get('total')
-        order.save()
-
-        self.get_discount(self.bucket_items)
-
-        for item in self.bucket_items:
-            OrderProducts.objects.create(
-                order=order,
-                product=item.product,
-                quantity=item.quantity,
-                price_per_product=item.unit_price,
-            )
-            item.delete()
-
-        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy('payment', kwargs={'order_id': self.object.id})

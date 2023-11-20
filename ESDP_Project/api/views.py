@@ -6,9 +6,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 
-from shop.models import TimeDiscount, Product, Bucket
+from shop.models import TimeDiscount, Product, Bucket, Order, OrderProducts
 from shop.views.bucket import BucketListView
-from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer
+from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer, OrderSerializer
 
 
 class LogoutView(APIView):
@@ -169,7 +169,6 @@ class BucketViewSet(viewsets.ModelViewSet):
 
             BucketListView.get_discount(bucket_all)
             total_price = sum(item.unit_price for item in bucket_all)
-            print(total_price)
             product_id = item.product.id
 
             return JsonResponse({'success': True, "total_price": total_price, 'product_id': product_id,
@@ -178,9 +177,77 @@ class BucketViewSet(viewsets.ModelViewSet):
             return JsonResponse({'success': False, 'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_url_kwarg = 'id'
     lookup_field = 'id'
+
+
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+    def get_cart(self, shop, user=None):
+        if user.is_authenticated:
+            bucket_items = Bucket.objects.filter(user=user, shop_id=shop)
+        else:
+            ip_address = self.get_client_ip(self.request)
+            bucket_items = Bucket.objects.filter(ip_address=ip_address, shop_id=shop)
+
+        return bucket_items
+
+    @staticmethod
+    def get_client_ip(request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+
+        return ip
+
+    @action(detail=False, methods=['POST'])
+    def create_order(self, request, *args, **kwargs):
+        data = request.data
+        shop = data.get('shop')
+        total = data.get('total')
+        order = Order.objects.create(shop_id=shop, total=total)
+        print(data)
+
+        products = Bucket.objects.filter(id__in=data.get('products').split(','))
+        self.add_products(products, order)
+
+        order.payer_city = data.get('payer_city')
+        order.payer_address = data.get('payer_address')
+        order.payer_phone = data.get('payer_phone')
+        order.payer_email = data.get('payer_email')
+        order.payer_surname = data.get('payer_surname')
+        order.payer_name = data.get('payer_name')
+        order.payer_postal_code = data.get('payer_postal_code')
+        order.save()
+
+        if self.request.user.is_authenticated:
+            order.payer = request.user
+            return JsonResponse(data={'order_id': order.id, 'user_id': order.user.id}, status=status.HTTP_201_CREATED)
+
+        return JsonResponse(data={'order_id': order.id}, status=status.HTTP_201_CREATED)
+
+    @staticmethod
+    def add_products(products, order):
+        for item in products:
+            OrderProducts.objects.create(
+                order=order,
+                product=item.product,
+                quantity=item.quantity,
+                price_per_product=item.unit_price,
+            )
+            item.delete()
+
+    @action(detail=False, methods=['POST'])
+    def pay(self, request):
+        order_id = request.data.get('order_id')
+        order = Order.objects.get(id=order_id)
+        order.is_paid = True
+        order.save()

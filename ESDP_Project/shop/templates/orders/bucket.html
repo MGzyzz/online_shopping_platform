@@ -23,6 +23,10 @@
 <div class="container mt-3">
     {% if products %}
         <div>
+            <input hidden id="cart-products" value="{{ items }}">
+            <input hidden id="shop" value="{{ shop.id }}">
+            <input id="form-total" hidden name="total" value="{{ total_price }}">
+
             {% for product, card_item in products.items %}
                 <form method="post" class="d-flex flex-row card my-1">
                     <div>
@@ -50,7 +54,8 @@
                                     </button>
                                 </div>
                             </div>
-                            <a href="#" class="delete-from-bucket ms-2 btn btn-light rounded" data-item-id="{{ card_item.id }}">
+                            <a href="#" class="delete-from-bucket ms-2 btn btn-light rounded"
+                               data-item-id="{{ card_item.id }}">
                                 <i
                                         class="fa fa-trash"></i></a>
                         </div>
@@ -73,8 +78,6 @@
                             {{ field }}
                         </div>
                     {% endfor %}
-                    <input id="form-total" hidden name="total" value="{{ total_price }}">
-                    <input hidden name="products" value="{{ products }}">
                 </form>
                 <button type="button" class="btn btn-primary float-end" id="checkout">Оформить</button>
             </div>
