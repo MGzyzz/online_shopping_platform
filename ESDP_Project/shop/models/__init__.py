@@ -7,3 +7,4 @@ from .attributes import Attributes
 from .bucket import Bucket
 from .order import Order
 from .orderproducts import OrderProducts
+from .accountshops import AccountShops

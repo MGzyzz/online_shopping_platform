@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model, password_validation
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django import forms
 
-from accounts.models import User
+from accounts.models import User, Account
 
 
 class RegisterForm(UserCreationForm):
@@ -14,6 +14,7 @@ class RegisterForm(UserCreationForm):
             }
         ),
         help_text=password_validation.password_validators_help_text_html(),
+        label="Пароль",
     )
     password2 = forms.CharField(
         widget=forms.PasswordInput(
@@ -23,6 +24,7 @@ class RegisterForm(UserCreationForm):
         ),
         strip=False,
         help_text="Enter the same password as before, for verification.",
+        label="Повторите пароль",
     )
 
     class Meta(UserCreationForm.Meta):
@@ -81,3 +83,13 @@ class PasswordChangeForm(forms.ModelForm):
         model = get_user_model()
         fields = ['password', 'password_confirm', 'old_password']
 
+
+class AccountRegisterForm(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = ['city', 'address', 'postal_code']
+        widgets = {
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.TextInput(attrs={'class': 'form-control'}),
+            'postal_code': forms.TextInput(attrs={'class': 'form-control'}),
+        }

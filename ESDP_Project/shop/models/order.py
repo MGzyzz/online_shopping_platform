@@ -4,7 +4,7 @@ from core import settings
 
 
 class Order(models.Model):
-    payer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='orders', null=True,
+    payer = models.ForeignKey('accounts.Account', on_delete=models.CASCADE, related_name='orders', null=True,
                               blank=True)
     shop = models.ForeignKey('shop.Shop', on_delete=models.CASCADE, related_name='order')
     products = models.ManyToManyField('shop.Product', related_name='orders', through='OrderProducts')

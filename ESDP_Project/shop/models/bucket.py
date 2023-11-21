@@ -1,6 +1,6 @@
 from django.db import models
 
-from accounts.models import User
+from accounts.models import User, Account
 from shop.models import Product, Shop
 
 
@@ -30,7 +30,7 @@ class Bucket(models.Model):
         verbose_name='Цена за единицу'
     )
     user = models.ForeignKey(
-        User,
+        Account,
         on_delete=models.CASCADE,
         null=True,
         blank=True,

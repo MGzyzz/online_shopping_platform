@@ -188,33 +188,12 @@ class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
-    def get_cart(self, shop, user=None):
-        if user.is_authenticated:
-            bucket_items = Bucket.objects.filter(user=user, shop_id=shop)
-        else:
-            ip_address = self.get_client_ip(self.request)
-            bucket_items = Bucket.objects.filter(ip_address=ip_address, shop_id=shop)
-
-        return bucket_items
-
-    @staticmethod
-    def get_client_ip(request):
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-
-        if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0]
-        else:
-            ip = request.META.get('REMOTE_ADDR')
-
-        return ip
-
     @action(detail=False, methods=['POST'])
     def create_order(self, request, *args, **kwargs):
         data = request.data
         shop = data.get('shop')
         total = data.get('total')
         order = Order.objects.create(shop_id=shop, total=total)
-        print(data)
 
         products = Bucket.objects.filter(id__in=data.get('products').split(','))
         self.add_products(products, order)
@@ -244,10 +223,3 @@ class OrderViewSet(viewsets.ModelViewSet):
                 price_per_product=item.unit_price,
             )
             item.delete()
-
-    @action(detail=False, methods=['POST'])
-    def pay(self, request):
-        order_id = request.data.get('order_id')
-        order = Order.objects.get(id=order_id)
-        order.is_paid = True
-        order.save()
