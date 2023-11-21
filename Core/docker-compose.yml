@@ -10,7 +10,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - main
+      default_net:
 
   app:
     build:
@@ -20,33 +20,22 @@ services:
       - "8000:8000"
     depends_on:
       - postgres
-      - sms
+    env_file:
+      - .env
     volumes:
       - .:/usr/src/app
     command: bash -c "python manage.py makemigrations --merge --noinput &&
                       python manage.py migrate --noinput && 
                       python manage.py runserver 0.0.0.0:8000"
     networks:
-      - main
-
-  sms:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile-sms
-    ports:
-      - "1026:1026"
-    volumes:
-      - .:/usr/src/sms
-    command: bash -c "cd sms-service && python3 main.py"
-    networks:
-      - main
+      default_net:
 
   redis:
      image: redis:5.0.1
      ports:
        - "6379:6379"
      networks:
-       - main
+       default_net:
 
   celery:
     build:
@@ -54,13 +43,15 @@ services:
     command: celery -A core.celery worker -l info
     volumes:
       - .:/usr/src/app
+    env_file:
+      - .env
     depends_on:
       - postgres
       - redis
     environment:
       - TZ=Asia/Almaty
     networks:
-      - main
+      default_net:
 
   celery-beat:
     build:
@@ -68,15 +59,18 @@ services:
     command: celery -A core.celery beat -l info
     volumes:
       - .:/usr/src/app
+    env_file:
+      - .env
     depends_on:
       - postgres
       - redis
     environment:
       - TZ=Asia/Almaty
     networks:
-      - main
+      default_net:
 
 
 networks:
-  main:
-    driver: bridge
+  default_net:
+    external: True
+    name: esdp-ap-11

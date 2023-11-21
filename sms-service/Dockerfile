@@ -10,5 +10,3 @@ COPY reqs.txt ./reqs.txt
 RUN pip install --upgrade pip && pip install -r reqs.txt
 
 COPY . .
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "1026", "--reload"]
-
