@@ -1,3 +1,5 @@
+import random
+
 from django.db.models import Q
 from django.http import JsonResponse
 from django.utils import timezone
@@ -6,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 
+from accounts.models import User
 from shop.models import TimeDiscount, Product, Bucket
 from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer
 
@@ -166,3 +169,10 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     lookup_url_kwarg = 'id'
     lookup_field = 'id'
+
+
+def user_detail_api_view(request, id, *args, **kwargs):
+    user = User.objects.get(id=id)
+    code = random.randint(1000, 9999)
+    data = {'id': user.id, 'phone': user.phone, 'code': code}
+    return JsonResponse(data=data, status=200)

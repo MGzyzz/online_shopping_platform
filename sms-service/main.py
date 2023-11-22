@@ -1,0 +1,30 @@
+import os
+
+import fastapi
+from starlette import status
+import dto
+from adapters import SMSAdapter
+import httpx
+
+app = fastapi.FastAPI()
+
+
+@app.post('/sms/send/{id_}')
+async def send_sms(id_: int):
+
+    response = httpx.get(f'{os.environ.get("CORE_URL")}/api/user/{id_}')
+    as_json = response.json()
+
+    phone = '77081636294'
+    data = {'from': 'Info', 'to': phone, 'text': str(as_json.get('code'))}
+    body = dto.SendSmsDto(**data)
+
+    await SMSAdapter().send(body)
+
+    return fastapi.responses.Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+if __name__ == '__main__':
+    import uvicorn
+
+    uvicorn.run('main:app',  host='0.0.0.0', port=1026, reload=True)
