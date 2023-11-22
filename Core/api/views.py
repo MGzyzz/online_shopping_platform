@@ -175,5 +175,4 @@ def user_detail_api_view(request, id, *args, **kwargs):
     user = User.objects.get(id=id)
     code = random.randint(1000, 9999)
     data = {'id': user.id, 'phone': user.phone, 'code': code}
-    # CodePhone.objects.create(phone=date.phone, code = date.code)
     return JsonResponse(data=data, status=200)
