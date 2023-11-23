@@ -83,14 +83,22 @@
                     </div>
                 {% endfor %}
             </div>
-            <button class="btn text-{% if shop.theme == 'white' %}dark{% else %}white{% endif %}"
-                    {% if product.quantity == 0 %} disabled {% endif %}
-                    style="background-color: {% if shop.theme == 'blue' %}#0D6EFD{% else %}{{ shop.theme }}{% endif %}"
-                    data-product-id="{{ product.id }}" data-shop-id="{{ shop.id }}"
-                    {% if user.is_authenticated %}id="cart-btn-user" data-user-id="{{ request.user.id }}"
-                    {% else %}id="cart-btn"{% endif %}>
-                Добавить в корзину
-            </button>
+            {% if in_bucket %}
+                <a href="{% url 'bucket' shop_id=shop.id %}" class="btn text-{% if shop.theme == 'white' %}dark{% else %}white{% endif %}"
+                        {% if product.quantity == 0 %} disabled {% endif %}
+                        style="background-color: {% if shop.theme == 'blue' %}#0D6EFD{% else %}{{ shop.theme }}{% endif %}">
+                    Перейти в корзину
+                </a>
+            {% else %}
+                <button class="btn text-{% if shop.theme == 'white' %}dark{% else %}white{% endif %}"
+                        {% if product.quantity == 0 %} disabled {% endif %}
+                        style="background-color: {% if shop.theme == 'blue' %}#0D6EFD{% else %}{{ shop.theme }}{% endif %}"
+                        data-product-id="{{ product.id }}" data-shop-id="{{ shop.id }}"
+                        {% if user.is_authenticated %}id="cart-btn-user" data-user-id="{{ request.user.id }}"
+                        {% else %}id="cart-btn"{% endif %}>
+                    Добавить в корзину
+                </button>
+            {% endif %}
             <div class="alert alert-success mt-3 d-none" role="alert">
                 Товар успешно добавлен в корзину
             </div>

@@ -1,3 +1,5 @@
+import decimal
+
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
@@ -7,7 +9,8 @@ from django.views.generic import CreateView, UpdateView, ListView, DeleteView, D
 from taggit.models import Tag
 
 from shop.forms import ProductForm, ImagesForm
-from shop.models import Images, Category, Product, Shop
+from shop.models import Images, Category, Product, Shop, Bucket
+from .get_ip import get_client_ip
 
 
 class ProductCreateView(PermissionRequiredMixin, CreateView):
@@ -43,7 +46,7 @@ class ProductCreateView(PermissionRequiredMixin, CreateView):
         if product.discount:
 
             if product.discount > 0:
-                product.discounted_price = product.price - (product.price * (product.discount / 100))
+                product.discounted_price = product.price - (product.price * decimal.Decimal(product.discount / 100))
 
         self.new_category(product)
 
@@ -182,7 +185,7 @@ class EditProduct(PermissionRequiredMixin, UpdateView):
         if product.discount:
 
             if product.discount > 0:
-                product.discounted_price = product.price - (product.price * (product.discount / 100))
+                product.discounted_price = product.price - (product.price * decimal.Decimal(product.discount / 100))
 
         self.new_category(product)
         product.save()
@@ -229,6 +232,15 @@ class DetailProduct(DetailView):
 
     def dispatch(self, request, *args, **kwargs):
         self.product = self.get_object()
+        self.shop_id = self.product.shop.id
+
+        try:
+            self.bucket_items = Bucket.objects.filter(user=self.request.user.account, shop_id=self.shop_id)
+        except AttributeError:
+            ip_address = get_client_ip(self.request)
+            self.bucket_items = Bucket.objects.filter(ip_address=ip_address, shop_id=self.shop_id)
+
+        self.products = [item.product for item in self.bucket_items]
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -241,6 +253,8 @@ class DetailProduct(DetailView):
             if ',' in attribute.value:
                 parameters[attribute.name] = attribute.value.split(',')
         context['parameters'] = parameters
+
+        context['in_bucket'] = True if self.object in self.products else False
         return context
 
 

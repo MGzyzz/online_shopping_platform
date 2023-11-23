@@ -33,10 +33,15 @@
                 <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
                    href="{% url 'bucket' shop.id %}">Корзина</a>
             </li>
-            {% if not user.is_authenticated %}
+            {% if not user.account %}
                 <li class="nav-item">
                     <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
                        href="{% url 'account_login' shop.id %}">Войти</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
+                       href="{% url 'logout' %}">Выйти</a>
                 </li>
             {% endif %}
         </ul>

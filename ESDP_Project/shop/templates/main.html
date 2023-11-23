@@ -90,7 +90,7 @@
                             </div>
 
                             <ul class="navbar-nav ml-auto">
-                                {% if user.is_authenticated %}
+                                {% if user.is_authenticated and not user.account  %}
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
                                            role="button" data-toggle="dropdown" aria-haspopup="true"

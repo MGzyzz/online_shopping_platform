@@ -1,4 +1,4 @@
-import httpx as httpx
+# import httpx as httpx
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -22,11 +22,11 @@ class Recarring(View):
                 payer_id=account_id,
 
             )
-            httpx.post(
-                'https://api.cloudpayments.ru/payments/void',
-                auth=('pk_3d2e6006deeae8feba63160d9efd2', '6bdcf4e0a6dd4adb7f2671a524deaa38'),
-                json={'TransactionId': request.POST.get('TransactionId')},
-            )
+            # httpx.post(
+            #     'https://api.cloudpayments.ru/payments/void',
+            #     auth=('pk_3d2e6006deeae8feba63160d9efd2', '6bdcf4e0a6dd4adb7f2671a524deaa38'),
+            #     json={'TransactionId': request.POST.get('TransactionId')},
+            # )
 
             return HttpResponse(status=201)
 

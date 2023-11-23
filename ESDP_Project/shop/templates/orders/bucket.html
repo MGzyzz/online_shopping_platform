@@ -46,7 +46,7 @@
                                 </div>
                                 <input type="text" id="quantity-{{ card_item.id }}"
                                        class="text-center form-control mx-2 rounded"
-                                       name="cart-quantity" value="{{ card_item.quantity }}">
+                                       name="cart-quantity" value="{{ card_item.quantity }}" readonly>
                                 <div class="input-group-append">
                                     <button class="btn btn-light rounded" type="button" id="button-plus"
                                             onclick="incrementQuantity('{{ card_item.id }}')">

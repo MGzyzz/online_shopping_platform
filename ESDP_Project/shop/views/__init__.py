@@ -3,5 +3,5 @@ from .product import ProductCreateView, ProductListView, DetailProduct, EditProd
 from .attributes import AttributesCreateView, AttributesUpdateView
 from .profile import Profile
 from .bucket import BucketListView
-from .payments import PaymentView
 from .recarring import Recarring
+from .get_ip import get_client_ip
