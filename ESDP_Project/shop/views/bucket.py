@@ -34,13 +34,34 @@ class BucketListView(CreateView):
         products = Product.objects.filter(id__in=bucket_ids).order_by(Case(*order_conditions))
 
         self.check_quantity(self.bucket_items)
+        self.get_form_data(context)
 
+        context['bucket'] = self.bucket_items
         context['total_price'] = sum(item.unit_price for item in self.bucket_items)
         context['shop'] = Shop.objects.get(id=self.shop_id)
         context['products'] = dict(zip(products, self.bucket_items))
         context['items'] = ', '.join(str(item.id) for item in self.bucket_items)
 
         return context
+
+    def get_form_data(self, context):
+        try:
+            account = self.user.account
+            data = {
+                'payer_name': self.user.first_name,
+                'payer_surname': self.user.last_name,
+                'payer_email': self.user.email,
+                'payer_phone': self.user.phone,
+                'payer_city': account.city,
+                'payer_address': account.address,
+                'payer_postal_code': account.postal_code,
+            }
+            context['form'] = OrderForm(initial=data)
+        except AttributeError:
+            pass
+
+
+
 
     def check_quantity(self, bucket_items):
         for item in bucket_items:

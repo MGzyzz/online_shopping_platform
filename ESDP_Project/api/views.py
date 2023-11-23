@@ -141,7 +141,7 @@ class BucketViewSet(viewsets.ModelViewSet):
             item_id = self.kwargs.get('pk')
             new_quantity = int(request.data.get('new_quantity'))
             item = Bucket.objects.get(id=item_id)
-            item.unit_price = (item.unit_price/item.quantity) * new_quantity
+            item.unit_price = (item.unit_price / item.quantity) * new_quantity
             item.quantity = new_quantity
             item.save()
 
@@ -187,9 +187,10 @@ class OrderViewSet(viewsets.ModelViewSet):
         order.payer_postal_code = data.get('payer_postal_code')
         order.save()
 
-        if self.request.user.is_authenticated:
-            order.payer = request.user
-            return JsonResponse(data={'order_id': order.id, 'user_id': order.user.id}, status=status.HTTP_201_CREATED)
+        if account := data.get('account'):
+            order.payer = Account.objects.get(id=account)
+            order.save()
+            return JsonResponse(data={'order_id': order.id, 'user_id': account}, status=status.HTTP_201_CREATED)
 
         return JsonResponse(data={'order_id': order.id}, status=status.HTTP_201_CREATED)
 

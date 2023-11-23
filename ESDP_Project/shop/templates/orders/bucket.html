@@ -26,6 +26,7 @@
             <input hidden id="cart-products" value="{{ items }}">
             <input hidden id="shop" value="{{ shop.id }}">
             <input id="form-total" hidden name="total" value="{{ total_price }}">
+            <input id="user-id" hidden value="{{ user.account.id }}">
 
             {% for product, card_item in products.items %}
                 <form method="post" class="d-flex flex-row card my-1">
