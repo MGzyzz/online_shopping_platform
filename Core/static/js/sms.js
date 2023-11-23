@@ -4,4 +4,18 @@ $(document).ready(function () {
             $(this).next('input').focus();
         }
     });
+    let userId = $('#userId').val()
+    $.ajax({
+        url: `http://localhost:1026/sms/send/${userId}`,
+        method: 'POST',
+        success: function (resp){
+            console.log(`success ${resp}`)
+        },
+        error: function (err) {
+            console.log(`fail ${err}`)
+        }
+})
 });
+
+
+
