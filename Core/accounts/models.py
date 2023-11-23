@@ -25,10 +25,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, verbose_name='Email')
     first_name = models.CharField(max_length=50, verbose_name='Имя')
     last_name = models.CharField(max_length=50, verbose_name='Фамилия')
-    phone = models.IntegerField(verbose_name='Телефон')
+    phone = models.BigIntegerField(verbose_name='Телефон')
     is_staff = models.BooleanField(default=False, verbose_name='Сотрудник')
     is_active = models.BooleanField(default=True, verbose_name='Активен')
     date_joined = models.DateTimeField(default=timezone.now, verbose_name='Дата регистрации')
+    phone_verification = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 

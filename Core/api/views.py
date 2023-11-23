@@ -1,5 +1,5 @@
 import random
-
+import redis
 from django.db.models import Q
 from django.http import JsonResponse
 from django.utils import timezone
@@ -173,6 +173,19 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 def user_detail_api_view(request, id, *args, **kwargs):
     user = User.objects.get(id=id)
+
     code = random.randint(1000, 9999)
     data = {'id': user.id, 'phone': user.phone, 'code': code}
+
+    redis_client = redis.StrictRedis(host='core-redis-1', port=6379, db=1)
+
+    key = user.phone
+    value = str(code)
+
+    redis_client.set(key, value)
+    redis_client.expire(key, 300)
+    redis_value = redis_client.get(value)
+
+    print(f'Read value from redis: {redis_value}')
+
     return JsonResponse(data=data, status=200)

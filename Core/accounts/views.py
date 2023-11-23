@@ -2,9 +2,10 @@ from django.contrib.auth import views, login, get_user_model
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView, TemplateView
-
+import redis
 from accounts.forms import RegisterForm, LoginForm, UserUpdateForm, PasswordChangeForm
 from accounts.models import User
+from django.http import HttpResponse
 
 
 class LoginView(views.LoginView):
@@ -30,9 +31,10 @@ class RegisterView(CreateView):
     form_class = RegisterForm
 
     def form_valid(self, form):
-        phone_number = form.cleaned_data.get('phone')
-        self.request.session['phone'] = phone_number
-        self.request.session['user_data'] = form.cleaned_data
+        user = form.save(commit=False)
+        user.save()
+
+        login(self.request, user)
 
         return redirect('sms-verification')
 
@@ -45,8 +47,8 @@ class Sms_Verification(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        phone_number = self.request.session.get('phone', 'Неизвестный номер')
-        context['phone_number'] = phone_number
+        phone_number = self.request.user.phone
+        context['phone_number'] = f'+{phone_number}'
         return context
 
     def post(self, request, *args, **kwargs):
@@ -56,16 +58,16 @@ class Sms_Verification(TemplateView):
         code_4 = request.POST.get('code_4')
 
         input_code = f"{code_1}{code_2}{code_3}{code_4}"
-        if input_code == '4444':
-            user_data = self.request.session.get('user_data')
-            password = user_data.pop('password1')
-            user_data.pop('password2', None)
-            user = User(**user_data)
-            user.set_password(password)
-            user.save()
-            login(self.request, user)
+        redis_client = redis.StrictRedis(host='core-redis-1', port=6379, db=1)
 
-        return redirect('home')
+        if input_code == redis_client.get(self.request.user.phone).decode('utf-8'):
+            current_user = User.objects.get(id=self.request.user.id)
+            current_user.phone_verification = True
+            current_user.save()
+
+            return redirect('home')
+
+        return HttpResponse('Error ')
 
 
 class UserUpdate(UpdateView):
