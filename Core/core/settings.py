@@ -24,7 +24,8 @@ SECRET_KEY = 'django-insecure-!@k(9#8m6x27oe^2vdynmg419k1uqf-#0aun2agr=&au2-j0qb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'core-app-1', 'sms-service-sms-1']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'core-django-app', 'sms-service-sms-1']
+
 
 # Application definition
 

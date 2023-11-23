@@ -58,7 +58,7 @@ class Sms_Verification(TemplateView):
         code_4 = request.POST.get('code_4')
 
         input_code = f"{code_1}{code_2}{code_3}{code_4}"
-        redis_client = redis.StrictRedis(host='core-redis-1', port=6379, db=1)
+        redis_client = redis.StrictRedis(host='core-redis', port=6379, db=1)
 
         if input_code == redis_client.get(self.request.user.phone).decode('utf-8'):
             current_user = User.objects.get(id=self.request.user.id)

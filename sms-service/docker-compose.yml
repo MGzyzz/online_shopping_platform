@@ -2,6 +2,7 @@ version: '3'
 
 services:
   sms:
+    container_name: sms
     build:
       context: .
       dockerfile: Dockerfile

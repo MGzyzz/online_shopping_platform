@@ -177,7 +177,7 @@ def user_detail_api_view(request, id, *args, **kwargs):
     code = random.randint(1000, 9999)
     data = {'id': user.id, 'phone': user.phone, 'code': code}
 
-    redis_client = redis.StrictRedis(host='core-redis-1', port=6379, db=1)
+    redis_client = redis.StrictRedis(host='core-redis', port=6379, db=1)
 
     key = user.phone
     value = str(code)
