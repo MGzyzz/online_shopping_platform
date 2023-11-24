@@ -6,9 +6,19 @@ from starlette import status
 import dto
 from adapters import SMSAdapter
 import httpx
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = fastapi.FastAPI()
+
+origins = ['http://localhost']
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
 
 
 @app.post('/sms/send/{id_}')
@@ -23,7 +33,6 @@ async def send_sms(id_: int):
         body = dto.SendSmsDto(**data)
 
         await SMSAdapter().send(body)
-
     except json.JSONDecodeError as e:
         print('JSON Decode Error:', e)
 
