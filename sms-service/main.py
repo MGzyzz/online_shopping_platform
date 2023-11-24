@@ -1,3 +1,4 @@
+import json
 import os
 
 import fastapi
@@ -6,6 +7,7 @@ import dto
 from adapters import SMSAdapter
 import httpx
 
+
 app = fastapi.FastAPI()
 
 
@@ -13,12 +15,17 @@ app = fastapi.FastAPI()
 async def send_sms(id_: int):
 
     response = httpx.get(f'{os.environ.get("CORE_URL")}/api/user/{id_}')
-    as_json = response.json()
 
-    data = {'from': 'Info', 'to': str(as_json.get("phone")), 'text': str(as_json.get('code'))}
-    body = dto.SendSmsDto(**data)
+    try:
+        as_json = response.json()
 
-    await SMSAdapter().send(body)
+        data = {'from': 'Info', 'to': str(as_json.get("phone")), 'text': str(as_json.get('code'))}
+        body = dto.SendSmsDto(**data)
+
+        await SMSAdapter().send(body)
+
+    except json.JSONDecodeError as e:
+        print('JSON Decode Error:', e)
 
     return fastapi.responses.Response(status_code=status.HTTP_204_NO_CONTENT)
 
