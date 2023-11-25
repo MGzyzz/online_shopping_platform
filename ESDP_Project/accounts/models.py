@@ -29,11 +29,17 @@ class User(AbstractBaseUser):
     is_staff = models.BooleanField(default=False, verbose_name='Сотрудник')
     is_active = models.BooleanField(default=True, verbose_name='Активен')
     date_joined = models.DateTimeField(default=timezone.now, verbose_name='Дата регистрации')
-
+    is_superuser = models.BooleanField(default=False, verbose_name='Суперпользователь')
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['phone', 'first_name', 'last_name']
+
+    def has_perm(self, perm, obj=None):
+        return self.is_superuser
+
+    def has_module_perms(self, app_label):
+        return self.is_superuser
 
     def __str__(self):
         return self.email
