@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-!@k(9#8m6x27oe^2vdynmg419k1uqf-#0aun2agr=&au2-j0qb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['c9e4-91-205-188-160.ngrok-free.app', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['86af-176-64-28-234.ngrok-free.app', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -145,6 +145,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
 }
+
+URL_REKASSA = 'https://api-test.rekassa.kz/api/'
+TOKEN_REKASSA = '494c9dc5-44a0-4825-b17b-f7337ea0c63c'
 
 
 AUTH_USER_MODEL = 'accounts.User'

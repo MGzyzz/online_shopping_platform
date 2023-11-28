@@ -103,6 +103,10 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class OrderIdSerializer(serializers.Serializer):
+    order_id = serializers.IntegerField()
+
+
 class BucketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bucket
