@@ -5,6 +5,7 @@ $(document).ready(function () {
         }
     });
     let userId = $('#userId').val()
+    console.log(userId)
     $.ajax({
         url: `http://localhost:1026/sms/send/${userId}`,
         method: 'POST',

@@ -171,8 +171,8 @@ class ProductViewSet(viewsets.ModelViewSet):
     lookup_field = 'id'
 
 
-def user_detail_api_view(request, id_, *args, **kwargs):
-    user = User.objects.get(id=id_)
+def user_detail_api_view(request, id, *args, **kwargs):
+    user = User.objects.get(id=id)
 
     code = random.randint(1000, 9999)
     data = {'id': user.id, 'phone': user.phone, 'code': code}
