@@ -4,8 +4,9 @@ from core import settings
 
 
 class Order(models.Model):
-    payer = models.ForeignKey('accounts.Account', on_delete=models.CASCADE, related_name='orders', null=True,
+    account = models.ForeignKey('accounts.Account', on_delete=models.CASCADE, related_name='orders', null=True,
                               blank=True)
+    user_ip = models.CharField(max_length=100, null=True, blank=True, verbose_name='IP плательщика')
     shop = models.ForeignKey('shop.Shop', on_delete=models.CASCADE, related_name='order')
     products = models.ManyToManyField('shop.Product', related_name='orders', through='OrderProducts')
     total = models.DecimalField(decimal_places=2, max_digits=15, null=False, blank=False, verbose_name='Сумма')

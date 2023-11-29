@@ -113,7 +113,9 @@
             </div>
         </div>
     {% endfor %}
+{% if is_paginated %}
     {% include 'partial/pagination.html' %}
+{% endif %}
 
 </div>
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"

@@ -102,7 +102,7 @@ class AccountLoginView(views.LoginView):
     authentication_form = LoginForm
 
     def dispatch(self, request, *args, **kwargs):
-        self.shop = Shop.objects.get(id=self.kwargs['id'])
+        self.shop = Shop.objects.get(id=self.kwargs['shop_id'])
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -129,7 +129,7 @@ class AccountRegisterView(CreateView):
     template_name = 'account-register.html'
 
     def dispatch(self, request, *args, **kwargs):
-        self.shop = Shop.objects.get(id=self.kwargs['id'])
+        self.shop = Shop.objects.get(id=self.kwargs['shop_id'])
         self.account_form = AccountRegisterForm()
         return super().dispatch(request, *args, **kwargs)
 
@@ -154,7 +154,7 @@ class AccountRegisterView(CreateView):
             account = Account.objects.get(user__email=email)
             account.shops.add(self.shop)
         except Account.DoesNotExist:
-            account = self.account_form.save(commit=False)
+            account = AccountRegisterForm(self.request.POST).save(commit=False)
             user = form.save(commit=False)
             user.save()
             account.user = user

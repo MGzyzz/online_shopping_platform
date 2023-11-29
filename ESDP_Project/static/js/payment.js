@@ -27,12 +27,11 @@ function order() {
             account
         }
     }).then(function (data) {
-        pay(data['order_id'], parseInt(total), data['user_id'])
+        pay(data['order_id'], parseFloat(total), payer_phone, data['user_id'])
     })
 }
 
-let pay = function (orderId, total, account) {
-        console.log(account)
+let pay = function (orderId, total, payer_phone, account) {
         var widget = new cp.CloudPayments();
         widget.pay('charge',
             { //options
@@ -42,13 +41,18 @@ let pay = function (orderId, total, account) {
                 currency: 'KZT', //валюта
                 accountId: account, //идентификатор плательщика (необязательно)
                 invoiceId: orderId, //номер заказа  (необязательно)
-                skin: "classic", //дизайн виджета (необязательно)
+                skin: "classic", //дизайн виджета (необязательно)б
+                payer: {
+                    phone: payer_phone, //номер телефона плательщика
+                }
             }).then(function (widgetResult) {
             console.log('result', widgetResult);
+            window.location.reload()
         }).catch(function (error) {
                 console.log('error', error);
             }
         )
+
     }
 ;
 

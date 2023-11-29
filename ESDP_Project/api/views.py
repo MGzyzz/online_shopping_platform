@@ -1,5 +1,3 @@
-import decimal
-
 from django.db.models import Q
 from django.http import JsonResponse
 from django.utils import timezone
@@ -11,7 +9,7 @@ from rest_framework.views import APIView
 from accounts.models import Account
 from shop.models import TimeDiscount, Product, Bucket, Order, OrderProducts
 from shop.views import get_client_ip
-from shop.views.bucket import BucketListView
+from shop.views.additional_functions import get_discount
 from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer, OrderSerializer
 
 
@@ -112,24 +110,10 @@ class BucketViewSet(viewsets.ModelViewSet):
             created = Bucket.objects.create(ip_address=ip_address, product_id=product_id, shop_id=shop_id,
                                             quantity=quantity)
 
-        self.get_discount(created)
+        get_discount(created)
         serializer = self.get_serializer(created)
 
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
-
-    @staticmethod
-    def get_discount(item) -> None:
-        product = item.product
-        quantity = decimal.Decimal(item.quantity)
-        item.unit_price = product.price * quantity
-
-        if discount := product.discounted_price:
-            item.unit_price = discount * quantity
-
-        if TimeDiscount.objects.filter(product=product).exists():
-            time_discount = TimeDiscount.objects.get(product=product)
-            item.unit_price = time_discount.discounted_price * quantity
-        item.save()
 
     @action(detail=True, methods=['DELETE'])
     def remove_from_cart(self, request, *args, **kwargs):
@@ -188,9 +172,13 @@ class OrderViewSet(viewsets.ModelViewSet):
         order.save()
 
         if account := data.get('account'):
-            order.payer = Account.objects.get(id=account)
+            order.account = Account.objects.get(id=account)
             order.save()
             return JsonResponse(data={'order_id': order.id, 'user_id': account}, status=status.HTTP_201_CREATED)
+        else:
+            ip = get_client_ip(request)
+            order.user_ip = ip
+            order.save()
 
         return JsonResponse(data={'order_id': order.id}, status=status.HTTP_201_CREATED)
 

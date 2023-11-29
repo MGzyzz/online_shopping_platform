@@ -10,7 +10,7 @@ from taggit.models import Tag
 
 from shop.forms import ProductForm, ImagesForm
 from shop.models import Images, Category, Product, Shop, Bucket
-from .get_ip import get_client_ip
+from .additional_functions import get_client_ip
 
 
 class ProductCreateView(PermissionRequiredMixin, CreateView):

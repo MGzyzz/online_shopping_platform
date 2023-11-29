@@ -1,12 +1,10 @@
 from django.db.models import When, Case
 from django.urls import reverse_lazy
-from django.utils import timezone
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView
 
-from accounts.models import User
 from shop.forms import OrderForm
-from shop.models import Bucket, Shop, Order, Product, TimeDiscount, OrderProducts
-from .get_ip import get_client_ip
+from shop.models import Bucket, Shop, Order, Product
+from .additional_functions import get_client_ip, get_discount
 
 
 class BucketListView(CreateView):
@@ -19,10 +17,12 @@ class BucketListView(CreateView):
         self.shop_id = self.kwargs['shop_id']
 
         try:
-            self.bucket_items = Bucket.objects.filter(user=self.user.account, shop_id=self.shop_id)
-        except:
+            self.bucket_items = Bucket.objects.filter(user=self.user.account, shop_id=self.shop_id,
+                                                      product__quantity__gt=0)
+        except Bucket.DoesNotExist:
             ip_address = get_client_ip(self.request)
-            self.bucket_items = Bucket.objects.filter(ip_address=ip_address, shop_id=self.shop_id)
+            self.bucket_items = Bucket.objects.filter(ip_address=ip_address, shop_id=self.shop_id,
+                                                      product__quantity__gt=0)
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -33,8 +33,9 @@ class BucketListView(CreateView):
         order_conditions = [When(id=id_val, then=pos) for pos, id_val in enumerate(bucket_ids, start=1)]
         products = Product.objects.filter(id__in=bucket_ids).order_by(Case(*order_conditions))
 
-        self.check_quantity(self.bucket_items)
         self.get_form_data(context)
+        for item in self.bucket_items:
+            get_discount(item)
 
         context['bucket'] = self.bucket_items
         context['total_price'] = sum(item.unit_price for item in self.bucket_items)
@@ -60,15 +61,22 @@ class BucketListView(CreateView):
         except AttributeError:
             pass
 
-
-
-
-    def check_quantity(self, bucket_items):
-        for item in bucket_items:
-            if item.product.quantity == 0:
-                item.delete()
-
-
-
     def get_success_url(self):
         return reverse_lazy('payment', kwargs={'order_id': self.object.id})
+
+
+class OrderListView(ListView):
+    model = Order
+    template_name = 'orders/orders.html'
+    context_object_name = 'orders'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['shop'] = Shop.objects.get(id=self.kwargs['shop_id'])
+        return context
+
+    def get_queryset(self):
+        try:
+            return Order.objects.filter(shop__id=self.kwargs['shop_id'], account=self.request.user.account)
+        except AttributeError:
+            return Order.objects.filter(shop__id=self.kwargs['shop_id'], user_ip=get_client_ip(self.request))
