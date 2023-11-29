@@ -10,11 +10,11 @@ class Product(models.Model):
     description = models.TextField(max_length=500, null=True, blank=True, verbose_name='Описание')
     vendor_code = models.IntegerField(unique=True, null=False, blank=False, verbose_name='Код Поставщика')
     quantity = models.PositiveIntegerField(default=0, verbose_name='Количество')
-    price = models.PositiveIntegerField(default=0, null=False, blank=False, verbose_name='Цена')
+    price = models.DecimalField(decimal_places=2, max_digits=10, null=False, blank=False, verbose_name='Цена')
     discount = models.PositiveIntegerField(default=0, null=True, blank=True, verbose_name='Скидка')
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, related_name='products',
                                  verbose_name='Категория', null=True)
-    discounted_price = models.PositiveIntegerField(default=0, null=True, blank=True, verbose_name='Цена со скдикой')
+    discounted_price = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True, verbose_name='Цена со скдикой')
     tags = TaggableManager(blank=True, verbose_name='Тэги', related_name='products')
 
     class Meta:

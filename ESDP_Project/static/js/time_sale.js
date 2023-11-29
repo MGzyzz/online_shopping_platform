@@ -7,12 +7,12 @@ let currentDate = now.toISOString().slice(0,16)
 let productId = $('#product').val()
 startDateInp.attr('min', currentDate)
 endDateInp.attr('min', currentDate)
-let addBtn = $('.add-discount')
+let addBtn = $('#add-discount')
 
 checkSale(productId)
 
 addBtn.click(function (){
-    $('#exampleModal').show()
+    $('#discountModal').show()
 })
 
 
@@ -39,8 +39,8 @@ $('#make_sale').click(function () {
             }
 
         }).then(function (){
-            $('#exampleModal').hide()
-            let discountBtn =  $('.add-discount')
+            $('#discountModal').hide()
+            let discountBtn =  $('#add-discount')
             discountBtn.hide()
             $('#delete-btn').show()
             checkTimeDiscountField(product)
@@ -114,7 +114,7 @@ $('#delete_sale').click(function (){
                 }).then(function () {
                     $('#delete_modal').hide()
                     $('#delete-btn').hide()
-                    $('.add-discount').show()
+                    $('#add-discount').show()
                     checkConstantSale(productId)
                 })
             } else {
@@ -181,12 +181,8 @@ function checkStartDiscount(productId){
                     'Authentication': `Token ${token}`
                 }
             }).then(function (data){
-                if (data.started){
-                    return true
-                }
-                else {
-                    return false
-                }
+                return !!data.started;
+
             })
         }
         return false
@@ -194,7 +190,7 @@ function checkStartDiscount(productId){
 }
 
 $('.close-btn').click(function (){
-     $('#exampleModal').hide()
+     $('#discountModal').hide()
     $('#delete_modal').hide()
 })
 
@@ -202,12 +198,12 @@ function checkSale(productId){
     getSaleId(productId).then(function (data) {
         if (data.error){
             $('#delete-btn').hide()
-        $('.add-discount').show()
+        $('#add-discount').show()
         checkConstantSale(productId)
         }
         else {
             $('#delete-btn').show()
-            $('.add-discount').hide()
+            $('#add-discount').hide()
             checkTimeDiscountField(productId)
         }
     })
@@ -216,6 +212,6 @@ function checkSale(productId){
 setInterval(function (){
     let productId = $('#product').val()
     checkSale(productId)
-}, 10000)
+}, 100000)
 
 
