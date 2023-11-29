@@ -14,5 +14,3 @@ def check_expiration():
 
         if now >= end_date:
             discount.delete()
-
-

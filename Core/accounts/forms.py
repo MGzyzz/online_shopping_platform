@@ -22,7 +22,6 @@ class PhoneNumberInput(forms.CharField):
 
 
 class RegisterForm(UserCreationForm):
-
     password1 = forms.CharField(
         strip=False,
         widget=forms.PasswordInput(
@@ -43,7 +42,8 @@ class RegisterForm(UserCreationForm):
         help_text="Enter the same password as before, for verification.",
         label="Повторите пароль",
     )
-    phone = PhoneNumberInput(max_length=12, widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':'+7XXXXXXXXXX '}))
+    phone = PhoneNumberInput(max_length=12,
+                             widget=forms.TextInput(attrs={'class': "form-control", 'placeholder': '+7XXXXXXXXXX '}))
 
     class Meta(UserCreationForm.Meta):
         model = User
