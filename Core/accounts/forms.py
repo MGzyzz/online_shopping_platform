@@ -31,6 +31,7 @@ class RegisterForm(UserCreationForm):
             }
         ),
         help_text=password_validation.password_validators_help_text_html(),
+        label="Пароль",
     )
     password2 = forms.CharField(
         widget=forms.PasswordInput(
@@ -40,6 +41,7 @@ class RegisterForm(UserCreationForm):
         ),
         strip=False,
         help_text="Enter the same password as before, for verification.",
+        label="Повторите пароль",
     )
     phone = PhoneNumberInput(max_length=12, widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':'+7XXXXXXXXXX '}))
 
@@ -99,4 +101,12 @@ class PasswordChangeForm(forms.ModelForm):
         fields = ['password', 'password_confirm', 'old_password']
 
 
-
+class AccountRegisterForm(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = ['city', 'address', 'postal_code']
+        widgets = {
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.TextInput(attrs={'class': 'form-control'}),
+            'postal_code': forms.TextInput(attrs={'class': 'form-control'}),
+        }

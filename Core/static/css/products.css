@@ -19,13 +19,17 @@
     object-fit: cover;
 }
 
-.category-card{
+.category-card {
     width: 20%;
     margin-right: 1.5rem;
 }
 
 .product-info {
     padding: 15px;
+}
+
+.products-row{
+    width: 80%;
 }
 
 @media screen and (width < 1200px) {
@@ -39,17 +43,29 @@
         width: 48%;
         margin: 10px 5px !important;
     }
+
+    .product-price {
+        display: block !important;
+    }
+
+    .product-price p {
+        padding: 0 !important;
+    }
 }
 
 @media screen and (width < 768px) {
 
-    .main{
+    .main {
         display: block !important;
     }
 
-    .category-card{
+    .category-card {
         width: 100%;
         margin-right: 0 !important;
+    }
+
+    .products-row{
+        width: 100%;
     }
 }
 

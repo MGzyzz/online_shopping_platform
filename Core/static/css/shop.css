@@ -67,11 +67,37 @@
     .sale {
         display: none;
     }
+
+    .product-price{
+        display: block !important;
+    }
+
+    .product-price p{
+        padding: 0 !important;
+    }
 }
 
 @media screen and (width < 780px) {
     .product-card {
         width: 100%;
         margin: 10px 0 !important;
+    }
+
+    .hr-lines:after {
+        max-width: 150px;
+    }
+
+    .hr-lines:before {
+        max-width: 150px;
+    }
+}
+
+@media screen and (width < 500px) {
+    .hr-lines:after {
+        display: none;
+    }
+
+    .hr-lines:before {
+        display: none;
     }
 }

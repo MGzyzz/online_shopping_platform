@@ -1,3 +1,5 @@
+import decimal
+
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
@@ -7,7 +9,8 @@ from django.views.generic import CreateView, UpdateView, ListView, DeleteView, D
 from taggit.models import Tag
 
 from shop.forms import ProductForm, ImagesForm
-from shop.models import Images, Category, Product, Shop
+from shop.models import Images, Category, Product, Shop, Bucket
+from .additional_functions import get_client_ip
 
 
 class ProductCreateView(PermissionRequiredMixin, CreateView):
@@ -43,7 +46,7 @@ class ProductCreateView(PermissionRequiredMixin, CreateView):
         if product.discount:
 
             if product.discount > 0:
-                product.discounted_price = product.price - (product.price * (product.discount / 100))
+                product.discounted_price = product.price - (product.price * decimal.Decimal(product.discount / 100))
 
         self.new_category(product)
 
@@ -82,7 +85,7 @@ class ProductListView(ListView):
 
     def dispatch(self, request, *args, **kwargs):
         self.shop = get_object_or_404(Shop, id=self.kwargs['shop_id'])
-        self.products = self.shop.products.all()
+        self.products = self.shop.products.filter(quantity__gt=0)
         return super().dispatch(request, *args, **kwargs)
 
     def get_allow_empty(self):
@@ -100,10 +103,10 @@ class ProductListView(ListView):
                      Q(description__icontains=capitalized_query) |
                      Q(category__name__icontains=capitalized_query) |
                      Q(tags__name__icontains=query))
-            queryset = self.products.filter(query).distinct()
+            queryset = self.products.filter(query, quantity__gt=0).distinct()
             return queryset
         if category_id := self.request.GET.get('category'):
-            return self.shop.products.filter(category_id=category_id)
+            return self.shop.products.filter(category_id=category_id, quantity__gt=0)
         return self.products
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -150,6 +153,7 @@ class EditProduct(PermissionRequiredMixin, UpdateView):
 
         context['form'] = ProductForm(initial=data)
         context['images'] = self.images
+        context['shop'] = self.object.shop
 
         return context
 
@@ -177,12 +181,11 @@ class EditProduct(PermissionRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         product = form.save(commit=False)
-        product.category = form.cleaned_data['category']
 
         if product.discount:
 
             if product.discount > 0:
-                product.discounted_price = product.price - (product.price * (product.discount / 100))
+                product.discounted_price = product.price - (product.price * decimal.Decimal(product.discount / 100))
 
         self.new_category(product)
         product.save()
@@ -229,6 +232,15 @@ class DetailProduct(DetailView):
 
     def dispatch(self, request, *args, **kwargs):
         self.product = self.get_object()
+        self.shop_id = self.product.shop.id
+
+        try:
+            self.bucket_items = Bucket.objects.filter(user=self.request.user.account, shop_id=self.shop_id)
+        except AttributeError:
+            ip_address = get_client_ip(self.request)
+            self.bucket_items = Bucket.objects.filter(ip_address=ip_address, shop_id=self.shop_id)
+
+        self.products = [item.product for item in self.bucket_items]
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -241,6 +253,8 @@ class DetailProduct(DetailView):
             if ',' in attribute.value:
                 parameters[attribute.name] = attribute.value.split(',')
         context['parameters'] = parameters
+
+        context['in_bucket'] = True if self.object in self.products else False
         return context
 
 
@@ -259,7 +273,7 @@ class ShopProductView(PermissionRequiredMixin, ListView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        queryset = self.shop.products.all()
+        queryset = self.shop.products.filter(quantity__gt=0)
         if query := self.request.GET.get('search'):
             capitalized_query = query.capitalize()
             query = (Q(name__icontains=query) |

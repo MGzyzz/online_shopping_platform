@@ -2,6 +2,7 @@ import random
 
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.views.generic import TemplateView, CreateView, UpdateView, ListView, DeleteView
 
 from accounts.forms import LoginForm
@@ -58,21 +59,8 @@ class ShopListView(ListView):
     paginate_by = 5
     extra_context = {
         'form': LoginForm(),
-        "products": Product.objects.all(),
-        'bucket': Bucket.objects.all()
     }
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        bucket_items = Bucket.objects.filter(user=user.id)
-        for item in bucket_items:
-            item.unit_price = item.product.price * item.quantity
-        total_price = sum(item.unit_price for item in bucket_items)
-
-        context['total_price'] = total_price
-
-        return context
 
 
 class ShopDeleteView(PermissionRequiredMixin, DeleteView):
@@ -107,12 +95,12 @@ class ShopMainView(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        products = self.shop.products.all()
+        products = self.shop.products.filter(quantity__gt=0)
         categories = set([products.category for products in products])
         category_product = {}
-
         context['shop'] = self.shop
         context['products'] = products[:3]
+        context['now'] = timezone.now()
 
         for category in categories:
             category_product[category] = products.filter(category=category)[:3]

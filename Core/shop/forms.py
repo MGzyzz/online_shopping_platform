@@ -1,7 +1,7 @@
 from django import forms
 from django.core.validators import FileExtensionValidator
 
-from .models import Shop, Product, Images, Category
+from .models import Shop, Product, Images, Category, Order
 
 
 class ShopModelForm(forms.ModelForm):
@@ -62,3 +62,19 @@ class ImagesForm(forms.ModelForm):
             raise forms.ValidationError({'image': "Максимум 3 изображения"})
 
         return self.cleaned_data
+
+
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['payer_name', 'payer_surname', 'payer_phone', 'payer_email', 'payer_city', 'payer_address',
+                  'payer_postal_code']
+        widgets = {
+            'payer_name': forms.TextInput(attrs={'class': 'form-control', 'required': True,}),
+            'payer_surname': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'payer_phone': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'payer_email': forms.EmailInput(attrs={'class': 'form-control', 'required': True}),
+            'payer_city': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'payer_address': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'payer_postal_code': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+        }

@@ -114,7 +114,7 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'Asia/Almaty'
 
@@ -145,6 +145,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
 }
+
+URL_REKASSA = 'https://api-test.rekassa.kz/api/'
+TOKEN_REKASSA = '494c9dc5-44a0-4825-b17b-f7337ea0c63c'
+
 
 AUTH_USER_MODEL = 'accounts.User'
 
