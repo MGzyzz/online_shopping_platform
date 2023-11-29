@@ -37,7 +37,7 @@
                 <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
                    href="{% url 'orders' shop_id=shop.id %}">Заказы</a>
             </li>
-            {% if not user.account %}
+            {% if not shop in user.account.shops.all %}
                 <li class="nav-item">
                     <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
                        href="{% url 'account_login' shop_id=shop.id %}">Войти</a>

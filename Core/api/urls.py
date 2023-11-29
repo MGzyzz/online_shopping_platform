@@ -14,6 +14,6 @@ urlpatterns = [
    path('', include(router.urls)),
    path('login/', obtain_auth_token),
    path('logout/', LogoutView.as_view()),
-   path('create-check/', Create_check.as_view(), name='create-check'),
+   path('create-check/', CreateCheck.as_view(), name='create-check'),
    path('user/<int:id>', user_detail_api_view),
 ]

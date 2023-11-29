@@ -25,10 +25,14 @@ function order() {
             payer_city,
             payer_postal_code,
             account
-        }
+        },
     }).then(function (data) {
         pay(data['order_id'], parseFloat(total), payer_phone, data['user_id'])
-    })
+    }).catch(
+        function (error) {
+            console.log(error)
+        }
+    )
 }
 
 let pay = function (orderId, total, payer_phone, account) {

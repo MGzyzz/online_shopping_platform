@@ -84,14 +84,14 @@
                 </div>
             {% endfor %}
         {% else %}
-            <h1 class="mt-5">Товары отсутствуют</h1>
+            <h1 class="mt- text-center">Товары отсутствуют</h1>
         {% endif %}
-{#        <div class="row product-card w-100 p-5 mt-3">#}
-{#            {% if shop.description %}#}
-{#                <h2>Интернет-магазин {{ shop.name }}</h2>#}
-{#                <p>{{ shop.description }}</p>#}
-{#            {% endif %}#}
-{#        </div>#}
+        {% if shop.description %}
+            <div class="row product-card w-100 p-5 mt-3">
+                <h2>Интернет-магазин {{ shop.name }}</h2>
+                <p>{{ shop.description }}</p>
+        </div>
+        {% endif %}
     </div>
 </div>
 

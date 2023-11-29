@@ -116,5 +116,5 @@ class BucketSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ["payer", "shop", "products", "total", "date", "payer_name", "payer_surname", "payer_phone",
+        fields = ["account", "user_ip", "shop", "products", "total", "date", "payer_name", "payer_surname", "payer_phone",
                   "payer_email", "payer_city", "payer_address", "payer_postal_code"]

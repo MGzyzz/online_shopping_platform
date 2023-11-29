@@ -1,4 +1,5 @@
 from django.contrib.auth import views, login, get_user_model
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView, TemplateView
@@ -150,7 +151,8 @@ class AccountRegisterView(CreateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        if self.get_form().is_valid() and AccountRegisterForm(request.POST).is_valid():
+        print(self.get_form().errors)
+        if AccountRegisterForm(request.POST).is_valid():
             return self.form_valid(self.get_form())
 
         return render(self.request, self.template_name,
@@ -158,22 +160,27 @@ class AccountRegisterView(CreateView):
 
     def form_valid(self, form):
         email = self.request.POST.get('email')
+        phone = self.request.POST.get('phone')
 
         try:
-            Account.objects.get(user__email=email).exists()
-            account = Account.objects.get(user__email=email)
+            user = User.objects.get(email=email, phone=phone)
+            account = Account.objects.get(user=user)
             account.shops.add(self.shop)
-        except Account.DoesNotExist:
-            account = AccountRegisterForm(self.request.POST).save(commit=False)
-            user = form.save(commit=False)
-            user.save()
-            account.user = user
-            account.save()
-            account.shops.add(self.shop)
+        except User.DoesNotExist:
+            try:
+                user = form.save(commit=False)
+                account = AccountRegisterForm(self.request.POST).save(commit=False)
+                account.user = user
+                account.save()
+                account.shops.add(self.shop)
 
-            login(self.request, account.user)
+                login(self.request, account.user)
+            except ValueError:
+                return render(self.request, self.template_name,
+                              {'form': self.get_form(), 'shop': self.shop, 'account_form': self.account_form})
 
         return HttpResponseRedirect(self.get_success_url())
+
 
     def get_success_url(self):
         return reverse('shop_view', kwargs={'shop_id': self.shop.id})

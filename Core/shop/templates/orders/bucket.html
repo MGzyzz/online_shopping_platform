@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +24,7 @@
         <div>
             <input hidden id="cart-products" value="{{ items }}">
             <input hidden id="shop" value="{{ shop.id }}">
-            <input id="form-total" hidden name="total" value="{{ total_price }}">
+            <input id="form-total" hidden name="total" value="{{ total_price|stringformat:'.2f' }}">
             <input id="user-id" hidden value="{{ user.account.id }}">
 
             {% for product, card_item in products.items %}
@@ -36,7 +35,7 @@
                     <div class="p-2">
                         <a class="link link-dark fs-3"
                            href="{% url 'detail_product' product.id %}">{{ product.name }}</a>
-                        <p>Cумма: <span id="price-{{ product.id }}">{{ card_item.unit_price }}</span> ₸</p>
+                        <p>Cумма: <span id="price-{{ product.id }}">{{ card_item.unit_price|stringformat:'.2f'}}</span> ₸</p>
                         <div class="col-md-5 text-md-right text-right d-flex">
                             <div class="input-group input-spinner">
                                 <div class="input-group-prepend">
@@ -65,7 +64,7 @@
             {% endfor %}
             <div class="d-flex justify-content-between mb-4">
                 <h1>Итого:</h1>
-                <h3 id="total">{{ total_price }}₸</h3>
+                <h3 id="total">{{ total_price|stringformat:'.2f' }}₸</h3>
             </div>
         </div>
         <div class="card mb-4">

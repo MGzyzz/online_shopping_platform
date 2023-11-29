@@ -3,7 +3,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from accounts.models import User, Account
-from shop.models import Order, Bucket
+from shop.models import Order, Bucket, OrderProducts
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -11,13 +11,24 @@ class Pay(View):
     def post(self, request, *args, **kwargs):
         account_id = request.POST.get('AccountId')
         token = request.POST.get('Token')
-        if account_id and token:
+        try:
             account = Account.objects.get(id=account_id)
             account.token = token
             account.save()
+        except Account.DoesNotExist:
+            pass
 
         order_id = request.POST.get('InvoiceId')
         order = Order.objects.get(id=order_id)
+        self.reduce_quantity(order, order.products.all())
+        print(order.products.all())
         order.is_paid = True
         order.save()
         return JsonResponse({'code':0})
+
+    @staticmethod
+    def reduce_quantity(order, products):
+        for product in products:
+            quantity = OrderProducts.objects.get(product=product, order=order).quantity
+            product.quantity -= quantity
+            product.save()

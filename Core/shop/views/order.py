@@ -1,4 +1,4 @@
-from django.db.models import When, Case
+from django.db.models import When, Case, IntegerField
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView
 
@@ -19,7 +19,7 @@ class BucketListView(CreateView):
         try:
             self.bucket_items = Bucket.objects.filter(user=self.user.account, shop_id=self.shop_id,
                                                       product__quantity__gt=0)
-        except Bucket.DoesNotExist:
+        except (Bucket.DoesNotExist, AttributeError):
             ip_address = get_client_ip(self.request)
             self.bucket_items = Bucket.objects.filter(ip_address=ip_address, shop_id=self.shop_id,
                                                       product__quantity__gt=0)
@@ -29,10 +29,14 @@ class BucketListView(CreateView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        bucket_ids = self.bucket_items.values_list('product_id', flat=True)
-        order_conditions = [When(id=id_val, then=pos) for pos, id_val in enumerate(bucket_ids, start=1)]
-        products = Product.objects.filter(id__in=bucket_ids).order_by(Case(*order_conditions))
+        bucket_ids = self.bucket_items.values('product_id')
+        order_conditions = [When(product_id=item['product_id'], then=pos) for pos, item in
+                            enumerate(bucket_ids, start=1)]
+        product_ids = bucket_ids.annotate(
+            item_order=Case(*order_conditions, output_field=IntegerField())
+        ).order_by('item_order').values_list('product_id', flat=True)
 
+        products = Product.objects.filter(id__in=product_ids)
         self.get_form_data(context)
         for item in self.bucket_items:
             get_discount(item)

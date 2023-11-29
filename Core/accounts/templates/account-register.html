@@ -16,6 +16,7 @@
                 <p class="px-3 text-center text-secondary" style="text-wrap: balance">Войдите, чтобы получить доступ к
                     личному кабинету и системе лояльности</p>
             </div>
+        {{ form_valid }}
             <form method="post" class="px-4 pb-4 pt-2">
                 {% csrf_token %}
                 {% for field in form %}

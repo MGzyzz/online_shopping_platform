@@ -12,11 +12,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 
-from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer
-from accounts.models import Account
-from shop.models import TimeDiscount, Product, Bucket, Order, OrderProducts, User
+from accounts.models import Account, User
+from shop.models import TimeDiscount, Product, Bucket, Order, OrderProducts
 from shop.views import get_client_ip
-from shop.views.bucket import BucketListView
 
 from shop.views.additional_functions import get_discount
 from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer, OrderSerializer, OrderIdSerializer
