@@ -10,8 +10,8 @@ from rest_framework.views import APIView
 
 from accounts.models import User
 from shop.models import TimeDiscount, Product, Bucket
-from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer
-
+from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer, ProductXMLSerializer
+from django.http import HttpResponse
 
 class LogoutView(APIView):
 
@@ -171,8 +171,15 @@ class ProductViewSet(viewsets.ModelViewSet):
     lookup_field = 'id'
 
 
-def user_detail_api_view(request, id_, *args, **kwargs):
-    user = User.objects.get(id=id_)
+def product_list_xml(request, id):
+    product = Product.objects.filter(shop_id=id)
+    xml_data = ProductXMLSerializer.to_xml(product, filename='media/price_list.xml')
+
+    return HttpResponse(xml_data, content_type='application/xml')
+
+
+def user_detail_api_view(request, id, *args, **kwargs):
+    user = User.objects.get(id=id)
 
     code = random.randint(1000, 9999)
     data = {'id': user.id, 'phone': user.phone, 'code': code}
