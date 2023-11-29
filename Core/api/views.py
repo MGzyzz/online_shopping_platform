@@ -190,6 +190,7 @@ class OrderViewSet(viewsets.ModelViewSet):
             order.save()
 
         return JsonResponse(data={'order_id': order.id}, status=status.HTTP_201_CREATED)
+
     @staticmethod
     def add_products(products, order):
         for item in products:

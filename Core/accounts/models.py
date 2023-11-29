@@ -55,4 +55,3 @@ class Account(models.Model):
     token = models.CharField(max_length=100, verbose_name='Токен', null=True, blank=True)
     shops = models.ManyToManyField('shop.Shop', related_name='shops', verbose_name='Магазины',
                                    through='shop.AccountShops')
-

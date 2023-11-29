@@ -3,9 +3,6 @@ from datetime import timedelta
 
 from celery import Celery
 from core import settings
-from redis import Redis
-from celery.schedules import crontab
-
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
 app = Celery("core")
