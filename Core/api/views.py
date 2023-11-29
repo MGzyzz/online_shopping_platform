@@ -248,6 +248,15 @@ class CreateCheck(APIView):
                 }
             })
             total_bills += op.quantity * op.price_per_product
+        payments = [
+            {
+                "type": "PAYMENT_CASH",
+                "sum": {
+                    "bills": str(total_bills),
+                    "coins": 0
+                }
+            }
+        ]
 
         now = datetime.datetime.now()
         data = {
@@ -264,6 +273,7 @@ class CreateCheck(APIView):
                     "second": str(now.second).zfill(2)
                 }
             },
+            "payments": payments,
             "items": items,
             "amounts": {
                 "total": {
