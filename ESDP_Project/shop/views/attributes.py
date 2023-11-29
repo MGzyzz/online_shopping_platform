@@ -1,6 +1,5 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.shortcuts import get_object_or_404, render, redirect
-from django.urls import reverse
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import CreateView, UpdateView
 from shop.models import Attributes, Product
 

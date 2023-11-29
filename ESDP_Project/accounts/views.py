@@ -9,7 +9,6 @@ from accounts.models import User, Account
 from shop.models import Shop
 
 
-# Create your views here.
 class LoginView(views.LoginView):
     template_name = 'main.html'
     form_class = LoginForm
