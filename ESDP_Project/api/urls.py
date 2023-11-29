@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import TimeDiscountViewSet, LogoutView, BucketViewSet, ProductViewSet, OrderViewSet
+from .views import TimeDiscountViewSet, LogoutView, BucketViewSet, ProductViewSet, OrderViewSet, Create_check
 from rest_framework.authtoken.views import obtain_auth_token
 
 
@@ -14,4 +14,5 @@ urlpatterns = [
    path('', include(router.urls)),
    path('login/', obtain_auth_token),
    path('logout/', LogoutView.as_view()),
+   path('create-check/', Create_check.as_view(), name='create-check'),
 ]

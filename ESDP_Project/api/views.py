@@ -1,6 +1,10 @@
+import datetime
+import decimal
+
 from django.db.models import Q
 from django.http import JsonResponse
 from django.utils import timezone
+from django.conf import settings
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -9,9 +13,9 @@ from rest_framework.views import APIView
 from accounts.models import Account
 from shop.models import TimeDiscount, Product, Bucket, Order, OrderProducts
 from shop.views import get_client_ip
-from shop.views.additional_functions import get_discount
-from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer, OrderSerializer
-
+from shop.views.bucket import BucketListView
+from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer, OrderSerializer, OrderIdSerializer
+import requests
 
 class LogoutView(APIView):
 
@@ -110,10 +114,24 @@ class BucketViewSet(viewsets.ModelViewSet):
             created = Bucket.objects.create(ip_address=ip_address, product_id=product_id, shop_id=shop_id,
                                             quantity=quantity)
 
-        get_discount(created)
+        self.get_discount(created)
         serializer = self.get_serializer(created)
 
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+
+    @staticmethod
+    def get_discount(item) -> None:
+        product = item.product
+        quantity = decimal.Decimal(item.quantity)
+        item.unit_price = product.price * quantity
+
+        if discount := product.discounted_price:
+            item.unit_price = discount * quantity
+
+        if TimeDiscount.objects.filter(product=product).exists():
+            time_discount = TimeDiscount.objects.get(product=product)
+            item.unit_price = time_discount.discounted_price * quantity
+        item.save()
 
     @action(detail=True, methods=['DELETE'])
     def remove_from_cart(self, request, *args, **kwargs):
@@ -172,13 +190,9 @@ class OrderViewSet(viewsets.ModelViewSet):
         order.save()
 
         if account := data.get('account'):
-            order.account = Account.objects.get(id=account)
+            order.payer = Account.objects.get(id=account)
             order.save()
             return JsonResponse(data={'order_id': order.id, 'user_id': account}, status=status.HTTP_201_CREATED)
-        else:
-            ip = get_client_ip(request)
-            order.user_ip = ip
-            order.save()
 
         return JsonResponse(data={'order_id': order.id}, status=status.HTTP_201_CREATED)
 
@@ -192,3 +206,133 @@ class OrderViewSet(viewsets.ModelViewSet):
                 price_per_product=item.unit_price,
             )
             item.delete()
+
+
+class Create_check(APIView):
+    def get_api_token(self):
+        url = settings.URL_REKASSA + 'auth/login'
+        api_key = settings.TOKEN_REKASSA
+        data = {
+            "number": "BHUM2VQS-QA1",
+            "password": "AzYKbddpL*5c2ocLaKK0hjBzaqz*AwAP"
+        }
+        try:
+            response = requests.post(url, params={'apiKey': api_key}, json=data)
+            response.raise_for_status()
+
+            return response.text
+        except requests.RequestException as e:
+            raise ValueError(f"Error getting API token: {e}")
+
+
+    def register_ticket(self, api_token, order_products):
+        url = settings.URL_REKASSA + 'crs/1316/tickets'
+        items= []
+        total_bills = 0
+        for op in order_products:
+            product = op.product
+            product_price = product.price if product.discount == 0 else product.discounted_price
+            items.append({
+                "type": "ITEM_TYPE_COMMODITY",
+                "commodity": {
+                    "name": product.name,
+                    "sectionCode": str(product.category_id),
+                    "quantity": op.quantity,
+                    "price": {
+                        "bills": str(product_price),
+                        "coins": 0
+                    },
+                    "sum": {
+                        "bills": str(op.quantity * product_price),
+                        "coins": 0
+                    },
+                    "auxiliary": [
+                        {
+                            "key": "UNIT_TYPE",
+                            "value": "PIECE"
+                        }
+                    ]
+                }
+            })
+            total_bills += op.quantity * op.price_per_product
+
+        now = datetime.datetime.now()
+        data = {
+            "operation": "OPERATION_SELL",
+            "dateTime": {
+                "date": {
+                    "year": str(now.year),
+                    "month": str(now.month).zfill(2),
+                    "day": str(now.day).zfill(2)
+                },
+                "time": {
+                    "hour": str(now.hour).zfill(2),
+                    "minute": str(now.minute).zfill(2),
+                    "second": str(now.second).zfill(2)
+                }
+            },
+            "items": items,
+            "amounts": {
+                "total": {
+                    "bills": str(total_bills),
+                    "coins": 0
+                },
+                "taken": {
+                    "bills": str(total_bills),
+                    "coins": 0
+                },
+                "change": {
+                    "bills": "0",
+                    "coins": 0
+                }
+            }
+        }
+        headers = {
+            'Authorization': f'Bearer {api_token}'
+        }
+        print(data)
+        try:
+            response = requests.post(url, json=data, headers=headers)
+            print(response)
+            response.raise_for_status()
+
+            return response.json().get('id')
+        except requests.RequestException as e:
+            raise ValueError(f"Error registering ticket: {e}")
+
+    def download_receipt(self, api_token, ticket_id):
+        url = settings.URL_REKASSA + f"crs/1316/tickets/{ticket_id}/receipts"
+        data = {
+            'type': 'DOWNLOAD'
+        }
+        headers = {
+            'Authorization': f'Bearer {api_token}'
+        }
+
+        try:
+            response = requests.post(url, json=data, headers=headers)
+            response.raise_for_status()
+            return response.json()
+        except requests.RequestException as e:
+            raise ValueError(f"Error downloading receipt: {e}")
+
+    def post(self, request, *args, **kwargs):
+        serializer = OrderIdSerializer(data=request.data)
+        try:
+            if serializer.is_valid():
+                order_id = serializer.validated_data.get('order_id')
+                try:
+                    order_products = OrderProducts.objects.filter(order_id=order_id)
+                except Order.DoesNotExist:
+                    return Response({'error': 'Заказ не найден'}, status=status.HTTP_404_NOT_FOUND)
+
+                api_token = self.get_api_token()
+                print(api_token)
+                ticket_id = self.register_ticket(api_token, order_products)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            receipt_data = self.download_receipt(api_token, ticket_id)
+            return Response(receipt_data)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
