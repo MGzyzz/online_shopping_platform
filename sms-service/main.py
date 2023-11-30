@@ -8,7 +8,6 @@ from adapters import SMSAdapter
 import httpx
 from fastapi.middleware.cors import CORSMiddleware
 
-
 app = fastapi.FastAPI()
 
 origins = ['http://localhost']
@@ -23,7 +22,6 @@ app.add_middleware(
 
 @app.post('/sms/send/{id_}')
 async def send_sms(id_: int):
-
     response = httpx.get(f'{os.environ.get("CORE_URL")}/api/user/{id_}')
 
     try:
@@ -42,4 +40,4 @@ async def send_sms(id_: int):
 if __name__ == '__main__':
     import uvicorn
 
-    uvicorn.run('main:app',  host='0.0.0.0', port=1026, reload=True)
+    uvicorn.run('main:app', host='0.0.0.0', port=1026, reload=True)
