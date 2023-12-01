@@ -20,15 +20,8 @@ class Pay(View):
 
         order_id = request.POST.get('InvoiceId')
         order = Order.objects.get(id=order_id)
-        self.reduce_quantity(order, order.products.all())
-        print(order.products.all())
         order.is_paid = True
         order.save()
         return JsonResponse({'code':0})
 
-    @staticmethod
-    def reduce_quantity(order, products):
-        for product in products:
-            quantity = OrderProducts.objects.get(product=product, order=order).quantity
-            product.quantity -= quantity
-            product.save()
+

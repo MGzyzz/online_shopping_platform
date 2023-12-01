@@ -26,7 +26,6 @@
             <input hidden id="shop" value="{{ shop.id }}">
             <input id="form-total" hidden name="total" value="{{ total_price|stringformat:'.2f' }}">
             <input id="user-id" hidden value="{{ user.account.id }}">
-
             {% for product, card_item in products.items %}
                 <form method="post" class="d-flex flex-row card my-1">
                     <div>
@@ -59,6 +58,7 @@
                                 <i
                                         class="fa fa-trash"></i></a>
                         </div>
+                        <p id="quantity-{{ card_item.id }}-error"></p>
                     </div>
                 </form>
             {% endfor %}

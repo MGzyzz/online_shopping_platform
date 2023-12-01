@@ -85,35 +85,41 @@ toCartUser()
 toCart()
 
 function updateQuantity(itemId, newQuantity) {
-    $.ajax({
-        url: `http://localhost:8000/api/bucket/${itemId}/update_quantity/`,
-        method: 'PUT',
-        data: {
-            id: itemId,
-            new_quantity: newQuantity
-        },
-        dataType: 'json',
-        success: function (response) {
-            if (response.success) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: `http://localhost:8000/api/bucket/${itemId}/update_quantity/`,
+            method: 'PUT',
+            data: {
+                id: itemId,
+                new_quantity: newQuantity
+            },
+            dataType: 'json',
+            success: function (response) {
                 console.log('Quantity updated successfully')
                 console.log(response)
-                parseInt($('#price-'+ response.product_id ).text(response.unit_price))
-                $('#total').text(response.total_price+'₸')
+                parseInt($('#price-' + response.product_id).text(response.unit_price))
+                $('#total').text(response.total_price + '₸')
                 $('#form-total').val(response.total_price)
+                resolve()
+            },
+            error: function (response) {
+                console.log('Error Quantity update', response.error)
+                reject()
             }
-        },
-        error: function (response) {
-            console.log('Error Quantity update', response.error)
-        }
+        })
     })
 }
 
 function incrementQuantity(itemId) {
     let quantityInput = $('#quantity-' + itemId)
     let newQuantity = parseInt(quantityInput.val()) + 1
-    quantityInput.val(newQuantity)
-
     updateQuantity(itemId, newQuantity)
+        .then(function () {
+            quantityInput.val(newQuantity)
+        })
+        .catch(function () {
+            $('#quantity-' + itemId + '-error').text('Нельзя добавить больше товара ')
+        })
 }
 
 function decrementQuantity(itemId) {

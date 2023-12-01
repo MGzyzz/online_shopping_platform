@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import When, Case, IntegerField
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView
@@ -17,26 +18,16 @@ class BucketListView(CreateView):
         self.shop_id = self.kwargs['shop_id']
 
         try:
-            self.bucket_items = Bucket.objects.filter(user=self.user.account, shop_id=self.shop_id,
-                                                      product__quantity__gt=0)
+            self.bucket_items = Bucket.objects.filter(user=self.user.account, shop_id=self.shop_id)
         except (Bucket.DoesNotExist, AttributeError):
             ip_address = get_client_ip(self.request)
-            self.bucket_items = Bucket.objects.filter(ip_address=ip_address, shop_id=self.shop_id,
-                                                      product__quantity__gt=0)
+            self.bucket_items = Bucket.objects.filter(ip_address=ip_address, shop_id=self.shop_id)
 
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        bucket_ids = self.bucket_items.values('product_id')
-        order_conditions = [When(product_id=item['product_id'], then=pos) for pos, item in
-                            enumerate(bucket_ids, start=1)]
-        product_ids = bucket_ids.annotate(
-            item_order=Case(*order_conditions, output_field=IntegerField())
-        ).order_by('item_order').values_list('product_id', flat=True)
-
-        products = Product.objects.filter(id__in=product_ids)
         self.get_form_data(context)
         for item in self.bucket_items:
             get_discount(item)
@@ -44,7 +35,7 @@ class BucketListView(CreateView):
         context['bucket'] = self.bucket_items
         context['total_price'] = sum(item.unit_price for item in self.bucket_items)
         context['shop'] = Shop.objects.get(id=self.shop_id)
-        context['products'] = dict(zip(products, self.bucket_items))
+        context['products'] = {item.product: item for item in self.bucket_items}
         context['items'] = ', '.join(str(item.id) for item in self.bucket_items)
 
         return context
@@ -84,3 +75,24 @@ class OrderListView(ListView):
             return Order.objects.filter(shop__id=self.kwargs['shop_id'], account=self.request.user.account)
         except AttributeError:
             return Order.objects.filter(shop__id=self.kwargs['shop_id'], user_ip=get_client_ip(self.request))
+
+
+class ShopOrderListView(ListView, PermissionRequiredMixin):
+    model = Order
+    template_name = 'profile/shop_orders.html'
+    context_object_name = 'orders'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.shop = Shop.objects.get(id=self.kwargs['id'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def has_permission(self):
+        return self.request.user == self.shop.user
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['shop'] = self.shop
+        return context
+
+    def get_queryset(self):
+        return Order.objects.filter(shop__id=self.shop.id)

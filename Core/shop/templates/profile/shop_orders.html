@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    {% include 'partial/shop_nav.html' %}
+
+    <div class="container my-3">
+        {% for order in orders %}
+            <div class="card border-0" style="border-radius: 10px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);;">
+                <div class="card-header border-0">
+                    <h4>Заказ №{{ order.id }}. {{ order.date|date:'F d' }} </h4>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5>{{ order.total }} ₸</h5>
+                            <h5 class="card-title">{% if order.is_paid %}Оплачен{% else %}Не оплачен{% endif %}</h5>
+                            <a class="btn" href="#">Детальный просмотр</a>
+                        </div>
+                        <div>
+                            {% for product in order.products.all %}
+                                <a class="me-2" href="{% url 'detail_product' id=product.id %}">
+                                    <img style="object-fit: cover" height="100" width="100"
+                                         src="{{ product.images.first.image.url }}" alt="Товар">
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
