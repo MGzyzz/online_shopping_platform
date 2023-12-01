@@ -273,7 +273,7 @@ class ShopProductView(PermissionRequiredMixin, ListView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        queryset = self.shop.products.filter(quantity__gt=0)
+        queryset = self.shop.products.all()
         if query := self.request.GET.get('search'):
             capitalized_query = query.capitalize()
             query = (Q(name__icontains=query) |

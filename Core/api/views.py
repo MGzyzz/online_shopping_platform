@@ -119,12 +119,19 @@ class BucketViewSet(viewsets.ModelViewSet):
                                             quantity=quantity)
 
         get_discount(created)
+        product = Product.objects.get(id=product_id)
+        product.quantity -= int(quantity)
+        product.save()
         serializer = self.get_serializer(created)
 
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['DELETE'])
     def remove_from_cart(self, request, *args, **kwargs):
+        item_id = self.kwargs.get('pk')
+        item = Bucket.objects.get(id=item_id)
+        item.product.quantity += item.quantity
+        item.product.save()
         return self.destroy(request, *args, **kwargs)
 
     @action(detail=True, methods=['PUT'])
@@ -133,9 +140,13 @@ class BucketViewSet(viewsets.ModelViewSet):
             item_id = self.kwargs.get('pk')
             new_quantity = int(request.data.get('new_quantity'))
             item = Bucket.objects.get(id=item_id)
+            if new_quantity > item.product.quantity:
+                return JsonResponse({'success': False, 'error': 'Not enough quantity in stock'}, status=status.HTTP_400_BAD_REQUEST)
             item.unit_price = (item.unit_price / item.quantity) * new_quantity
+            item.product.quantity -= new_quantity - item.quantity
             item.quantity = new_quantity
             item.save()
+            item.product.save()
 
             bucket_all = Bucket.objects.filter(Q(ip_address=item.ip_address)) or Bucket.objects.filter(
                 Q(user_id=item.user))
