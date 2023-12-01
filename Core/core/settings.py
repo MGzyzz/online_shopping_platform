@@ -26,7 +26,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'django-app', '25cc-91-205-188-160.ngrok-free.app']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -148,7 +147,6 @@ REST_FRAMEWORK = {
 
 URL_REKASSA = 'https://api-test.rekassa.kz/api/'
 TOKEN_REKASSA = '494c9dc5-44a0-4825-b17b-f7337ea0c63c'
-
 
 AUTH_USER_MODEL = 'accounts.User'
 
