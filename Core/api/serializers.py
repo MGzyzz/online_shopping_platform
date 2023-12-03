@@ -140,6 +140,7 @@ class ProductXMLSerializer(serializers.ModelSerializer):
 
         xml_data = ET.tostring(root, encoding='utf-8').decode()
         tree = ET.ElementTree(root)
+
         with open(filename, 'wb') as file:
             tree.write(file, encoding='utf-8', xml_declaration=True)
 
