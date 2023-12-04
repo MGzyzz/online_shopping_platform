@@ -13,6 +13,7 @@ from shop.models import TimeDiscount, Product, Bucket
 from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer, ProductXMLSerializer
 from django.http import HttpResponse
 
+
 class LogoutView(APIView):
 
     def post(self, request, *args, **kwargs):

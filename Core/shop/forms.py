@@ -1,7 +1,8 @@
 from django import forms
+from django.contrib.auth import get_user_model
 from django.core.validators import FileExtensionValidator
 
-from .models import Shop, Product, Images, Category
+from .models import Shop, Product, Images, Category, PartnerProduct, City, PartnerCityShop, PartnerShop
 
 
 class ShopModelForm(forms.ModelForm):
@@ -62,3 +63,50 @@ class ImagesForm(forms.ModelForm):
             raise forms.ValidationError({'image': "Максимум 3 изображения"})
 
         return self.cleaned_data
+
+
+class ProductKaspiForm(forms.ModelForm):
+    products = forms.ModelMultipleChoiceField(
+        queryset=Product.objects.none(),
+        widget=forms.CheckboxSelectMultiple(attrs={'class': ''}),
+    )
+
+    city = forms.ModelMultipleChoiceField(
+        queryset=City.objects.all(),
+        widget=forms.CheckboxSelectMultiple(attrs={'class': ''}),
+    )
+
+    class Meta:
+        model = PartnerShop
+        fields = ['partner_id']
+        widgets = {
+            'partner_id': forms.TextInput(attrs={'class': 'form-control'})
+        }
+
+    def __init__(self, *args, **kwargs):
+        shop_id = kwargs.pop('shop_id', None)
+        self.shop_id = shop_id
+
+        super().__init__(*args, **kwargs)
+
+        if shop_id:
+            self.fields['products'].queryset = Product.objects.filter(shop_id=shop_id)
+
+    def save(self, commit=True):
+        partner_shop = PartnerShop.objects.get_or_create(
+            shop_id=self.shop_id,
+            partner_id=self.cleaned_data['partner_id']
+        )
+
+        for product in self.cleaned_data['products']:
+            partner_product = PartnerProduct.objects.get_or_create(
+                product=product,
+                partner_shop=partner_shop[0]
+            )
+
+            for city in self.cleaned_data['city']:
+                PartnerCityShop.objects.get_or_create(
+                        city=city,
+                        partner_product=partner_product[0]
+                    )
+        return PartnerShop
