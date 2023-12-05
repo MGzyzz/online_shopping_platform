@@ -241,7 +241,7 @@ class CreateCheck(APIView):
                 "commodity": {
                     "name": product.name,
                     "sectionCode": str(product.category_id),
-                    "quantity": op.quantity,
+                    "quantity": op.quantity * 1000,
                     "price": {
                         "bills": str(product_price),
                         "coins": 0
@@ -258,7 +258,7 @@ class CreateCheck(APIView):
                     ]
                 }
             })
-            total_bills += op.quantity * op.price_per_product
+            total_bills += op.quantity * product_price
         payments = [
             {
                 "type": "PAYMENT_CASH",
