@@ -19,8 +19,8 @@ app.add_middleware(
 )
 
 
-@app.post('/generate_xml', response_class=StreamingResponse)
-async def generate_xml_endpoint(product_data: Offers):
+@app.post('/kaspi/{partner_id}Kaspi.xml', response_class=StreamingResponse)
+async def generate_xml_endpoint(partner_id, product_data: Offers):
     xml_data = await generate_xml(product_data)
     return StreamingResponse(io.StringIO(xml_data), media_type='application/xml')
 
