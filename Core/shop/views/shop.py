@@ -1,16 +1,12 @@
-import random
-
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from django.views.generic import TemplateView, CreateView, UpdateView, ListView, DeleteView
+from django.views.generic import CreateView, UpdateView, ListView, DeleteView
 
 from accounts.forms import LoginForm
 from shop.forms import ShopModelForm
-from shop.models import Shop, Product, Bucket
+from shop.models import Shop, Product
 from django.urls import reverse_lazy
-
-from shop.models.bucket import Bucket
 
 
 class ShopCreateView(LoginRequiredMixin, CreateView):
@@ -60,7 +56,6 @@ class ShopListView(ListView):
     extra_context = {
         'form': LoginForm(),
     }
-
 
 
 class ShopDeleteView(PermissionRequiredMixin, DeleteView):

@@ -1,10 +1,10 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.db.models import When, Case, IntegerField
+from django.db.models import When, Case, IntegerField, Q
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, DetailView
 
 from shop.forms import OrderForm
-from shop.models import Bucket, Shop, Order, Product
+from shop.models import Bucket, Shop, Order, Product, OrderProducts
 from .additional_functions import get_client_ip, get_discount
 
 
@@ -95,4 +95,20 @@ class ShopOrderListView(ListView, PermissionRequiredMixin):
         return context
 
     def get_queryset(self):
-        return Order.objects.filter(shop__id=self.shop.id)
+        queryset = Order.objects.filter(shop__id=self.shop.id)
+
+        if query := self.request.GET.get('search'):
+            queryset = queryset.filter(id__icontains=query)
+        return queryset
+
+
+class OrderDetailView(DetailView):
+    model = Order
+    pk_url_kwarg = 'order_id'
+    template_name = 'profile/detail_shop_order.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['shop'] = Shop.objects.get(id=self.kwargs['id'])
+        context['orders'] = OrderProducts.objects.filter(order_id=self.kwargs['order_id'])
+        return context

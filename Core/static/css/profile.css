@@ -7,9 +7,6 @@
 }
 
 @media screen and (width < 1200px){
-    .main-card-btn{
-        display: block !important;
-    }
     .main-card-btn a{
         width: 100% !important;
         margin: 0.4rem 0 !important;
