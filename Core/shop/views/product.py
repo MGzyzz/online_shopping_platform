@@ -338,7 +338,8 @@ class ProductKaspiView(View):
             form.save()
 
             data = {
-                'offers': []
+                'offers': [],
+                'partner_id': form.cleaned_data['partner_id']
             }
 
             for product in form.cleaned_data['products']:

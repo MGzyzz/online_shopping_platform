@@ -3,7 +3,7 @@ import io
 import fastapi
 from starlette.responses import StreamingResponse
 
-from xml_generate import Offers, generate_xml, PartnerId
+from xml_generate import Offers, generate_xml
 from fastapi.middleware.cors import CORSMiddleware
 
 

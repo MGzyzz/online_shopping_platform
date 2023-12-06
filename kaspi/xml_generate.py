@@ -15,9 +15,6 @@ class Product(BaseModel):
 
 class Offers(BaseModel):
     offers: List[Product]
-
-
-class PartnerId(BaseModel):
     partner_id: int
 
 
