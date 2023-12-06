@@ -7,5 +7,4 @@ from .attributes import Attributes
 from .bucket import Bucket
 from .city import City
 from .partner_shop import PartnerShop
-from .partner_city_shop import PartnerCityShop
 from .partner_product import PartnerProduct

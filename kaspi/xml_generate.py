@@ -10,10 +10,15 @@ class Product(BaseModel):
     price: int
     quantity: int
     name: str
+    city_code: int
 
 
 class Offers(BaseModel):
     offers: List[Product]
+
+
+class PartnerId(BaseModel):
+    partner_id: int
 
 
 async def generate_xml(product_data: Offers):

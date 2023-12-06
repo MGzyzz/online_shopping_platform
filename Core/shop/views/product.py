@@ -8,8 +8,9 @@ from django.views.generic import CreateView, UpdateView, ListView, DeleteView, D
 from taggit.models import Tag
 
 from shop.forms import ProductForm, ImagesForm, ProductKaspiForm
-from shop.models import Images, Category, Product, Shop, City
-
+from shop.models import Images, Category, Product, Shop, City, PartnerShop
+import httpx
+from django.http import HttpResponse
 
 class ProductCreateView(PermissionRequiredMixin, CreateView):
     model = Product
@@ -282,7 +283,7 @@ class ShopProductView(PermissionRequiredMixin, ListView):
 
 class ProductKaspiView(View):
     template_name = 'product/product_kaspi.html'
-
+    KASPI_XML_URL = 'http://kaspixml:5050/generate_xml'
     CITY_CHOICES = [(471010000, 'Актау'), (151010000, 'Актобе'), (750000000, 'Алматы'), (511610000, 'Арысь'),
                     (710000000, 'Астана'), (231010000, 'Атырау'), (351810000, 'Жезказган'),
                     (351010000, 'Караганда'),
@@ -318,7 +319,15 @@ class ProductKaspiView(View):
             City.objects.get_or_create(city_code=code, name=name)
 
         shop = Shop.objects.get(id=shop_id)
-        form = ProductKaspiForm(shop_id=shop_id)
+
+        try:
+            partner_shop = PartnerShop.objects.get(shop_id=shop_id)
+            partner_id = partner_shop.partner_id
+
+        except PartnerShop.DoesNotExist:
+            partner_id = None
+
+        form = ProductKaspiForm(shop_id=shop_id, initial_partner_id=partner_id)
 
         return render(request, self.template_name, {'form': form, 'shop': shop})
 
@@ -328,6 +337,33 @@ class ProductKaspiView(View):
         if form.is_valid():
             form.save()
 
-            return redirect('home')
+            data = {
+                'offers': []
+            }
+
+            for product in form.cleaned_data['products']:
+                some_product = {
+                    'id': product.id,
+                    'shop_id': product.shop.id,
+                    'price': int(product.price),
+                    'quantity': product.quantity,
+                    'name': product.name,
+                    'city_code': form.cleaned_data['city'].city_code
+                    }
+
+                data['offers'].append(some_product)
+
+            try:
+                headers = {"Content-Type": "application/json"}
+                response = httpx.post(self.KASPI_XML_URL, json=data, headers=headers)
+
+                if response.status_code == 200:
+                    return redirect('home')
+
+                else:
+                    return HttpResponse(f'Error')
+
+            except Exception as e:
+                return HttpResponse(f'{e}')
 
         return render(request, self.template_name, {'form': form})

@@ -3,10 +3,20 @@ import io
 import fastapi
 from starlette.responses import StreamingResponse
 
-from xml_generate import Offers, generate_xml
+from xml_generate import Offers, generate_xml, PartnerId
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = fastapi.FastAPI()
+
+origins = ['http://localhost']
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
 
 
 @app.post('/generate_xml', response_class=StreamingResponse)
