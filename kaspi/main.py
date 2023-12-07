@@ -2,7 +2,6 @@ import io
 
 import fastapi
 from starlette.responses import StreamingResponse
-
 from xml_generate import Offers, generate_xml
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -20,10 +19,10 @@ app.add_middleware(
 
 
 @app.post('/kaspi/{partner_id}Kaspi.xml', response_class=StreamingResponse)
-async def generate_xml_endpoint(partner_id, product_data: Offers):
+async def generate_xml_endpoint(product_data: Offers, partner_id):
     xml_data = await generate_xml(product_data)
+    print(xml_data)
     return StreamingResponse(io.StringIO(xml_data), media_type='application/xml')
-
 
 if __name__ == '__main__':
     import uvicorn

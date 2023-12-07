@@ -19,7 +19,6 @@ class Offers(BaseModel):
 
 
 async def generate_xml(product_data: Offers):
-
     root = et.Element('kaspi_catalog', date='string', xmlns='kaspiShopping',)
     root.set('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
     root.set('xsi:schemaLocation', 'kaspiShopping http://kaspi.kz/kaspishopping.xsd')
@@ -34,7 +33,11 @@ async def generate_xml(product_data: Offers):
         model = et.SubElement(offer, 'model')
         model.text = product.name
         availabilities = et.SubElement(offer, 'availabilities')
-        availability = et.SubElement(availabilities, 'availability', available='yes', storeID=str(product.shop_id))
+        if product.quantity > 0:
+            available = 'yes'
+        else:
+            available = 'no'
+        availability = et.SubElement(availabilities, 'availability', available=available, storeID=str(product.shop_id))
         cityprices = et.SubElement(offer, 'cityprices')
         cityprice = et.SubElement(cityprices, 'cityprice', cityID='id')
         cityprice.text = product.price
