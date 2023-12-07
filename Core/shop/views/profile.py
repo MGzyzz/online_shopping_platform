@@ -20,7 +20,7 @@ def get_statistics(shops, period, time_period):
             income = [queryset.filter(date__year=year).aggregate(income=Sum('total'))['income'] for year in time_period]
         case 'month':
             orders = [queryset.filter(date__month=month).count() for month in time_period]
-            income = [queryset.filter(date__year=month).aggregate(income=Sum('total'))['income'] for month in
+            income = [queryset.filter(date__month=month).aggregate(income=Sum('total'))['income'] for month in
                       time_period]
         case 'day':
             orders = [queryset.filter(date=day).count() for day in time_period]
@@ -70,7 +70,7 @@ class Profile(PermissionRequiredMixin, DetailView):
         months = [12 + month - i if month - i < 1 else month - i for i in range(3, -1, -1)]
 
         context['shops'] = self.shops
-        context['statistics'] = get_statistics(shops=self.shops, now_months=months)
+        context['statistics'] = get_statistics(shops=self.shops, period='month', time_period=months)
         return context
 
 
@@ -95,9 +95,9 @@ class Statistic(PermissionRequiredMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         start = datetime.strptime(self.request.GET.get('start_date'), '%Y-%m-%d') if self.request.GET.get(
-            'start_date') else datetime.utcnow()
+            'start_date') else timezone.now()
         end = datetime.strptime(self.request.GET.get('end_date'), '%Y-%m-%d') if self.request.GET.get(
-            'end_date') else datetime.utcnow()
+            'end_date') else timezone.now()
         self.period = self.request.GET.get('PeriodRadios')
 
         self.stat_shops = self.shops if self.request.GET.get('shopRadios') == 'all' else Shop.objects.filter(
