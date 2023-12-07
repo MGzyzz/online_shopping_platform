@@ -7,6 +7,8 @@ from accounts.forms import RegisterForm, LoginForm, UserUpdateForm, PasswordChan
 from accounts.models import User
 from django.http import HttpResponse
 
+from shop.models import Shop
+
 
 class LoginView(views.LoginView):
     template_name = 'main.html'
@@ -17,7 +19,7 @@ class LoginView(views.LoginView):
 
     def form_invalid(self, form):
         self.request.session['dropdown'] = 'show'
-        return render(self.request, 'main.html', {'form': form})
+        return render(self.request, 'main.html', {'form': form, "shops": Shop.objects.all()})
 
 
 class Logout(views.LogoutView):

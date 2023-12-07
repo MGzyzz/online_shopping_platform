@@ -1,2 +1,2 @@
 <?xml version='1.0' encoding='utf-8'?>
-<kaspi_catalog date="string" xmlns="kaspiShopping"><company>test<merchantid>1</merchantid><offers><offer sku="2"><model>TEST2</model><price>70000</price><quantity>50</quantity></offer><offer sku="1"><model>New</model><price>200000</price><quantity>90</quantity></offer></offers></company></kaspi_catalog>
+<kaspi_catalog date="string" xmlns="kaspiShopping"><company>New<merchantid>1</merchantid><offers><offer sku="1"><model>test</model><price>1500.00</price><quantity>10</quantity></offer></offers></company></kaspi_catalog>

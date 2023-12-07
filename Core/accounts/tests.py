@@ -1,34 +1,39 @@
 from django.test import TestCase
-from selenium.webdriver import Chrome
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from django.urls import reverse
+
+from .models import User
 
 
 class LoginTestCase(TestCase):
     def setUp(self):
-        self.driver = Chrome()
+        self.username = 'username@gmail.com'
+        self.password = '123123'
+        self.user = User.objects.create_user(email=self.username, password=self.password, phone='77054779047')
 
-    def tearDown(self):
-        self.driver.close()
+        self.login_url = reverse('login')
 
-    def test_log_in_as_admin(self):
-        self.get_url('http://localhost:8000/')
-        element = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.CLASS_NAME, "ml-3"))
-        )
-        element.click()
-        self.fill_input_by_name('username', 'admin@gmail.com')
-        self.fill_input_by_name('password', '123')
-        self.click_button()
+    def test_user_login(self):
+        data = {'username': self.username, 'password': self.password}
 
-    def get_url(self, url):
-        self.driver.get(url)
+        response = self.client.post(self.login_url, data)
 
-    def click_button(self):
-        button = self.driver.find_element(value='button')
-        button.click()
+        self.assertRedirects(response, reverse('home'))
 
-    def fill_input_by_name(self, name, text):
-        input_element = self.driver.find_element(by=By.NAME, value=name)
-        input_element.send_keys(text)
+    def test_user_login_fail(self):
+        data = {'username': self.username, 'password': 'wrongpass'}
+
+        response = self.client.post(self.login_url, data)
+
+        self.assertContains(response, 'Please enter a correct Email and password. Note that both fields may be case-sensitive.')
+
+
+class RegistrationTestCase(TestCase):
+    def setUp(self):
+        self.registration_url = 'register'
+
+    def test_registration_success(self):
+        data = {'first_name': 'John', 'last_name': 'Doe', 'phone': '77054779047', 'email': 'johndoe@gmail.com', 'password1': '123', 'password2': '123'}
+
+
+
+
