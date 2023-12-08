@@ -1,4 +1,4 @@
-from django.views.generic import ListView, DeleteView
+from django.views.generic import ListView
 
 from shop.models import Bucket, Shop, Product
 

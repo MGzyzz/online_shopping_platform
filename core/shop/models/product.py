@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import TextChoices
 from shop.models import Shop
 from taggit.managers import TaggableManager
 

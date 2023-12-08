@@ -1,8 +1,6 @@
-import random
-
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView, CreateView, UpdateView, ListView, DeleteView
+from django.views.generic import CreateView, UpdateView, ListView, DeleteView
 
 from accounts.forms import LoginForm
 from shop.forms import ShopModelForm

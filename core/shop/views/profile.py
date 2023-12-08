@@ -1,5 +1,4 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.urls import reverse
 from django.views.generic import DetailView
 from accounts.models import User
 from shop.models import *

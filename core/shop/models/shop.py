@@ -1,6 +1,5 @@
 from django.db import models
 from django.db.models import TextChoices
-from django.template.context_processors import media
 
 from core import settings
 from taggit.managers import TaggableManager
