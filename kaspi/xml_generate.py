@@ -24,7 +24,7 @@ async def generate_xml(product_data: Offers):
     root.set('xsi:schemaLocation', 'kaspiShopping http://kaspi.kz/kaspishopping.xsd')
     company = et.SubElement(root, 'company')
     merchantid = et.SubElement(company, 'merchantid')
-    merchantid.text = 'merchantid'
+    merchantid.text = str(product_data.partner_id)
 
     offers = et.SubElement(company, 'offers')
 
@@ -40,7 +40,7 @@ async def generate_xml(product_data: Offers):
         availability = et.SubElement(availabilities, 'availability', available=available, storeID=str(product.shop_id))
         cityprices = et.SubElement(offer, 'cityprices')
         cityprice = et.SubElement(cityprices, 'cityprice', cityID='id')
-        cityprice.text = product.price
+        cityprice.text = str(product.price)
 
     xml_data = et.tostring(root, encoding='utf-8').decode()
     return xml_data

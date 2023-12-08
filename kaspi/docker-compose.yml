@@ -13,10 +13,9 @@ services:
     volumes:
       - .:/usr/src/kaspi
     command: bash -c "python3 main.py"
-    networks:
-      default_net:
+
 
 networks:
-  default_net:
+  default:
     external: True
-    name: esdp-ap-11
+    name: default_net
