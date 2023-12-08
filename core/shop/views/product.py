@@ -283,7 +283,6 @@ class ShopProductView(PermissionRequiredMixin, ListView):
 
 class ProductKaspiView(View):
     template_name = 'product/product_kaspi.html'
-    KASPI_XML_URL = 'http://kaspixml:5050/generate_xml'
     CITY_CHOICES = [(471010000, 'Актау'), (151010000, 'Актобе'), (750000000, 'Алматы'), (511610000, 'Арысь'),
                     (710000000, 'Астана'), (231010000, 'Атырау'), (351810000, 'Жезказган'),
                     (351010000, 'Караганда'),
@@ -333,10 +332,11 @@ class ProductKaspiView(View):
 
     def post(self, request, shop_id):
         form = ProductKaspiForm(request.POST, shop_id=shop_id)
+        partner_id = []
 
         if form.is_valid():
             form.save()
-
+            partner_id.append(form.cleaned_data['partner_id'])
             data = {
                 'offers': [],
                 'partner_id': form.cleaned_data['partner_id']
@@ -356,10 +356,11 @@ class ProductKaspiView(View):
 
             try:
                 headers = {"Content-Type": "application/json"}
-                response = httpx.post(self.KASPI_XML_URL, json=data, headers=headers)
+                response = httpx.post(f'http://kaspixml:5050/{partner_id[0]}/kaspi_xml', json=data, headers=headers)
 
                 if response.status_code == 200:
-                    return HttpResponse(response, content_type='application/xml')
+
+                    return HttpResponse(response.text, content_type='application/xml')
 
                 else:
                     return HttpResponse(f'Error')

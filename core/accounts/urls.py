@@ -7,5 +7,5 @@ urlpatterns = [
     path('logout/', views.Logout.as_view(), name='logout'),
     path('user/update/<int:id>', views.UserUpdate.as_view(), name='update_user'),
     path('user/change-password/<int:id>', views.PasswordChangeView.as_view(), name='change_password'),
-    path('sms-verification/', views.Sms_Verification.as_view(), name='sms-verification')
+    path('sms-verification/', views.SmsVerification.as_view(), name='sms-verification')
 ]

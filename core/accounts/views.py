@@ -44,7 +44,7 @@ class RegisterView(CreateView):
         return render(self.request, 'register.html', {'form': form})
 
 
-class Sms_Verification(TemplateView):
+class SmsVerification(TemplateView):
     template_name = 'sms.html'
 
     def get_context_data(self, **kwargs):

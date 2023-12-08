@@ -3,6 +3,7 @@ import fastapi
 from xml_generate import Offers, generate_xml
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
+import httpx
 
 app = fastapi.FastAPI()
 
@@ -16,10 +17,11 @@ app.add_middleware(
 )
 
 
-@app.post('/generate_xml')
+@app.post('/{partner_id}/kaspi_xml')
 async def generate_xml_endpoint(product_data: Offers):
 
     xml_data = await generate_xml(product_data)
+    print(xml_data)
 
     return Response(xml_data, media_type='application/xml')
 

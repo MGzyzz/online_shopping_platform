@@ -175,7 +175,6 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 def product_list_xml(request):
 
-
     xml_data = ProductXMLSerializer.to_xml(request.body, filename='media/price_list.xml')
 
     return HttpResponse(xml_data, content_type='application/xml')
