@@ -19,7 +19,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile
     ports:
-      - "8020:8000"
+      - "8000:8000"
     depends_on:
       - postgres
     env_file:
@@ -27,7 +27,7 @@ services:
     volumes:
       - .:/usr/src/app
     command: bash -c "python manage.py makemigrations --merge --noinput &&
-                      python manage.py migrate --noinput && 
+                      python manage.py migrate --noinput &&
                       python manage.py runserver 0.0.0.0:8000"
 
   redis:
@@ -39,35 +39,3 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
-    command: celery -A core.celery worker -l info
-    volumes:
-      - .:/usr/src/app
-    env_file:
-      - .env
-    depends_on:
-      - postgres
-      - redis
-    environment:
-      - TZ=Asia/Almaty
-
-  celery-beat:
-    container_name: celery-beat
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
-    command: celery -A core.celery beat -l info
-    volumes:
-      - .:/usr/src/app
-    env_file:
-      - .env
-    depends_on:
-      - postgres
-      - redis
-    environment:
-      - TZ=Asia/Almaty
-
-
-networks:
-  default:
-    external: True
-    name: default_net
