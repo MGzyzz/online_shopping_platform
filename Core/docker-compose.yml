@@ -1,18 +1,17 @@
 version: '3'
 
+
+# docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
 services:
 
   postgres:
-    container_name: postgres
+    container_name: postgres_s
     image: postgres:14-alpine
     environment:
       POSTGRES_DB: shop
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    networks:
-      default_net:
 
   app:
     container_name: django-app
@@ -20,7 +19,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile
     ports:
-      - "8000:8000"
+      - "8020:8000"
     depends_on:
       - postgres
     env_file:
@@ -30,16 +29,10 @@ services:
     command: bash -c "python manage.py makemigrations --merge --noinput &&
                       python manage.py migrate --noinput && 
                       python manage.py runserver 0.0.0.0:8000"
-    networks:
-      default_net:
 
   redis:
-     container_name: redis
+     container_name: redis_r
      image: redis:5.0.1
-     ports:
-       - "6379:6379"
-     networks:
-       default_net:
 
   celery:
     container_name: celery
@@ -56,8 +49,6 @@ services:
       - redis
     environment:
       - TZ=Asia/Almaty
-    networks:
-      default_net:
 
   celery-beat:
     container_name: celery-beat
@@ -74,11 +65,9 @@ services:
       - redis
     environment:
       - TZ=Asia/Almaty
-    networks:
-      default_net:
 
 
 networks:
-  default_net:
+  default:
     external: True
-    name: esdp-ap-11
+    name: default_net
