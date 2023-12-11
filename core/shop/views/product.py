@@ -12,6 +12,7 @@ from shop.models import Images, Category, Product, Shop, City, PartnerShop
 import httpx
 from django.http import HttpResponse
 
+
 class ProductCreateView(PermissionRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
@@ -103,9 +104,12 @@ class ProductListView(ListView):
                      Q(category__name__icontains=capitalized_query) |
                      Q(tags__name__icontains=query))
             queryset = self.products.filter(query).distinct()
+
             return queryset
+
         if category_id := self.request.GET.get('category'):
             return self.shop.products.filter(category_id=category_id)
+
         return self.products
 
     def get_context_data(self, *, object_list=None, **kwargs):

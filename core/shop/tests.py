@@ -1,9 +1,10 @@
 from django.urls import reverse
-from django.test import TestCase
+from django.test import TestCase, Client
 
 from accounts.models import User
 
 from .models import Shop
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class ShopCreateCase(TestCase):
@@ -45,7 +46,8 @@ class ShopUpdateCase(TestCase):
     def test_update_success(self) -> None:
         self.client.login(username='myemail@gmail.com', password='123')
         response = self.client.post(reverse('shop_update', kwargs={'id': self.shop.id}),
-                                    {'name': 'New name', 'description': 'Test new description', 'logo': 'def.png', 'theme': 'white'})
+                                    {'name': 'New name', 'description': 'Test new description',
+                                     'logo': 'def.png', 'theme': 'white'})
 
         updated_shop = Shop.objects.get(id=self.shop.id)
 
@@ -65,4 +67,76 @@ class ShopUpdateCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
+class ShopDeleteCase(TestCase):
+    def setUp(self) -> None:
+        self.user = User.objects.create_user(email='myemail@gmail.com', phone='77014779047', password='123')
+        self.shop = Shop.objects.create(user_id=self.user.id, name='New', description='Test description', theme='black')
 
+    def test_delete_success(self) -> None:
+        self.client.login(username='myemail@gmail.com', password='123')
+
+        response = self.client.post(reverse('shop_delete', kwargs={"id": self.shop.id}))
+
+        with self.assertRaises(ObjectDoesNotExist):
+            Shop.objects.get(id=self.shop.id)
+        self.assertFalse(Shop.objects.filter(id=self.shop.id).exists())
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('profile', kwargs={'id': self.user.id}))
+
+    def test_delete_false(self) -> None:
+        self.client.login(username='myemail@gmail.com', password='123')
+
+        response = self.client.post(reverse('shop_delete', kwargs={'id': self.shop.id+1}))
+
+        self.assertTrue(Shop.objects.filter(id=self.shop.id))
+        self.assertEqual(response.status_code, 404)
+
+
+class ShopListCase(TestCase):
+    def setUp(self) -> None:
+        self.user = User.objects.create_user(email='myemail@gmail.com', phone='77014779047', password='123')
+        self.shop = Shop.objects.create(user_id=self.user.id, name='New', description='Test description', theme='black')
+
+    def test_success(self) -> None:
+        client = Client()
+
+        url = reverse('shop_view', kwargs={'shop_id': self.shop.id})
+
+        response = client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertIn('shop', response.context)
+        self.assertIn('products', response.context)
+        self.assertIn('category_product', response.context)
+        self.assertEqual(response.context['shop'], self.shop)
+
+    def test_false(self) -> None:
+        client = Client()
+
+        url = reverse('shop_view', kwargs={'shop_id': self.shop.id + 1})
+
+        response = client.get(url)
+
+        self.assertEqual(response.status_code, 404)
+
+
+class ProfileCase(TestCase):
+    def setUp(self) -> None:
+        self.user = User.objects.create_user(email='myemail@gmail.com', phone='77014779047', password='123')
+        self.other_user = User.objects.create_user(email='bad@mail.ru', phone='77011919099', password='555')
+        self.url = reverse('profile', kwargs={'id': self.user.id})
+
+    def test_profile_success(self) -> None:
+        self.client.login(username='myemail@gmail.com', password='123')
+
+        response = self.client.get(self.url)
+
+        self.assertIn('shops', response.context)
+        self.assertEqual(response.status_code, 200)
+
+    def test_fail_profile(self) -> None:
+        self.client.login(username='bad@mail.ru', password='555')
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 403)

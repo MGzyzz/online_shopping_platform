@@ -16,7 +16,7 @@ app.add_middleware(
 )
 
 
-@app.post('/{partner_id}/kaspi_xml')
+@app.get('/{partner_id}/kaspi_xml')
 async def generate_xml_endpoint(product_data: Offers):
 
     xml_data = await generate_xml(product_data)
