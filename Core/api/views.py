@@ -314,10 +314,13 @@ class CreateCheck(APIView):
         except requests.RequestException as e:
             raise ValueError(f"Error registering ticket: {e}")
 
-    def download_receipt(self, api_token, ticket_id):
+    def download_receipt(self, api_token, ticket_id, payer_email):
         url = settings.URL_REKASSA + f"crs/1316/tickets/{ticket_id}/receipts"
         data = {
-            'type': 'DOWNLOAD'
+            'type': 'EMAIL',
+            "receiver": {
+                "email": f"{payer_email}"
+            }
         }
         headers = {
             'Authorization': f'Bearer {api_token}'
@@ -345,8 +348,10 @@ class CreateCheck(APIView):
                 ticket_id = self.register_ticket(api_token, order_products)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-            receipt_data = self.download_receipt(api_token, ticket_id)
+            payer_email = serializer.validated_data.get('email')
+            print(payer_email)
+            # check
+            receipt_data = self.download_receipt(api_token, ticket_id, payer_email)
             return Response(receipt_data)
         except ValueError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

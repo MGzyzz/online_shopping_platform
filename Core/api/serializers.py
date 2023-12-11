@@ -105,6 +105,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class OrderIdSerializer(serializers.Serializer):
     order_id = serializers.IntegerField()
+    email = serializers.EmailField()
 
 
 class BucketSerializer(serializers.ModelSerializer):
