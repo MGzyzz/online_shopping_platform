@@ -36,6 +36,8 @@ class RegisterView(CreateView):
     def form_valid(self, form):
         user = form.save(commit=False)
         user.save()
+        user.groups.add(1)
+        user.is_staff = True
 
         self.request.session['user_id'] = user.id
         self.request.session['phone'] = user.phone
@@ -151,7 +153,6 @@ class AccountRegisterView(CreateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        print(self.get_form().errors)
         if AccountRegisterForm(request.POST).is_valid():
             return self.form_valid(self.get_form())
 
@@ -180,7 +181,6 @@ class AccountRegisterView(CreateView):
                               {'form': self.get_form(), 'shop': self.shop, 'account_form': self.account_form})
 
         return HttpResponseRedirect(self.get_success_url())
-
 
     def get_success_url(self):
         return reverse('shop_view', kwargs={'shop_id': self.shop.id})
