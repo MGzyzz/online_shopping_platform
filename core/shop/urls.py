@@ -1,6 +1,5 @@
 from django.urls import path
 from .views import *
-from .views.product import ProductKaspiView
 
 urlpatterns = [
     path('', ShopListView.as_view(), name='home'),
@@ -17,7 +16,6 @@ urlpatterns = [
     path('product/<int:id>/delete/', DeleteProduct.as_view(), name='delete_product'),
     path('product/<int:id>/attributes/add/', AttributesCreateView.as_view(), name='add_attributes'),
     path('product/<int:id>/attributes/update/', AttributesUpdateView.as_view(), name='update_attributes'),
-    path('products/<int:shop_id>/kaspi/', ProductKaspiView.as_view(), name='products_kaspi'),
 
     path('profile/<int:id>/', Profile.as_view(), name='profile'),
     path('profile/shop/<int:id>/products/', ShopProductView.as_view(), name='shop_products'),

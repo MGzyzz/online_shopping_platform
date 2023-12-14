@@ -7,7 +7,7 @@ from django.views import View
 from django.views.generic import CreateView, UpdateView, ListView, DeleteView, DetailView
 from taggit.models import Tag
 
-from shop.forms import ProductForm, ImagesForm, ProductKaspiForm
+from shop.forms import ProductForm, ImagesForm
 from shop.models import Images, Category, Product, Shop, City, PartnerShop
 import httpx
 from django.http import HttpResponse
@@ -285,91 +285,4 @@ class ShopProductView(PermissionRequiredMixin, ListView):
         return context
 
 
-class ProductKaspiView(View):
-    template_name = 'product/product_kaspi.html'
-    CITY_CHOICES = [(471010000, 'Актау'), (151010000, 'Актобе'), (750000000, 'Алматы'), (511610000, 'Арысь'),
-                    (710000000, 'Астана'), (231010000, 'Атырау'), (351810000, 'Жезказган'),
-                    (351010000, 'Караганда'),
-                    (195220100, 'Каскелен'), (191610000, 'Капшагай'), (111010000, 'Кокшетау'),
-                    (314851205, 'Кордай'),
-                    (391010000, 'Костанай'), (233620100, 'Кульсары'), (431010000, 'Кызылорда'),
-                    (551010000, 'Павлодар'),
-                    (591010000, 'Петропавловск'), (392410000, 'Рудный'), (352310000, 'Сатпаев'),
-                    (632810000, 'Семей'),
-                    (196220100, 'Талгар'), (191010000, 'Талдыкорган'), (311010000, 'Тараз'),
-                    (352410000, 'Темиртау'),
-                    (271010000, 'Уральск'), (631010000, 'Усть-Каменогорск'), (511010000, 'Шымкент'),
-                    (552210000, 'Экибастуз'),
-                    (194020100, 'Есик'), (512610000, 'Туркестан'), (117020100, 'Щучинск'), (471810000, 'Жанаозен'),
-                    (515420100, 'Сарыагаш'), (352810000, 'Шахтинск'), (117055900, 'Шиели'), (273620100, 'Аксай'),
-                    (514420100, 'Жетысай'), (351610000, 'Балхаш'), (551610000, 'Аксу'), (433220100, 'Аральск'),
-                    (431910000, 'Байконыр'), (473630100, 'Бейнеу'), (195620100, 'Жаркент'), (634620100, 'Зайсан'),
-                    (316220100, 'Каратау'), (612010000, 'Кентау'), (314851205, 'Кордай'), (392010000, 'Лисаковск'),
-                    (352210000, 'Сарань'), (111810000, 'Степногорск'), (192610000, 'Текели'),
-                    (616420100, 'Шардара'),
-                    (316621100, 'Шу'), (156420100, 'Риддер'), (634820100, 'Алтай'), (271035100, 'Зачаганск'),
-                    (153220100, 'Алга'), (156020100, 'Хромтау'), (391610000, 'Аркалык'), (395430100, 'Тобыл'),
-                    (554230100, 'Железинка'), (394420100, 'Житикара'), (116651100, 'Косшы'), (633420100, 'Аягоз'),
-                    (634030100, 'Глубокое'), (632210000, 'Курчатов'), (636820100, 'Шемонаиха'), (353220100, 'Абай'),
-                    (474630100, 'Шетпе'), (475220100, 'Форт-Шевченко'), (474239100, 'Жетыбай'),
-                    (474230100, 'Курык'),
-                    (113220100, 'Акколь'), (515820100, 'Ленгер'), (195020100, 'Уштобе'), (154820100, 'Кандыагаш'),
-                    (194230100, 'Узынагаш'), (515230100, 'Аксукент')
-                    ]
 
-    def get(self, request, shop_id):
-        for code, name in self.CITY_CHOICES:
-            City.objects.get_or_create(city_code=code, name=name)
-
-        shop = Shop.objects.get(id=shop_id)
-
-        try:
-            partner_shop = PartnerShop.objects.get(shop_id=shop_id)
-            partner_id = partner_shop.partner_id
-
-        except PartnerShop.DoesNotExist:
-            partner_id = None
-
-        form = ProductKaspiForm(shop_id=shop_id, initial_partner_id=partner_id)
-
-        return render(request, self.template_name, {'form': form, 'shop': shop})
-
-    def post(self, request, shop_id):
-        form = ProductKaspiForm(request.POST, shop_id=shop_id)
-        partner_id = []
-
-        if form.is_valid():
-            form.save()
-            partner_id.append(form.cleaned_data['partner_id'])
-            data = {
-                'offers': [],
-                'partner_id': form.cleaned_data['partner_id']
-            }
-
-            for product in form.cleaned_data['products']:
-                some_product = {
-                    'id': product.id,
-                    'shop_id': product.shop.id,
-                    'price': int(product.price),
-                    'quantity': product.quantity,
-                    'name': product.name,
-                    'city_code': form.cleaned_data['city'].city_code
-                    }
-
-                data['offers'].append(some_product)
-
-            try:
-                headers = {"Content-Type": "application/json"}
-                response = httpx.post(f'http://kaspixml:5050/{partner_id[0]}/kaspi_xml', json=data, headers=headers)
-
-                if response.status_code == 200:
-
-                    return HttpResponse(response.text, content_type='application/xml')
-
-                else:
-                    return HttpResponse(f'Error')
-
-            except Exception as e:
-                return HttpResponse(f'{e}')
-
-        return render(request, self.template_name, {'form': form})
