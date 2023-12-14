@@ -8,7 +8,7 @@ from .models import Shop, Product, Images, Category, PartnerProduct, City, Partn
 class ShopModelForm(forms.ModelForm):
     class Meta:
         model = Shop
-        fields = ['name', 'logo', 'description', 'theme']
+        fields = ['name', 'logo', 'description', 'theme', 'partner_id']
 
 
 class ProductForm(forms.ModelForm):

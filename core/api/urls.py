@@ -15,5 +15,5 @@ urlpatterns = [
    path('login/', obtain_auth_token),
    path('logout/', LogoutView.as_view()),
    path('user/<int:id>', user_detail_api_view),
-   path('products/xml/', product_list_xml)
+   path('<int:partner_id>/kaspi_xml', product_list_xml)
 ]

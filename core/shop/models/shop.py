@@ -39,10 +39,19 @@ class Shop(models.Model):
         max_length=2500,
         verbose_name='Описание магазина'
     )
+
     theme = models.CharField(
         max_length=255,
         choices=Themes.choices,
         default=Themes.DARK,
         verbose_name='Тема магазина'
     )
+    partner_id = models.CharField(
+        max_length=255,
+        verbose_name='ID Партнера(Kaspi)',
+        blank=True,
+        null=True,
+        unique=True
+    )
+
     tags = TaggableManager(blank=True, verbose_name='Тэги')

@@ -115,9 +115,12 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ProductXMLSerializer(serializers.ModelSerializer):
     @staticmethod
-    def to_xml(products, filename='price_list.xml'):
+    def to_xml(products):
 
         root = ET.Element('kaspi_catalog', date='string', xmlns='kaspiShopping',)
+        root.set('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
+        root.set('xsi:schemaLocation', 'kaspiShopping http://kaspi.kz/kaspishopping.xsd')
+
         company = ET.SubElement(root, 'company')
 
         merchantid = ET.SubElement(company, 'merchantid')
@@ -125,23 +128,25 @@ class ProductXMLSerializer(serializers.ModelSerializer):
         offers = ET.SubElement(company, 'offers')
 
         for product in products:
+
             merchantid.text = str(product.shop.id)
             company.text = product.shop.name
             offer = ET.SubElement(offers, 'offer', sku=str(product.id))
 
             model = ET.SubElement(offer, 'model')
             model.text = product.name
+            availabilities = ET.SubElement(offer, 'availabilities')
+
+            if product.quantity > 0:
+                available = 'yes'
+            else:
+                available = 'no'
+
+            availability = ET.SubElement(availabilities, 'availability', available=available, storeID=str(product.shop_id))
 
             price = ET.SubElement(offer, 'price')
             price.text = str(product.price)
 
-            quantity = ET.SubElement(offer, 'quantity')
-            quantity.text = str(product.quantity)
-
         xml_data = ET.tostring(root, encoding='utf-8').decode()
-        tree = ET.ElementTree(root)
-
-        with open(filename, 'wb') as file:
-            tree.write(file, encoding='utf-8', xml_declaration=True)
-
         return xml_data
+

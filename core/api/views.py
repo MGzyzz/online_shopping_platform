@@ -13,6 +13,8 @@ from shop.models import TimeDiscount, Product, Bucket
 from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer, ProductXMLSerializer
 from django.http import HttpResponse
 
+from shop.models import Shop
+
 
 class LogoutView(APIView):
 
@@ -173,9 +175,12 @@ class ProductViewSet(viewsets.ModelViewSet):
     lookup_field = 'id'
 
 
-def product_list_xml(request):
+def product_list_xml(request, partner_id):
 
-    xml_data = ProductXMLSerializer.to_xml(request.body, filename='media/price_list.xml')
+    shop = Shop.objects.get(partner_id=partner_id)
+    products = Product.objects.filter(shop=shop.id)
+
+    xml_data = ProductXMLSerializer.to_xml(products)
 
     return HttpResponse(xml_data, content_type='application/xml')
 

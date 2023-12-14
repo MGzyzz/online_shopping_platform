@@ -3,8 +3,9 @@ from django.test import TestCase, Client
 
 from accounts.models import User
 
-from .models import Shop
+from .models import Shop, Product
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 
 class ShopCreateCase(TestCase):
@@ -140,3 +141,26 @@ class ProfileCase(TestCase):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 403)
+
+
+# class ProductCreateCase(TestCase):
+#     def setUp(self) -> None:
+#         self.user = User.objects.create_user(email='pr@gmail.com', password='123', phone='87014779047')
+#         self.shop = Shop.objects.create(user_id=self.user.id, name='New', description='Test description', theme='black')
+#
+#     def test_product_create_success(self) -> None:
+#         self.client.login(username='pr@gmail.com', password='123')
+#         image_file = SimpleUploadedFile("test_image.jpg", b"file_content", content_type="image/jpeg")
+#         response = self.client.post(reverse('create_product', kwargs={"shop_id": self.shop.id}), {
+#             'shop': self.shop.id,
+#             'name': 'test product',
+#             'description': 'test test',
+#             'vendor_code': "111111",
+#             'quantity': 1111,
+#             'price': 10000,
+#             'image': [image_file]
+#
+#         }, follow=True)
+#
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTrue(Product.objects.filter(name='test product'))
