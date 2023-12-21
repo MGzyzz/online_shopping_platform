@@ -14,11 +14,12 @@ from rest_framework.views import APIView
 
 from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer
 from accounts.models import Account, User
-from shop.models import TimeDiscount, Product, Bucket, Order, OrderProducts
+from shop.models import TimeDiscount, Product, Bucket, Order, OrderProducts, Shop
 from shop.views import get_client_ip
-
+from django.http import HttpResponse
 from shop.views.additional_functions import get_discount
-from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer, OrderSerializer, OrderIdSerializer
+from django.forms.models import model_to_dict
+from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer, OrderSerializer, OrderIdSerializer, ProductXMLSerializer, ShopTgSerializer
 import requests
 
 
@@ -133,6 +134,20 @@ class BucketViewSet(viewsets.ModelViewSet):
         item = Bucket.objects.get(id=item_id)
         item.product.quantity += item.quantity
         item.product.save()
+
+    def get_client_ip(self, request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+
+        return ip
+
+    @action(detail=True, methods=['DELETE'])
+    def remove_from_cart(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
     @action(detail=True, methods=['PUT'])
@@ -166,6 +181,8 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     lookup_url_kwarg = 'id'
     lookup_field = 'id'
+
+
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -350,6 +367,26 @@ class CreateCheck(APIView):
             return Response(receipt_data)
         except ValueError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+def product_list_xml(request, partner_id):
+
+    shop = Shop.objects.get(partner_id=partner_id)
+    products = Product.objects.filter(shop=shop.id)
+    products_list = [model_to_dict(product, fields=['id', 'shop_id', 'price', 'quantity', 'name', 'vendor_code',]) for product in products]
+
+    return JsonResponse(products_list, safe=False)
+
+
+class TelegramShopsViewSet(viewsets.ModelViewSet):
+    queryset = Shop.objects.filter(tg_token__isnull=False)
+    serializer_class = ShopTgSerializer
+    lookup_field = 'id'
+    lookup_url_kwarg = 'id'
+
+    def get(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return JsonResponse({'shop': serializer.data}, safe=False)
 
 
 def user_detail_api_view(request, id, *args, **kwargs):

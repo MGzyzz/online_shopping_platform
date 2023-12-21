@@ -8,3 +8,6 @@ from .bucket import Bucket
 from .order import Order
 from .orderproducts import OrderProducts
 from .accountshops import AccountShops
+from .city import City
+from .partner_shop import PartnerShop
+from .partner_product import PartnerProduct

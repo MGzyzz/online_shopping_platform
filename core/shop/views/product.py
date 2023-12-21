@@ -5,12 +5,15 @@ from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
+from django.views import View
 from django.views.generic import CreateView, UpdateView, ListView, DeleteView, DetailView
 from taggit.models import Tag
 
 from shop.forms import ProductForm, ImagesForm
-from shop.models import Images, Category, Product, Shop, Bucket
+from shop.models import Images, Category, Product, Shop, Bucket, City, PartnerShop
 from .additional_functions import get_client_ip
+import httpx
+from django.http import HttpResponse
 
 
 class ProductCreateView(PermissionRequiredMixin, CreateView):
@@ -105,6 +108,7 @@ class ProductListView(ListView):
                      Q(tags__name__icontains=query))
             queryset = self.products.filter(query, quantity__gt=0).distinct()
             return queryset
+
         if category_id := self.request.GET.get('category'):
             return self.shop.products.filter(category_id=category_id, quantity__gt=0)
         return self.products
@@ -291,3 +295,6 @@ class ShopProductView(PermissionRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['shop'] = self.shop
         return context
+
+
+

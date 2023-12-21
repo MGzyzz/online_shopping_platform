@@ -20,7 +20,7 @@ class LoginView(views.LoginView):
 
     def form_invalid(self, form):
         self.request.session['dropdown'] = 'show'
-        return render(self.request, 'main.html', {'form': form})
+        return render(self.request, 'main.html', {'form': form, "shops": Shop.objects.all()})
 
 
 class Logout(views.LogoutView):
