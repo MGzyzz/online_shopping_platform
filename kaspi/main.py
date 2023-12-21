@@ -1,9 +1,11 @@
+import os
+
 import fastapi
 
-from xml_generate import Offers, generate_xml
+from xml_generate import generate_xml
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
-
+import httpx
 app = fastapi.FastAPI()
 
 origins = ['http://localhost']
@@ -16,10 +18,12 @@ app.add_middleware(
 )
 
 
-@app.post('/{partner_id}/kaspi_xml')
-async def generate_xml_endpoint(product_data: Offers):
+@app.get('/{partner_id}/kaspi_xml')
+async def generate_xml_endpoint(partner_id: int):
 
-    xml_data = await generate_xml(product_data)
+    response = httpx.get(f'http://django-app:8000/api/{partner_id}/kaspi_xml')
+    as_json = response.json()
+    xml_data = await generate_xml(as_json)
 
     return Response(xml_data, media_type='application/xml')
 

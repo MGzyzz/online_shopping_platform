@@ -46,9 +46,18 @@ class Shop(models.Model):
         default=Themes.DARK,
         verbose_name='Тема магазина'
     )
+
     partner_id = models.CharField(
         max_length=255,
         verbose_name='ID Партнера(Kaspi)',
+        blank=True,
+        null=True,
+        unique=True
+    )
+
+    tg_token = models.CharField(
+        max_length=255,
+        verbose_name='Телеграм-токен',
         blank=True,
         null=True,
         unique=True

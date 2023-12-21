@@ -12,6 +12,15 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ShopTgSerializer(serializers.ModelSerializer):
+    products = ProductSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Shop
+        fields = ['id', 'name', 'description', 'logo', 'tg_token', 'products']
+        read_only_fields = ['id', 'name', 'description', 'logo', 'tg_token', 'products']
+
+
 class TimeDiscountSerializer(serializers.ModelSerializer):
 
     class Meta:

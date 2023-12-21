@@ -10,9 +10,10 @@ from rest_framework.views import APIView
 
 from accounts.models import User
 from shop.models import TimeDiscount, Product, Bucket
-from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer, ProductXMLSerializer
+from .serializers import TimeDiscountSerializer, BucketSerializer, ProductSerializer, ProductXMLSerializer, \
+    ShopTgSerializer
 from django.http import HttpResponse
-
+from django.forms.models import model_to_dict
 from shop.models import Shop
 
 
@@ -179,10 +180,21 @@ def product_list_xml(request, partner_id):
 
     shop = Shop.objects.get(partner_id=partner_id)
     products = Product.objects.filter(shop=shop.id)
+    products_list = [model_to_dict(product, fields=['id', 'shop_id', 'price', 'quantity', 'name', 'vendor_code',]) for product in products]
 
-    xml_data = ProductXMLSerializer.to_xml(products)
+    return JsonResponse(products_list, safe=False)
 
-    return HttpResponse(xml_data, content_type='application/xml')
+
+class TelegramShopsViewSet(viewsets.ModelViewSet):
+    queryset = Shop.objects.filter(tg_token__isnull=False)
+    serializer_class = ShopTgSerializer
+    lookup_field = 'id'
+    lookup_url_kwarg = 'id'
+
+    def get(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return JsonResponse({'shop': serializer.data}, safe=False)
 
 
 def user_detail_api_view(request, id, *args, **kwargs):
