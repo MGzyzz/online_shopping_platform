@@ -4,7 +4,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     max-width: 40rem;
-    border: 1px solid rgba(0,0,0,.125);
+    border: 1px solid rgba(0, 0, 0, .125);
     border-radius: .25rem;
 }
 
@@ -20,6 +20,10 @@
         top: 3rem;
         left: 0;
         transform: translate(0, 0);
+    }
 
+    .login-content {
+        padding-right: 0;
+        border-right: none;
     }
 }

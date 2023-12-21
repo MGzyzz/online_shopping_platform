@@ -1,13 +1,13 @@
 from django import forms
 from django.core.validators import FileExtensionValidator
 
-from .models import Shop, Product, Images, Category, Order
+from .models import Shop, Product, Images, Category, PartnerProduct, City, PartnerShop, Order
 
 
 class ShopModelForm(forms.ModelForm):
     class Meta:
         model = Shop
-        fields = ['name', 'logo', 'description', 'theme']
+        fields = ['name', 'logo', 'description', 'theme', 'partner_id']
 
 
 class ProductForm(forms.ModelForm):
@@ -62,6 +62,9 @@ class ImagesForm(forms.ModelForm):
             raise forms.ValidationError({'image': "Максимум 3 изображения"})
 
         return self.cleaned_data
+
+
+
 
 
 class OrderForm(forms.ModelForm):

@@ -1,12 +1,23 @@
 from rest_framework import serializers
-from shop.models import TimeDiscount, Product, Bucket, Order
+from shop.models import TimeDiscount, Product, Bucket, Order, Shop
+from accounts.models import User
 from django.utils import timezone
+import xml.etree.ElementTree as ET
 
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+
+
+class ShopTgSerializer(serializers.ModelSerializer):
+    products = ProductSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Shop
+        fields = ['id', 'name', 'description', 'logo', 'tg_token', 'products']
+        read_only_fields = ['id', 'name', 'description', 'logo', 'tg_token', 'products']
 
 
 class TimeDiscountSerializer(serializers.ModelSerializer):
@@ -118,3 +129,48 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = ["account", "user_ip", "shop", "products", "total", "date", "payer_name", "payer_surname", "payer_phone",
                   "payer_email", "payer_city", "payer_address", "payer_postal_code"]
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'phone']
+
+
+class ProductXMLSerializer(serializers.ModelSerializer):
+    @staticmethod
+    def to_xml(products):
+
+        root = ET.Element('kaspi_catalog', date='string', xmlns='kaspiShopping',)
+        root.set('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
+        root.set('xsi:schemaLocation', 'kaspiShopping http://kaspi.kz/kaspishopping.xsd')
+
+        company = ET.SubElement(root, 'company')
+
+        merchantid = ET.SubElement(company, 'merchantid')
+
+        offers = ET.SubElement(company, 'offers')
+
+        for product in products:
+
+            merchantid.text = str(product.shop.id)
+            company.text = product.shop.name
+            offer = ET.SubElement(offers, 'offer', sku=str(product.id))
+
+            model = ET.SubElement(offer, 'model')
+            model.text = product.name
+            availabilities = ET.SubElement(offer, 'availabilities')
+
+            if product.quantity > 0:
+                available = 'yes'
+            else:
+                available = 'no'
+
+            availability = ET.SubElement(availabilities, 'availability', available=available, storeID=str(product.shop_id))
+
+            price = ET.SubElement(offer, 'price')
+            price.text = str(product.price)
+
+        xml_data = ET.tostring(root, encoding='utf-8').decode()
+        return xml_data
+

@@ -1,5 +1,4 @@
 from django.contrib import admin
-from accounts.models import User
 from shop.models import Shop
 
 
