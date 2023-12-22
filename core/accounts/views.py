@@ -47,7 +47,7 @@ class RegisterView(CreateView):
 
     def form_valid(self, form):
         user = form.save(commit=False)
-        # user.save()
+        user.save()
 
         self.request.session['user_id'] = user.id
         self.request.session['phone'] = user.phone
