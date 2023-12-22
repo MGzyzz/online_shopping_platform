@@ -64,6 +64,7 @@ services:
   celery-beat:
     container_name: celery-beat
     build:
+      context: .
       dockerfile: docker/Dockerfile
     command: celery -A core.celery beat -l info
     volumes:
