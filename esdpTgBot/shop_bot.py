@@ -42,7 +42,7 @@ class ShopBot:
         buttons = [
             [
                 types.InlineKeyboardButton(text="Каталог магазина", callback_data='test2'),
-                types.InlineKeyboardButton(text="Оформить досатвку", web_app=WebAppInfo(url="https://telegram.mihailgok.ru"))
+                types.InlineKeyboardButton(text="Оформить досатвку", web_app=WebAppInfo(url="https://market.shopuchet.kz/static/telegram.html"))
             ],
             [types.InlineKeyboardButton(text="Перейти на наш сайт", url='https://www.youtube.com/')]
         ]
