@@ -34,7 +34,7 @@ services:
                       python manage.py runserver 0.0.0.0:8000"
 
   redis:
-     container_name: redis_r
+     container_name: redis
      image: redis:5.0.1
      ports:
        - "6379:6379"
