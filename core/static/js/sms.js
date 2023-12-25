@@ -7,7 +7,7 @@ $(document).ready(function () {
     let userId = $('#userId').val()
     console.log(userId)
     $.ajax({
-        url: `http://sms:1026/sms/send/${userId}`,
+        url: `http://localhost:8585/sms/send/${userId}`,
         method: 'POST',
         success: function (resp){
             console.log(`success ${resp}`)
