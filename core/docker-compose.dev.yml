@@ -9,6 +9,6 @@ services:
     ports:
       - "6379:6379"
 
-  nging:
+  nginx:
     ports:
       - "8585:80"
