@@ -4,19 +4,15 @@ $(document).ready(function () {
             $(this).next('input').focus();
         }
     });
-    let userId = $('#userId').val()
-    console.log(userId)
-    $.ajax({
-        url: `http://localhost:8585/sms/send/${userId}`,
-        method: 'POST',
-        success: function (resp){
-            console.log(`success ${resp}`)
-        },
-        error: function (err) {
-            console.log(`fail ${err}`)
-        }
-})
+
+    let userId = $('#userId').val();
+    console.log(userId);
+
+    axios.post(`http://172.19.0.1:1026/sms/send/${userId}`)
+        .then(function (response) {
+            console.log(`success`, response);
+        })
+        .catch(function (error) {
+            console.log(`fail`, error);
+        });
 });
-
-
-
