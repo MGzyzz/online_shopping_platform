@@ -27,7 +27,7 @@ function order() {
             account
         },
     }).then(function (data) {
-        pay(data['order_id'], parseFloat(total), payer_phone, data['user_id'])
+        pay(data['order_id'], parseFloat(total), payer_phone, data['user_id'], payer_email)
     }).catch(
         function (error) {
             console.log(error)
@@ -35,7 +35,7 @@ function order() {
     )
 }
 
-let pay = function (orderId, total, payer_phone, account) {
+let pay = function (orderId, total, payer_phone, account, payer_email) {
         var widget = new cp.CloudPayments();
         widget.pay('charge',
             { //options
@@ -51,6 +51,19 @@ let pay = function (orderId, total, payer_phone, account) {
                 }
             }).then(function (widgetResult) {
             console.log('result', widgetResult);
+
+            $.ajax({
+                url: 'http://localhost:8000/api/create-check/',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ order_id: orderId, email: payer_email }),
+                success: function(response) {
+                    console.log('Server response', response);
+                },
+                error: function(error) {
+                    console.error('Error in AJAX request', error);
+                }
+            });
             window.location.reload()
         }).catch(function (error) {
                 console.log('error', error);

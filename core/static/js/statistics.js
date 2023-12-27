@@ -18,19 +18,18 @@ let statistics = $('#statistics').val().split('. ');
 let orders = statistics[0].split(', ');
 let income = statistics[1].split(', ');
 let labels = statistics[2].split(', ');
-let period = statistics[3].split(', ');
+let period = statistics[3];
 
 function stats_Chart(ctx, data, label) {
     let chartPeriod = [];
-    console.log(labels)
-    console.log(period)
     if (period === 'month') {
         labels.forEach(now_month => {
             chartPeriod.push(month[now_month]);
         });
     } else if (period === 'year') {
         labels.forEach(now_year => {
-            chartPeriod.push(now_year.slice(3));
+            console.log(now_year)
+            chartPeriod.push(now_year);
         });
     } else {
         labels.forEach(now_day => {
