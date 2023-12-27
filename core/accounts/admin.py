@@ -22,4 +22,4 @@ class MultiModelAdmin(admin.ModelAdmin):
     get_phone.short_description = 'Телефон'
 
 
-admin.site.register(Shop, MultiModelAdmin)
+# admin.site.register(Shop, MultiModelAdmin)
