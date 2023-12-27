@@ -16,6 +16,7 @@ class PhoneNumberInput(forms.CharField):
             formatted_number = phonenumbers.format_number(parse_number, phonenumbers.PhoneNumberFormat.E164)
 
             return formatted_number
+
         except phonenumbers.phonenumberutil.NumberParseException:
 
             raise ValidationError('Invalid phone number format')
