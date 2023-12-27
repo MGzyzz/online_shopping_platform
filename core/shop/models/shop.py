@@ -64,3 +64,7 @@ class Shop(models.Model):
     )
 
     tags = TaggableManager(blank=True, verbose_name='Тэги')
+
+    class Meta:
+        verbose_name = 'Магазин'
+        verbose_name_plural = 'Магазины'
