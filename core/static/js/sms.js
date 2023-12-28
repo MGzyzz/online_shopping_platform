@@ -6,17 +6,12 @@ $(document).ready(function () {
     });
     let userId = $('#userId').val()
     console.log(userId)
-    $.ajax({
-        url: `http://sms:1026/sms/send/${userId}`,
-        method: 'POST',
-        success: function (resp){
-            console.log(`success ${resp}`)
-        },
-        error: function (err) {
-            console.log(`fail ${err}`)
-        }
-})
-});
-
-
-
+    axios.get(`http://sms-service:1026/sms/send/${userId}`)
+    .then(function(response){
+        console.log(`success ${response.data}`)
+    }).catch(function(response) {
+        console.log(`fail ${response.data}`)
+    })
+    .finally(function(response){
+    console.log}('request Handled'))
+    })

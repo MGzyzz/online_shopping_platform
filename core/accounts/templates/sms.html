@@ -22,7 +22,7 @@
                 {% csrf_token %}
                 <div class="otp-card">
                 <h1>Verification</h1>
-                <p>Code has been sent to number {{ phone_number }} {{ user_id }}</p>
+                <p>Code has been sent to number {{ phone_number }}</p>
                 <div class="otp-card-inputs">
                     <input type="text" name="code_1" maxlength="1" autofocus class="mx-3" />
                     <input type="text" name="code_2" maxlength="1" class="mx-3" />
@@ -38,8 +38,9 @@
         </div>
     </div>
 </div>
+<script src="{% static 'js/sms.js' %}" defer></script>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="{% static 'js/sms.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
 
