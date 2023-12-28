@@ -181,8 +181,9 @@ class ProductCreateCase(TestCase):
             'new_category': 'Test category'
         }, follow=True)
 
+
         self.assertEqual(response.status_code, 200)
-        # self.assertContains(response, 'This field is required')
+        self.assertContains(response, 'Обязательное поле.')
 
 
 class ProductDetailCase(TestCase):
