@@ -21,7 +21,7 @@
                 {% csrf_token %}
                 <div class="otp-card">
                 <h1>Verification</h1>
-                <p>Code has been sent to number {{ phone_number }} {{ user_id }}</p>
+                <p>Code has been sent to number {{ phone_number }}</p>
                 <div class="otp-card-inputs">
                     <input type="text" name="code_1" maxlength="1" autofocus class="mx-3" />
                     <input type="text" name="code_2" maxlength="1" class="mx-3" />

@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Sum
-from django.utils import timezone
 from django.views.generic import DetailView, TemplateView
 from accounts.models import User
 from shop.models import *
@@ -70,8 +69,9 @@ class Profile(PermissionRequiredMixin, DetailView):
         months = [12 + month - i if month - i < 1 else month - i for i in range(3, -1, -1)]
 
         context['shops'] = self.shops
-        context['statistics'] = get_statistics(shops=self.shops, now_months=months)
+        context['statistics'] = get_statistics(shops=self.shops, period='month', time_period=months)
         return context
+
 
 
 class Statistic(PermissionRequiredMixin, TemplateView):
