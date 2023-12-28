@@ -7,7 +7,7 @@ class LoginTestCase(TestCase):
     def setUp(self):
         self.username = 'username@gmail.com'
         self.password = '123123'
-        self.user = User.objects.create_user(email=self.username, password=self.password, phone='77054779047')
+        self.user = User.objects.create_user(email=self.username, password=self.password, phone='77058788787')
 
         self.login_url = reverse('login')
 
@@ -16,15 +16,15 @@ class LoginTestCase(TestCase):
 
         response = self.client.post(self.login_url, data)
 
-        self.assertRedirects(response, reverse('home'))
+        self.assertRedirects(response, reverse('sms-verification'))
 
     def test_user_login_fail(self):
         data = {'username': self.username, 'password': 'wrongpass'}
 
         response = self.client.post(self.login_url, data)
 
-        self.assertContains(response, 'Please enter a correct Email and password.'
-                                      ' Note that both fields may be case-sensitive.')
+        self.assertContains(response, 'Пожалуйста, введите правильные Email и пароль. '
+                                      'Оба поля могут быть чувствительны к регистру.')
 
 
 class RegistrationTestCase(TestCase):
@@ -59,4 +59,4 @@ class RegistrationTestCase(TestCase):
         response = self.client.post(self.registration_url, data)
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'The two password fields didn’t match.')
+        self.assertContains(response, 'Введенные пароли не совпадают.')
