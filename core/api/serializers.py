@@ -1,14 +1,30 @@
+
 from rest_framework import serializers
-from shop.models import TimeDiscount, Product, Bucket, Order, Shop
+from shop.models import TimeDiscount, Product, Bucket, Order, Shop, Images, Category
 from accounts.models import User
 from django.utils import timezone
 import xml.etree.ElementTree as ET
 
 
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Images
+        fields = ['image']
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['name']
+
+
 class ProductSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True, read_only=True)
+    category = CategorySerializer()
+
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ['name', 'description', 'vendor_code', 'quantity', 'price', 'images', 'discounted_price', 'category']
 
 
 class ShopTgSerializer(serializers.ModelSerializer):
@@ -16,7 +32,7 @@ class ShopTgSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Shop
-        fields = ['id', 'name', 'description', 'logo', 'tg_token', 'products']
+        fields = ['id', 'name', 'description', 'logo', 'tg_token', 'products', ]
         read_only_fields = ['id', 'name', 'description', 'logo', 'tg_token', 'products']
 
 
