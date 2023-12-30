@@ -23,17 +23,20 @@ class ShopBot:
 
         @self.dp.message(Command('start'))
         async def start(message: types.Message):
-            image_from_url = URLInputFile(self.shop_data['logo'])
-            await message.answer_photo(image_from_url,
+            try:
+                image_from_url = URLInputFile(self.shop_data['logo'])
+                await message.answer_photo(image_from_url,
                                        caption=f'Здраствуйте! Вас приветствует бот магазина: {self.shop_data["name"]}\n'
                                                f'Описание нашего магазина: {self.shop_data["description"]}')
+            except Exception as e:
+                print(e)
 
         @self.dp.message(Command('info'))
         async def info(message: types.Message):
             buttons = [
                 [
-                    types.InlineKeyboardButton(text="Каталог магазина", callback_data='test2'),
-                    types.InlineKeyboardButton(text="Оформить досатвку", web_app=WebAppInfo(
+                    types.InlineKeyboardButton(text="Оформить досатвку", callback_data='test2'),
+                    types.InlineKeyboardButton(text="Каталог магазина ", web_app=WebAppInfo(
                         url="https://market.shopuchet.kz/static/telegram.html"), data=self.shop_data['products'])
                 ],
 
