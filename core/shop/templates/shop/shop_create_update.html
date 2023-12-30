@@ -23,6 +23,10 @@
 
             <label for="partner_id">ID Партнера(необязательно):</label>
             <input id="partner_id" type="text" class="form-control custom-input" name="partner_id">
+
+            <label for="tg_token">Telegram Token(Токен для телеграм бота):</label>
+            <input id='tg_token' class="form-control custom-input" type="text" name="tg_token">
+
             <input type="hidden" name="user" value="{{ request.user.id }}">
            <button type="submit" class="btn btn-submit">Создать</button>
 

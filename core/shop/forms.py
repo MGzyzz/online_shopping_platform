@@ -3,11 +3,30 @@ from django.core.validators import FileExtensionValidator
 
 from .models import Shop, Product, Images, Category, PartnerProduct, City, PartnerShop, Order
 
+import telebot
+
 
 class ShopModelForm(forms.ModelForm):
     class Meta:
         model = Shop
-        fields = ['name', 'logo', 'description', 'theme', 'partner_id']
+        fields = ['name', 'logo', 'description', 'theme', 'partner_id', 'tg_token']
+
+    def clean_tg_token(self):
+        tg_token = self.cleaned_data.get('tg_token')
+        print(f'validate tg_token {tg_token}')
+        if tg_token:
+            if not self.validate_telegram_token(tg_token):
+                raise forms.ValidationError('Не активный телеграм токен. Пожалуйста введите корректный токен.')
+
+        return tg_token
+
+    def validate_telegram_token(self, bot_token):
+        try:
+            bot = telebot.TeleBot(token=bot_token)
+            bot.get_me()
+            return True
+        except Exception as e:
+            return False
 
 
 class ProductForm(forms.ModelForm):

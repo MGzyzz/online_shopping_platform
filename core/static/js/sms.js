@@ -4,15 +4,14 @@ $(document).ready(function () {
             $(this).next('input').focus();
         }
     });
-
-    let userId = $('#userId').val();
-    console.log(userId);
-
-    axios.post(`http://172.19.0.1:1026/sms/send/${userId}`)
-        .then(function (response) {
-            console.log(`success`, response);
-        })
-        .catch(function (error) {
-            console.log(`fail`, error);
-        });
-});
+    let userId = $('#userId').val()
+    console.log(userId)
+    axios.get(`http://sms-service:1026/sms/send/${userId}`)
+    .then(function(response){
+        console.log(`success ${response.data}`)
+    }).catch(function(response) {
+        console.log(`fail ${response.data}`)
+    })
+    .finally(function(response){
+    console.log}('request Handled'))
+    })

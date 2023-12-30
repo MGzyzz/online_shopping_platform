@@ -23,9 +23,9 @@ class ShopCreateCase(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Shop.objects.count(), 1)
-        self.assertRedirects(response, reverse('profile', kwargs={'id': self.user.id}))
         new_shop = Shop.objects.first()
         self.assertEqual(new_shop.user, self.user)
+        self.assertRedirects(response, reverse('profile', kwargs={'id': self.user.id}))
 
     def test_shop_created_invalid(self) -> None:
         self.client.login(username='myemail@gmail.com', password='123')
@@ -36,7 +36,8 @@ class ShopCreateCase(TestCase):
         })
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Select a valid choice. greeen is not one of the available choices.')
+
+        self.assertContains(response, 'Выберите корректный вариант. greeen нет среди допустимых значений.')
 
 
 class ShopUpdateCase(TestCase):
@@ -51,9 +52,8 @@ class ShopUpdateCase(TestCase):
                                      'logo': 'def.png', 'theme': 'white'})
 
         updated_shop = Shop.objects.get(id=self.shop.id)
-
-        self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('profile', kwargs={'id': self.user.id}))
+        self.assertEqual(response.status_code, 302)
         self.assertEqual(updated_shop.name, 'New name')
         self.assertEqual(updated_shop.description, 'Test new description')
 
@@ -64,7 +64,8 @@ class ShopUpdateCase(TestCase):
                                     {'name': 'NEW NAME', 'description': 'Test new description', 'logo': 'def.png',
                                      'theme': 'green'})
 
-        self.assertContains(response, 'Select a valid choice. green is not one of the available choices.')
+
+        self.assertContains(response, 'Выберите корректный вариант. green нет среди допустимых значений.')
         self.assertEqual(response.status_code, 200)
 
 
@@ -180,8 +181,9 @@ class ProductCreateCase(TestCase):
             'new_category': 'Test category'
         }, follow=True)
 
+
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'This field is required')
+        self.assertContains(response, 'Обязательное поле.')
 
 
 class ProductDetailCase(TestCase):
