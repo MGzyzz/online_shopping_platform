@@ -7,7 +7,7 @@ $(document).ready(function () {
     let userId = $('#userId').val()
     console.log(userId)
     $.ajax({
-        url: `http://172.19.0.1:1026/sms/send/${userId}`,
+        url: `https://market.shopuchet.kz/sms/send/${userId}`,
         method: 'POST',
         success: function (resp){
             console.log(`success ${resp}`)
