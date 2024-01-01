@@ -6,12 +6,14 @@ $(document).ready(function () {
     });
     let userId = $('#userId').val()
     console.log(userId)
-    axios.get(`https://market.shopuchet.kz/sms/send/${userId}`)
-    .then(function(response){
-        console.log(`success ${response.data}`)
-    }).catch(function(response) {
-        console.log(`fail ${response.data}`)
-    })
-    .finally(function(response){
-    console.log}('request Handled'))
-    })
+    $.ajax({
+        url: `http://172.19.0.1:1026/sms/send/${userId}`,
+        method: 'POST',
+        success: function (resp){
+            console.log(`success ${resp}`)
+        },
+        error: function (err) {
+            console.log(`fail ${err}`)
+        }
+})
+});
