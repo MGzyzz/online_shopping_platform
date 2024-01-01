@@ -10,9 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = fastapi.FastAPI()
 
-origins = ['http://django-app:8000',
-           'https://market.shopuchet.kz'
-           ]
+origins = ['http://django-app:8000']
 app.add_middleware(
     CORSMiddleware,
     allow_origins=['*'],
