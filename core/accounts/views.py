@@ -82,7 +82,8 @@ class Sms_Verification(TemplateView):
 
         phone_number = self.request.session.get('phone')
 
-        if input_code == redis_client:
+
+        if input_code == redis_client.get(phone_number).decode('utf-8'):
             user_id = self.request.session.get('user_id')
             current_user = User.objects.get(id=user_id)
 
