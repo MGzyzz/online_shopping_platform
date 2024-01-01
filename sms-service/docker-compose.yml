@@ -11,7 +11,8 @@ services:
     volumes:
       - .:/usr/src/sms
     command: bash -c "python3 main.py"
-
+    ports:
+      - "1026:1026"
 
 networks:
   default:
