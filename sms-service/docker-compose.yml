@@ -6,13 +6,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    ports:
+      - "1026:1026"
     env_file:
       - .env
     volumes:
       - .:/usr/src/sms
     command: bash -c "python3 main.py"
-    ports:
-      - "1026:1026"
 
 networks:
   default:
