@@ -4,7 +4,7 @@ function toCart() {
         let productId = $(this).data('product-id');
         let shopId = $(this).data('shop-id')
         $.ajax({
-            url: 'http://localhost:8000/api/bucket/add_to_cart/',
+            url: 'https://market.shopuchet.kz/api/bucket/add_to_cart/',
             type: 'POST',
             data: {
                 shop: shopId,
