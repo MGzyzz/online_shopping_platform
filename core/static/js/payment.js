@@ -11,7 +11,7 @@ function order() {
     let payer_postal_code = $('#id_payer_postal_code').val()
     let account = $('#user-id').val()
     $.ajax({
-        url: 'http://localhost:8000/api/order/create_order/',
+        url: 'https://market.shopuchet.kz/api/order/create_order/',
         method: 'POST',
         data: {
             products,
@@ -53,7 +53,7 @@ let pay = function (orderId, total, payer_phone, account, payer_email) {
             console.log('result', widgetResult);
 
             $.ajax({
-                url: 'http://localhost:8000/api/create-check/',
+                url: 'https://market.shopuchet.kz/api/create-check/',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ order_id: orderId, email: payer_email }),

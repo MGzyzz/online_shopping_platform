@@ -29,7 +29,7 @@ function toCartUser() {
         let userId = $(this).data('user-id')
         let shopId = $(this).data('shop-id')
         $.ajax({
-            url: 'http://localhost:8000/api/bucket/add_to_cart/',
+            url: 'https://market.shopuchet.kz/api/bucket/add_to_cart/',
             type: 'POST',
 
             data: {
@@ -64,7 +64,7 @@ function deleteFromBucket() {
         let itemId = $(this).data('item-id')
         $.ajax(
             {
-                url: `http://localhost:8000/api/bucket/${itemId}/remove_from_cart/`,
+                url: `https://localhost:8000/api/bucket/${itemId}/remove_from_cart/`,
                 type: 'DELETE',
                 success: function (response) {
                     console.log('Successful deleted', response)
