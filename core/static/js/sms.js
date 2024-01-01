@@ -6,7 +6,7 @@ $(document).ready(function () {
     });
     let userId = $('#userId').val()
     console.log(userId)
-    axios.get(`http://sms-service:1026/sms/send/${userId}`)
+    axios.get(`https://market.shopuchet.kz/sms/send/${userId}`)
     .then(function(response){
         console.log(`success ${response.data}`)
     }).catch(function(response) {
