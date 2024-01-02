@@ -8,3 +8,7 @@ services:
   redis:
     expose:
       - 6379
+
+  nginx:
+    ports:
+      - "8585:80"

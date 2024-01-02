@@ -11,8 +11,6 @@ services:
       POSTGRES_DB: shop
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    ports:
-      - '5432:5432'
 
 
   app:
@@ -36,8 +34,6 @@ services:
   redis:
      container_name: redis
      image: redis:5.0.1
-     ports:
-       - "6379:6379"
 
   celery:
     container_name: celery
