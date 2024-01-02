@@ -25,7 +25,7 @@ $('#make_sale').click(function () {
         let discountCurrency = $('#currency').val()
 
         $.ajax({
-            url: `http://localhost:8000/api/time_discount/`,
+            url: `https://market.shopuchet.kz/api/time_discount/`,
             method: "POST",
             data: {
                 product: product,
@@ -91,7 +91,7 @@ $('#delete-btn').click(function (){
 
 function getSaleId (productId) {
      return $.ajax({
-            url: `http://localhost:8000/api/time_discount/get-discount-by-product/?product_id=${productId}`,
+            url: `https://market.shopuchet.kz/api/time_discount/get-discount-by-product/?product_id=${productId}`,
             method: 'GET',
             headers: {
                 'Authentication': `Token ${token}`
@@ -106,7 +106,7 @@ $('#delete_sale').click(function (){
             let discountId = data.discount_id
             if (discountId) {
                 $.ajax({
-                    url: `http://localhost:8000/api/time_discount/${discountId}/`,
+                    url: `https://market.shopuchet.kz/api/time_discount/${discountId}/`,
                     method: "DELETE",
                     headers: {
                         'Authentication': `Token ${token}`
@@ -125,7 +125,7 @@ $('#delete_sale').click(function (){
 
 function checkConstantSale(productId){
      $.ajax({
-        url: `http://localhost:8000/api/product/${productId}/`,
+        url: `https://market.shopuchet.kz/api/product/${productId}/`,
         method: 'GET',
         headers: {
             'Authentication': `Token ${token}`
@@ -150,7 +150,7 @@ function checkTimeDiscountField(productId) {
         let productPrice = $('#somePrice').val();
         if (discountId) {
             $.ajax({
-                url: `http://localhost:8000/api/time_discount/${discountId}/`,
+                url: `https://market.shopuchet.kz/api/time_discount/${discountId}/`,
                 method: "GET",
                 headers: {
                     'Authentication': `Token ${token}`
@@ -175,7 +175,7 @@ function checkStartDiscount(productId){
         let discountId = data.discount_id
         if (discountId){
             return $.ajax({
-                url: `http://localhost:8000/api/time_discount/${discountId}/check-start`,
+                url: `https://market.shopuchet.kz/api/time_discount/${discountId}/check-start`,
                 method: "GET",
                 headers: {
                     'Authentication': `Token ${token}`
