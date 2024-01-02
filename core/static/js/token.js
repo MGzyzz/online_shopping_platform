@@ -3,7 +3,7 @@ $('#loginForm').submit(function (event) {
     let password = $('#id_password').val()
     let token
     $.ajax({
-        url: 'http://localhost:8000/api/login/',
+        url: 'https://market.shopuchet.kz/api/login/',
         method: 'POST',
         data: {
             username: email,
@@ -20,7 +20,7 @@ $('#loginForm').submit(function (event) {
 
 $('#logout').click(function logOut(e) {
     $.ajax({
-        url: 'http://localhost:8000/api/logout/',
+        url: 'https://market.shopuchet.kz/api/logout/',
         method: 'post',
         headers: {'Authorization': 'Token ' + localStorage.getItem('Token')},
         dataType: 'json',

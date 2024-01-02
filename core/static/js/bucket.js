@@ -64,7 +64,7 @@ function deleteFromBucket() {
         let itemId = $(this).data('item-id')
         $.ajax(
             {
-                url: `https://localhost:8000/api/bucket/${itemId}/remove_from_cart/`,
+                url: `https://market.shopuchet.kz/api/bucket/${itemId}/remove_from_cart/`,
                 type: 'DELETE',
                 success: function (response) {
                     console.log('Successful deleted', response)
@@ -87,7 +87,7 @@ toCart()
 function updateQuantity(itemId, newQuantity) {
     return new Promise(function (resolve, reject) {
         $.ajax({
-            url: `http://localhost:8000/api/bucket/${itemId}/update_quantity/`,
+            url: `https://market.shopuchet.kz/api/bucket/${itemId}/update_quantity/`,
             method: 'PUT',
             data: {
                 id: itemId,
