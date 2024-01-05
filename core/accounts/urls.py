@@ -10,4 +10,5 @@ urlpatterns = [
     path('sms-verification/', views.Sms_Verification.as_view(), name='sms-verification'),
     path('shop/<int:shop_id>/sign-in/', views.AccountLoginView.as_view(), name='account_login'),
     path('shop/<int:shop_id>/register/', views.AccountRegisterView.as_view(), name='account_register'),
+    path('login-page/', views.LoginPageView.as_view(), name='login_page')
 ]

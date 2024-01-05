@@ -53,15 +53,15 @@
                     </div>
 
                     <div class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-4 relative search-wrapper on-index">
-                        <form action="" class="search">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Поиск по каталогу">
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+{#                        <form action="" class="search">#}
+{#                            <div class="input-group">#}
+{#                                <input type="text" class="form-control" placeholder="Поиск по каталогу">#}
+{#                                <div class="input-group-append">#}
+{#                                    <button class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i>#}
+{#                                    </button>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </form>#}
                     </div>
                     <div class="col-12 col-sm-6 col-md-4 col-lg-2 text-center text-sm-left mt-3 mt-sm-0">
                         <div class="h6 mb-0">
@@ -76,16 +76,16 @@
                         <div class="widgets-wrap d-flex justify-content-center justify-content-lg-end mt-4 mt-lg-0">
                             <div class="widget-header me-3">
                                 <a href="#" class="icon-text decor">
-                                    <div class="icon">
-                                        <i class="fa-regular fa-heart"></i>
-                                    </div>
-                                    <div class="text">
-                                        <small class="text-muted"> Избранное</small>
-                                        <br>
-                                        <span>
-                                            Кол-во:
-                                        </span>
-                                    </div>
+{#                                    <div class="icon">#}
+{#                                        <i class="fa-regular fa-heart"></i>#}
+{#                                    </div>#}
+{#                                    <div class="text">#}
+{#                                        <small class="text-muted"> Избранное</small>#}
+{#                                        <br>#}
+{#                                        <span>#}
+{#                                            Кол-во:#}
+{#                                        </span>#}
+{#                                    </div>#}
                                 </a>
                             </div>
 
@@ -99,7 +99,6 @@
                                         </a>
                                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                             <a class="dropdown-item" href="{% url 'profile' id=request.user.id %}">Профиль</a>
-                                            <a class="dropdown-item" href="#">Настройки</a>
                                             <a class="dropdown-item" href="{% url 'update_user' id=request.user.id %}">Изменение
                                                 пользователя</a>
                                             <a class="dropdown-item"
@@ -128,13 +127,12 @@
                                          </span>
                                         </div>
                                     </a>
-                                    <div class="dropdown-menu dropdown-menu-right {{ request.session.dropdown }}"
-                                         style="position: absolute; will-change: transform;">
+                                    <div id="DropDown" class="dropdown-menu dropdown-menu-right "
+                                         style="position: absolute; will-change: transform">
                                         <form method="post" action="{% url 'login' %}" id="loginForm" class="px-4 py-4">
                                             {% csrf_token %}
                                             <div class="form-group ">
                                                 <label>Email</label>
-                                                <label>Для тестов: admin@gmail.com</label>
                                                 {{ form.username }}
                                                 {% if form.username.errors %}
                                                     <div class="alert alert-danger mt-5">
@@ -144,7 +142,6 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>Пароль</label>
-                                                <label>Для тестов: 123</label>
                                                 {{ form.password }}
                                                 {% if form.password.errors %}
                                                     <div class="alert alert-danger mt-5">
@@ -162,7 +159,7 @@
                                         </form>
                                         <hr class="dropdown-divider">
                                         <a href="{% url 'register' %}" class="dropdown-item">Зарегистрироваться</a>
-                                        <a href="" class="dropdown-item"> Забыли пароль?</a>
+{#                                        <a href="" class="dropdown-item"> Забыли пароль?</a>#}
                                     </div>
                                 {% endif %}
                                 </div>
@@ -180,30 +177,11 @@
                     <div class="collapse navbar-collapse" id="navbarNavDropdown">
                         <ul class="navbar-nav">
                             <li class='nav-item'>
-                                <a class="nav-link-color" href="#">TEST PAGE</a>
+                                <a class="nav-link-color" href="#">Каталог</a>
                             </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link-color dropdown-toggle" href="#" id="navbarDropdownMenuLink"
-                                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Каталог
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                    <li><a class="dropdown-item" href="#">Action</a></li>
-                                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                </ul>
+                            <li class='nav-item'>
+                                <a class="nav-link-color" href="{% if user.is_authenticated %}{% url 'shop_create' %}{% else %}{% url 'login_page' %}{% endif %}">Создать магазин</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link-color active" aria-current="page" href="#">Home</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link-color" href="#">Features</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link-color" href="#">Pricing</a>
-                            </li>
-
                         </ul>
                     </div>
                 </div>
@@ -245,6 +223,7 @@
     </section>
 
     <section class="section-content bg padding-y slider-block">
+    <h3 class="ms-5">Примеры магазинов</h3>
         <div class="container">
             <div class="row">
                 {% for shop in shops %}
@@ -299,18 +278,18 @@
                     </article>
                 </aside>
 
-                <aside class="col-md-3 col-12">
-                    <article>
-                        <h5 class="title">Каталог</h5>
-                        <ul class="list-icon">
-                            <li><a href="#"> Электроника</a></li>
-                            <li><a href="#"> Одежда</a></li>
-                            <li><a href="#"> Питание</a></li>
-                            <li><a href="#"> </a></li>
-                        </ul>
-
-                    </article>
-                </aside>
+{#                <aside class="col-md-3 col-12">#}
+{#                    <article>#}
+{#                        <h5 class="title">Каталог</h5>#}
+{#                        <ul class="list-icon">#}
+{#                            <li><a href="#"> Электроника</a></li>#}
+{#                            <li><a href="#"> Одежда</a></li>#}
+{#                            <li><a href="#"> Питание</a></li>#}
+{#                            <li><a href="#"> </a></li>#}
+{#                        </ul>#}
+{##}
+{#                    </article>#}
+{#                </aside>#}
                 <aside class="col-md-3 col-12">
                     <h5 class="title">Информация</h5>
                     <ul class="list-icon">
@@ -319,16 +298,16 @@
                         <li><a href="#"> О Компании</a></li>
                     </ul>
                 </aside>
-                <aside class="col-md-3 col-12 social-links">
-                    <h5 class="title"> Мы в соц. сетях</h5>
-                    <div>
-                        <a href="#" target="_blank" class="btn btn-icon btn-primary icon-vk"> <i class="fab fa-vk"></i></a>
-                        <a href="#" target="_blank" class="btn btn-icon btn-primary border-0 icon-instagram"><i
-                                class="fab fa-instagram"></i></a>
-                        <a href="#" target="_blank" class="btn btn-icon btn-primary icon-telegram"><i
-                                class="fab fa-telegram"></i></a>
-                    </div>
-                </aside>
+{#                <aside class="col-md-3 col-12 social-links">#}
+{#                    <h5 class="title"> Мы в соц. сетях</h5>#}
+{#                    <div>#}
+{#                        <a href="#" target="_blank" class="btn btn-icon btn-primary icon-vk"> <i class="fab fa-vk"></i></a>#}
+{#                        <a href="#" target="_blank" class="btn btn-icon btn-primary border-0 icon-instagram"><i#}
+{#                                class="fab fa-instagram"></i></a>#}
+{#                        <a href="#" target="_blank" class="btn btn-icon btn-primary icon-telegram"><i#}
+{#                                class="fab fa-telegram"></i></a>#}
+{#                    </div>#}
+{#                </aside>#}
             </div>
         </section>
     </div>

@@ -17,9 +17,30 @@ class LoginView(views.LoginView):
     def get_success_url(self):
         return reverse('home')
 
-    def form_invalid(self, form):
-        self.request.session['dropdown'] = 'show'
-        return render(self.request, 'main.html', {'form': form})
+    # def form_invalid(self, form):
+    #     self.request.session['dropdown'] = 'show'
+    #     return render(self.request, 'main.html', {'form': form})
+
+    def form_valid(self, form):
+        user = form.get_user()
+
+        self.request.session['user_id'] = user.id
+        self.request.session['phone'] = user.phone
+
+        if user.phone_verification and user is not None:
+            login(self.request, user)
+
+            return redirect(self.get_success_url())
+
+        return redirect('sms-verification')
+
+
+class LoginPageView(views.LoginView):
+    template_name = 'login.html'
+    form_class = LoginForm
+
+    def get_success_url(self):
+        return reverse('home')
 
     def form_valid(self, form):
         user = form.get_user()
