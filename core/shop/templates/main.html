@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'css/create_product.css' %}">
     {% block script %}
+        <script src="{% static 'js/login.js' %}" defer></script>
     {% endblock %}
     <!-- bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -111,8 +112,8 @@
                                     </ul>
                                 {% else %}
 
-                                    <div class="widget-header dropdown">
-                                    <a href="" class="ml-3 icon-text decor" data-toggle="dropdown" data-offset="20, 10"
+                                    <div class="widget-header dropdown drop">
+                                    <a id="dropLink" href="" class="ml-3 icon-text decor" data-toggle="dropdown" data-offset="20, 10"
                                        aria-expanded="true">
                                         <div class="icon">
                                             <i class="fa fa-lg fa-user-circle"></i>
@@ -127,8 +128,8 @@
                                          </span>
                                         </div>
                                     </a>
-                                    <div id="DropDown" class="dropdown-menu dropdown-menu-right "
-                                         style="position: absolute; will-change: transform">
+                                    <div id="dropDownMenu" class="dropdown-menu dropdown-menu-right drop "
+                                         style="position: absolute; will-change: transform;">
                                         <form method="post" action="{% url 'login' %}" id="loginForm" class="px-4 py-4">
                                             {% csrf_token %}
                                             <div class="form-group ">
