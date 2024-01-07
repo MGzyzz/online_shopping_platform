@@ -8,7 +8,7 @@ $(document).ready(function () {
     let isRequestSent = localStorage.getItem('isRequestSent')
     if (!isRequestSent){
     $.ajax({
-        url: `http://sms:1026/sms/send/${userId}`,
+        url: `https://market.shopuchet.kz/sms/sms/send/${userId}`,
         method: 'POST',
         success: function (resp){
             console.log(`success ${resp}`)
@@ -19,6 +19,3 @@ $(document).ready(function () {
         }
 })}
 });
-
-
-

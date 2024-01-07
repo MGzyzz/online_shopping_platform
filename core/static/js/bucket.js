@@ -4,7 +4,7 @@ function toCart() {
         let productId = $(this).data('product-id');
         let shopId = $(this).data('shop-id')
         $.ajax({
-            url: 'http://localhost:8000/api/bucket/add_to_cart/',
+            url: 'https://market.shopuchet.kz/api/bucket/add_to_cart/',
             type: 'POST',
             data: {
                 shop: shopId,
@@ -29,7 +29,7 @@ function toCartUser() {
         let userId = $(this).data('user-id')
         let shopId = $(this).data('shop-id')
         $.ajax({
-            url: 'http://localhost:8000/api/bucket/add_to_cart/',
+            url: 'https://market.shopuchet.kz/api/bucket/add_to_cart/',
             type: 'POST',
 
             data: {
@@ -64,7 +64,7 @@ function deleteFromBucket() {
         let itemId = $(this).data('item-id')
         $.ajax(
             {
-                url: `http://localhost:8000/api/bucket/${itemId}/remove_from_cart/`,
+                url: `https://market.shopuchet.kz/api/bucket/${itemId}/remove_from_cart/`,
                 type: 'DELETE',
                 success: function (response) {
                     console.log('Successful deleted', response)
@@ -87,7 +87,7 @@ toCart()
 function updateQuantity(itemId, newQuantity) {
     return new Promise(function (resolve, reject) {
         $.ajax({
-            url: `http://localhost:8000/api/bucket/${itemId}/update_quantity/`,
+            url: `https://market.shopuchet.kz/api/bucket/${itemId}/update_quantity/`,
             method: 'PUT',
             data: {
                 id: itemId,
