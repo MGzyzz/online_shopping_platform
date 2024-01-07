@@ -64,9 +64,6 @@ class ImagesForm(forms.ModelForm):
         return self.cleaned_data
 
 
-
-
-
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
@@ -81,3 +78,12 @@ class OrderForm(forms.ModelForm):
             'payer_address': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
             'payer_postal_code': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
         }
+
+
+class SearchForm(forms.Form):
+    search = forms.CharField(
+        max_length=100,
+        required=False,
+        label='Search:',
+        widget=forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Введите название магазина'})
+    )

@@ -6,6 +6,7 @@ urlpatterns = [
     path('create/', ShopCreateView.as_view(), name='shop_create'),
     path('update/<int:id>', ShopUpdateView.as_view(), name='shop_update'),
     path('delete/<int:id>', ShopDeleteView.as_view(), name='shop_delete'),
+    path('shop/catalog', shop.ShopCatalogView.as_view(), name='shop_catalog'),
 
     path('shop/<int:shop_id>/create_product/', ProductCreateView.as_view(), name='create_product'),
     path('shop/<int:shop_id>/products/', ProductListView.as_view(), name='shop_products'),
