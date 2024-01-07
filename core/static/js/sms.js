@@ -5,8 +5,8 @@ $(document).ready(function () {
         }
     });
     let userId = $('#userId').val()
-    let isRequestSent = localStorage.getItem('isRequestSent')
-    if (!isRequestSent){
+    // let isRequestSent = localStorage.getItem('isRequestSent')
+    // if (!isRequestSent){
     $.ajax({
         url: `https://market.shopuchet.kz/sms/sms/send/${userId}`,
         method: 'POST',
@@ -17,5 +17,5 @@ $(document).ready(function () {
         error: function (err) {
             console.log(`fail ${err}`)
         }
-})}
+})
 });
