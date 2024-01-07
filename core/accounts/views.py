@@ -17,10 +17,6 @@ class LoginView(views.LoginView):
     def get_success_url(self):
         return reverse('home')
 
-    # def form_invalid(self, form):
-    #     self.request.session['dropdown'] = 'show'
-    #     return render(self.request, 'main.html', {'form': form})
-
     def form_valid(self, form):
         user = form.get_user()
 
@@ -69,7 +65,7 @@ class RegisterView(CreateView):
     def form_valid(self, form):
         user = form.save(commit=False)
         user.save()
-        user.groups.add(1)
+        # user.groups.add(1)
         user.is_staff = True
 
         self.request.session['user_id'] = user.id
