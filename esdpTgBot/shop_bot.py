@@ -40,7 +40,7 @@ class ShopBot:
                         url="https://market.shopuchet.kz/static/telegram.html"), data=self.shop_data['products'])
                 ],
 
-                [types.InlineKeyboardButton(text="Перейти на наш сайт", url=f'https://market.shopuchet.kz/{self.shop_data["id"]}')]
+                [types.InlineKeyboardButton(text="Перейти на наш сайт", url=f'https://market.shopuchet.kz/shop/{self.shop_data["id"]}')]
             ]
             keyboard = types.InlineKeyboardMarkup(inline_keyboard=buttons)
 
