@@ -39,7 +39,7 @@
         </div>
     </div>
 </nav>
-<div class="container mt-5 mb-2 register-container" >
+<div class="container mt-5 mb-2 register-container">
     <div class="d-flex register-main">
 
         <div class="w-50 my-auto mx-5 register-text">
@@ -72,10 +72,10 @@
             </p>
         </div>
         <div class="row justify-content-center w-50 register-card">
-        <div class="card-title">
-            <h1 class="register-title">Присоединяйтесь к #Название компании.</h1>
-            <h5 class="slogan">Слоган компании</h5>
-        </div>
+            <div class="card-title">
+                <h1 class="register-title">Присоединяйтесь к #Название компании.</h1>
+                <h5 class="slogan">Слоган компании</h5>
+            </div>
             <div class="card registration-card">
                 <div class="card-body">
                     <form id="registrationForm" method="post" action="{% url 'register' %}">
@@ -124,6 +124,26 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="inputIin">ИИН</label>
+                            {{ form.iin }}
+                            {% if form.iin.errors %}
+                                <div class="alert alert-danger mt-3">
+                                    {{ form.iin.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputBin">БИН</label>
+                            {{ form.bin }}
+                            {% if form.bin.errors %}
+                                <div class="alert alert-danger mt-3">
+                                    {{ form.bin.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
                             <label for="inputPassword">Пароль</label>
                             {{ form.password1 }}
                             {% if form.password1.errors %}
@@ -153,7 +173,8 @@
 </div>
 
 <footer>
-    <small><a target="_blank" class="link-dark" href="https://icons8.com/icon/TCnKnYZFoOzM/телеграмма-app">Телеграмм App</a> icon by <a target="_blank" class="link-dark" href="https://icons8.com">Icons8</a></small>
+    <small><a target="_blank" class="link-dark" href="https://icons8.com/icon/TCnKnYZFoOzM/телеграмма-app">Телеграмм
+        App</a> icon by <a target="_blank" class="link-dark" href="https://icons8.com">Icons8</a></small>
 </footer>
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

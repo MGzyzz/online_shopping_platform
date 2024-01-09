@@ -49,7 +49,7 @@ class RegisterForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         fields = [
-            'email', 'first_name', 'last_name', 'password1', 'password2',
+            'email', 'first_name', 'last_name', 'password1', 'password2', 'iin', 'bin'
             'phone'
         ]
         widgets = {
@@ -58,6 +58,8 @@ class RegisterForm(UserCreationForm):
             'last_name': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
             'password1': forms.PasswordInput(attrs={'class': 'form-control', 'required': True}),
             'password2': forms.PasswordInput(attrs={'class': 'form-control', 'required': True}),
+            'iin': forms.IntegerField(attrs={'class': 'form-control', 'required': True}),
+            'bin': forms.IntegerField(attrs={'class': 'form-control', 'required': True}),
         }
 
 
