@@ -20,7 +20,7 @@ app.add_middleware(
 )
 
 
-@app.post('/sms/send/{id_}')
+@app.post('/send/{id_}')
 async def send_sms(id_: int):
     response = httpx.get(f'{os.environ.get("CORE_URL")}/api/user/{id_}')
 
