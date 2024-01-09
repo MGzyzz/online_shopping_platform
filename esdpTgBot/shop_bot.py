@@ -27,7 +27,9 @@ class ShopBot:
                 image_from_url = URLInputFile(self.shop_data['logo'])
                 await message.answer_photo(image_from_url,
                                        caption=f'Здраствуйте! Вас приветствует бот магазина: {self.shop_data["name"]}\n'
-                                               f'Описание нашего магазина: {self.shop_data["description"]}')
+                                               f'Описание нашего магазина: {self.shop_data["description"]}'
+                                               f'{self.shop_data["products"]}')
+
             except Exception as e:
                 print(e)
 
