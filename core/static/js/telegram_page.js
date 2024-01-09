@@ -3,7 +3,7 @@ const parsedShopData = JSON.parse(decodeURIComponent(shopData));
 
 const shopDataContainer = document.getElementById('shopDataContainer')
 
-shopData.images.forEach(image => {
+parsedShopData.images.forEach(image => {
   shopDataContainer.innerHTML += `
     <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner">
