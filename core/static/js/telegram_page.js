@@ -1,4 +1,5 @@
 const shopData = window.location.href.split('?')[1]
+console.log(shopData)
 const parsedShopData = JSON.parse(decodeURIComponent(shopData));
 
 const shopDataContainer = document.getElementById('shopDataContainer')
