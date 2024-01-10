@@ -5,12 +5,6 @@ from django.utils import timezone
 from shop.models import TimeDiscount
 
 
-def delete_keys_with_prefix(redis_client, prefix):
-    keys_to_delete = redis_client.keys(f'{prefix}*')
-    for key in keys_to_delete:
-        redis_client.delete(key)
-
-
 @shared_task
 def check_expiration():
     discounts = TimeDiscount.objects.all()
