@@ -15,4 +15,10 @@ app.conf.beat_schedule = {
         "task": "api.tasks.check_expiration",
         "schedule": timedelta(seconds=10),
     },
+    "cleanup_old_task_metadata": {
+        "task": "api.tasks.cleanup_old_task_metadata",
+        "schedule": timedelta(minutes=1),
+    },
 }
+
+app.conf.result_expires = 60
