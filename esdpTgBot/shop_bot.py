@@ -36,12 +36,11 @@ class ShopBot:
 
         @self.dp.message(Command('info'))
         async def info(message: types.Message):
-            products_json = json.dumps(self.shop_data['products'])
             buttons = [
                 [
                     types.InlineKeyboardButton(text="Оформить досатвку", callback_data='test2'),
                     types.InlineKeyboardButton(text="Каталог магазина ", web_app=WebAppInfo(
-                        url=f"https://market.shopuchet.kz/static/telegram.html?products={products_json}"))
+                        url=f"https://market.shopuchet.kz/"))
                 ],
 
                 [types.InlineKeyboardButton(text="Перейти на наш сайт", url=f'https://market.shopuchet.kz/shop/{self.shop_data["id"]}')]
@@ -58,9 +57,12 @@ class ShopBot:
 
 
 async def main() -> None:
-    shop_data_list = await shop_data()
-    bots = [ShopBot(token=shop['tg_token'], shop_data=shop) for shop in shop_data_list]
-    await asyncio.gather(*(bot.run() for bot in bots))
+    try:
+        shop_data_list = await shop_data()
+        bots = [ShopBot(token=shop['tg_token'], shop_data=shop) for shop in shop_data_list]
+        await asyncio.gather(*(bot.run() for bot in bots))
+    except Exception as e:
+        print(e)
 
 
 if __name__ == '__main__':
