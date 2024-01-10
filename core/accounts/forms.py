@@ -23,6 +23,7 @@ class PhoneNumberInput(forms.CharField):
 
 
 class RegisterForm(UserCreationForm):
+    
     password1 = forms.CharField(
         strip=False,
         widget=forms.PasswordInput(
@@ -45,7 +46,23 @@ class RegisterForm(UserCreationForm):
     )
     phone = PhoneNumberInput(max_length=12,
                              widget=forms.TextInput(attrs={'class': "form-control", 'placeholder': '+7XXXXXXXXXX '}))
+    
+    def clean_iin(self):
+        iin = self.cleaned_data.get('iin', '')
+        if not iin.isdigit() or len(iin) != 12:
+            raise ValidationError("ИИН должен быть из 12 цифр.")
+        if User.objects.filter(iin=iin).exists():
+            raise ValidationError("Пользователь с таким ИИН уже существует.")
+        return iin
 
+    def clean_bin(self):
+        bin = self.cleaned_data.get('bin', '')
+        if not bin.isdigit() or len(bin) != 12:
+            raise ValidationError("БИН должен быть из 12 цифр.")
+        if User.objects.filter(bin=bin).exists():
+            raise ValidationError("Пользователь с таким БИН уже существует.")
+        return bin
+    
     class Meta(UserCreationForm.Meta):
         model = User
         fields = [
@@ -92,17 +109,6 @@ class PasswordChangeForm(forms.ModelForm):
             raise forms.ValidationError('Старый пароль неправильный!')
         return old_password
 
-    def clean_iin(self):
-        iin = self.cleaned_data['iin']
-        if not iin.isdigit() or len(iin) != 12:
-            raise ValidationError("ИИН должен быть из 12 цифр.")
-        return iin
-
-    def clean_bin(self):
-        bin = self.cleaned_data['bin']
-        if not bin.isdigit() or len(bin) != 12:
-            raise ValidationError("БИН должен быть из 12 цифр.")
-        return bin
 
     def save(self, commit=True):
         user = self.instance
