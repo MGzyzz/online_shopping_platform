@@ -1,5 +1,10 @@
-const shopData = window.location.href.split('?')[1]
-const parsedShopData = JSON.parse(decodeURIComponent(shopData));
+const shopData = new URLSearchParams(window.location.search)
+console.log(shopData)
+let productData = shopData.get('products')
+console.log(productData)
+
+const parsedShopData = JSON.parse(productData);
+console.log('parsedShopData', parsedShopData)
 
 const shopDataContainer = document.getElementById('shopDataContainer')
 

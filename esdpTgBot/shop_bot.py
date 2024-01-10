@@ -1,4 +1,5 @@
 import asyncio
+import json
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters.command import Command
@@ -35,11 +36,12 @@ class ShopBot:
 
         @self.dp.message(Command('info'))
         async def info(message: types.Message):
+            products_json = json.dumps(self.shop_data['products'])
             buttons = [
                 [
                     types.InlineKeyboardButton(text="Оформить досатвку", callback_data='test2'),
                     types.InlineKeyboardButton(text="Каталог магазина ", web_app=WebAppInfo(
-                        url="https://market.shopuchet.kz/static/telegram.html"), data=self.shop_data['products'])
+                        url=f"https://market.shopuchet.kz/static/telegram.html?products={products_json}"))
                 ],
 
                 [types.InlineKeyboardButton(text="Перейти на наш сайт", url=f'https://market.shopuchet.kz/shop/{self.shop_data["id"]}')]
