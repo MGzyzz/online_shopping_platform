@@ -49,7 +49,7 @@ class RegisterForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         fields = [
-            'email', 'first_name', 'last_name', 'password1', 'password2', 'iin', 'bin'
+            'email', 'first_name', 'last_name', 'password1', 'password2', 'iin', 'bin',
             'phone'
         ]
         widgets = {
@@ -58,8 +58,8 @@ class RegisterForm(UserCreationForm):
             'last_name': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
             'password1': forms.PasswordInput(attrs={'class': 'form-control', 'required': True}),
             'password2': forms.PasswordInput(attrs={'class': 'form-control', 'required': True}),
-            'iin': forms.IntegerField(attrs={'class': 'form-control', 'required': True}),
-            'bin': forms.IntegerField(attrs={'class': 'form-control', 'required': True}),
+            'iin': forms.NumberInput(attrs={'class': 'form-control', 'required': True}),
+            'bin': forms.NumberInput(attrs={'class': 'form-control', 'required': True}),
         }
 
 
@@ -91,6 +91,18 @@ class PasswordChangeForm(forms.ModelForm):
         if not self.instance.check_password(old_password):
             raise forms.ValidationError('Старый пароль неправильный!')
         return old_password
+
+    def clean_iin(self):
+        iin = self.cleaned_data['iin']
+        if not iin.isdigit() or len(iin) != 12:
+            raise ValidationError("ИИН должен быть из 12 цифр.")
+        return iin
+
+    def clean_bin(self):
+        bin = self.cleaned_data['bin']
+        if not bin.isdigit() or len(bin) != 12:
+            raise ValidationError("БИН должен быть из 12 цифр.")
+        return bin
 
     def save(self, commit=True):
         user = self.instance

@@ -2,7 +2,7 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import AbstractUser, PermissionsMixin, UserManager
 from django.db import models
 from django.utils import timezone
-
+from django.core.validators import RegexValidator
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -25,8 +25,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, verbose_name='Email')
     first_name = models.CharField(max_length=50, verbose_name='Имя')
     last_name = models.CharField(max_length=50, verbose_name='Фамилия')
-    iin = models.BigIntegerField(max_length=12, verbose_name='ИИН')
-    bin = models.BigIntegerField(max_length=12, verbose_name='БИН')
+    iin = models.CharField(
+        max_length=12,
+        validators=[RegexValidator(r'^\d{1,12}$', 'Только цифры, максимум 12.')],
+        verbose_name='ИИН'
+    )
+    bin = models.CharField(
+        max_length=12,
+        validators=[RegexValidator(r'^\d{1,12}$', 'Только цифры, максимум 12.')],
+        verbose_name='БИН'
+    )
     phone = models.BigIntegerField(verbose_name='Телефон', unique=True)
     is_staff = models.BooleanField(default=False, verbose_name='Сотрудник')
     is_active = models.BooleanField(default=True, verbose_name='Активен')
