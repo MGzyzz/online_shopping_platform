@@ -39,7 +39,7 @@ class ShopBot:
                 [
                     types.InlineKeyboardButton(text="Оформить досатвку", callback_data='test2'),
                     types.InlineKeyboardButton(text="Каталог магазина ", web_app=WebAppInfo(
-                        url=f"https://market.shopuchet.kz/static/telegram.html?{self.shop_data['products']}"), )
+                        url=f"https://market.shopuchet.kz/static/telegram.html?products={self.shop_data['products']}"))
                 ],
 
                 [types.InlineKeyboardButton(text="Перейти на наш сайт", url=f'https://market.shopuchet.kz/shop/{self.shop_data["id"]}')]
