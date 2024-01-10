@@ -5,12 +5,14 @@ $(document).ready(function () {
         }
     });
     let userId = $('#userId').val()
-    console.log(userId)
+    // let isRequestSent = localStorage.getItem('isRequestSent')
+    // if (!isRequestSent){
     $.ajax({
         url: `https://market.shopuchet.kz/sms/send/${userId}`,
         method: 'POST',
         success: function (resp){
             console.log(`success ${resp}`)
+            // localStorage.setItem('isRequestSent', true)
         },
         error: function (err) {
             console.log(`fail ${err}`)

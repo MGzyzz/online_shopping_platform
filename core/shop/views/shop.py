@@ -1,10 +1,13 @@
+from urllib.parse import urlencode
+
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views.generic import CreateView, UpdateView, ListView, DeleteView
 
 from accounts.forms import LoginForm
-from shop.forms import ShopModelForm
+from shop.forms import ShopModelForm, SearchForm
 from shop.models import Shop, Product, Bucket
 from django.urls import reverse_lazy
 
@@ -36,14 +39,6 @@ class ShopUpdateView(PermissionRequiredMixin, UpdateView):
     def has_permission(self):
         return self.shop.user == self.request.user
 
-    def form_valid(self, form):
-        shop = form.save(commit=False)
-        old_logo = self.shop.logo
-        storage, path = old_logo.storage, old_logo.path
-        storage.delete(path)
-        shop.save()
-        return super().form_valid(form)
-
     def get_success_url(self):
         return reverse_lazy('profile', kwargs={'id': self.request.user.id})
 
@@ -52,7 +47,7 @@ class ShopListView(ListView):
     template_name = 'main.html'
     model = Shop
     context_object_name = 'shops'
-    paginate_by = 5
+    paginate_by = 3
     extra_context = {
         'form': LoginForm(),
         "products": Product.objects.all(),
@@ -70,6 +65,41 @@ class ShopListView(ListView):
         context['total_price'] = total_price
 
         return context
+
+
+class ShopCatalogView(ListView):
+    template_name = 'shop/catalog.html'
+    model = Shop
+    context_object_name = 'shops'
+    paginate_by = 9
+
+    def dispatch(self, request, *args, **kwargs):
+        self.form = self.get_search_form()
+        self.search_value = self.get_search_value()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form
+        if self.search_value:
+            context['query'] = urlencode({'search': self.search_value})
+
+        return context
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if self.search_value:
+            query = Q(name__icontains=self.search_value)
+            qs = qs.filter(query)
+
+        return qs
+
+    def get_search_form(self):
+        return SearchForm(self.request.GET)
+
+    def get_search_value(self):
+        if self.form.is_valid():
+            return self.form.cleaned_data.get('search')
 
 
 class ShopDeleteView(PermissionRequiredMixin, DeleteView):

@@ -20,6 +20,10 @@
                     <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
                        href="{% url 'profile' shop.user.id %}">Личный кабинет</a>
                 </li>
+                 <li class="nav-item">
+                    <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
+                       href="{% url 'create_product' shop.id %}">Добавить продукт</a>
+                </li>
             {% endif %}
             <li class="nav-item">
                 <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"

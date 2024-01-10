@@ -23,6 +23,7 @@ class PhoneNumberInput(forms.CharField):
 
 
 class RegisterForm(UserCreationForm):
+    
     password1 = forms.CharField(
         strip=False,
         widget=forms.PasswordInput(
@@ -45,11 +46,27 @@ class RegisterForm(UserCreationForm):
     )
     phone = PhoneNumberInput(max_length=12,
                              widget=forms.TextInput(attrs={'class': "form-control", 'placeholder': '+7XXXXXXXXXX '}))
+    
+    def clean_iin(self):
+        iin = self.cleaned_data.get('iin', '')
+        if not iin.isdigit() or len(iin) != 12:
+            raise ValidationError("ИИН должен быть из 12 цифр.")
+        if User.objects.filter(iin=iin).exists():
+            raise ValidationError("Пользователь с таким ИИН уже существует.")
+        return iin
 
+    def clean_bin(self):
+        bin = self.cleaned_data.get('bin', '')
+        if not bin.isdigit() or len(bin) != 12:
+            raise ValidationError("БИН должен быть из 12 цифр.")
+        if User.objects.filter(bin=bin).exists():
+            raise ValidationError("Пользователь с таким БИН уже существует.")
+        return bin
+    
     class Meta(UserCreationForm.Meta):
         model = User
         fields = [
-            'email', 'first_name', 'last_name', 'password1', 'password2',
+            'email', 'first_name', 'last_name', 'password1', 'password2', 'iin', 'bin',
             'phone'
         ]
         widgets = {
@@ -58,6 +75,8 @@ class RegisterForm(UserCreationForm):
             'last_name': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
             'password1': forms.PasswordInput(attrs={'class': 'form-control', 'required': True}),
             'password2': forms.PasswordInput(attrs={'class': 'form-control', 'required': True}),
+            'iin': forms.NumberInput(attrs={'class': 'form-control', 'required': True}),
+            'bin': forms.NumberInput(attrs={'class': 'form-control', 'required': True}),
         }
 
 
@@ -67,15 +86,25 @@ class LoginForm(AuthenticationForm):
 
 
 class UserUpdateForm(forms.ModelForm):
+    phone = PhoneNumberInput(max_length=12,
+                             widget=forms.TextInput(attrs={'class': "form-control"}))
+
     class Meta:
         model = get_user_model()
         fields = ['first_name', 'last_name', 'phone']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+        }
 
 
 class PasswordChangeForm(forms.ModelForm):
-    password = forms.CharField(label="Новый пароль", strip=False, widget=forms.PasswordInput)
-    password_confirm = forms.CharField(label="Подтвердите пароль", widget=forms.PasswordInput, strip=False)
-    old_password = forms.CharField(label="Старый пароль", strip=False, widget=forms.PasswordInput)
+    password = forms.CharField(label="Новый пароль", strip=False,
+                               widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    password_confirm = forms.CharField(label="Подтвердите пароль",
+                                       widget=forms.PasswordInput(attrs={'class': 'form-control'}), strip=False)
+    old_password = forms.CharField(label="Старый пароль", strip=False,
+                                   widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     def clean_password_confirm(self):
         password = self.cleaned_data.get("password")
@@ -89,6 +118,7 @@ class PasswordChangeForm(forms.ModelForm):
         if not self.instance.check_password(old_password):
             raise forms.ValidationError('Старый пароль неправильный!')
         return old_password
+
 
     def save(self, commit=True):
         user = self.instance
