@@ -27,7 +27,7 @@
                                 <label for="{{ form.first_name.id_for_label }}">Имя</label>
                                 {{ form.first_name }}
                                 {% if form.first_name.errors %}
-                                    <div class="invalid-feedback">
+                                    <div class="alert alert-danger mt-5">
                                         {{ form.first_name.errors }}
                                     </div>
                                 {% endif %}
@@ -37,7 +37,7 @@
                                 <label for="{{ form.last_name.id_for_label }}">Фамилия</label>
                                 {{ form.last_name }}
                                 {% if form.last_name.errors %}
-                                    <div class="invalid-feedback">
+                                    <div class="alert alert-danger mt-5">
                                         {{ form.last_name.errors }}
                                     </div>
                                 {% endif %}
@@ -47,11 +47,16 @@
                                 <label for="{{ form.phone.id_for_label }}">Телефон</label>
                                 {{ form.phone }}
                                 {% if form.phone.errors %}
-                                    <div class="invalid-feedback">
+                                    <div class="alert alert-danger mt-5">
                                         {{ form.phone.errors }}
                                     </div>
                                 {% endif %}
                             </div>
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger mt-5">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
 
                             <button type="submit" class="btn btn-primary btn-block">Сохранить изменения</button>
                         </form>
