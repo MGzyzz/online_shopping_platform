@@ -3,7 +3,8 @@ console.log(shopData)
 let productData = shopData.get('products')
 console.log(productData)
 
-const parsedShopData = JSON.parse(decodeURIComponent(shopData));
+const parsedShopData = JSON.parse(productData);
+console.log('parsedShopData', parsedShopData)
 
 const shopDataContainer = document.getElementById('shopDataContainer')
 
