@@ -67,15 +67,25 @@ class LoginForm(AuthenticationForm):
 
 
 class UserUpdateForm(forms.ModelForm):
+    phone = PhoneNumberInput(max_length=12,
+                             widget=forms.TextInput(attrs={'class': "form-control"}))
+
     class Meta:
         model = get_user_model()
         fields = ['first_name', 'last_name', 'phone']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+        }
 
 
 class PasswordChangeForm(forms.ModelForm):
-    password = forms.CharField(label="Новый пароль", strip=False, widget=forms.PasswordInput)
-    password_confirm = forms.CharField(label="Подтвердите пароль", widget=forms.PasswordInput, strip=False)
-    old_password = forms.CharField(label="Старый пароль", strip=False, widget=forms.PasswordInput)
+    password = forms.CharField(label="Новый пароль", strip=False,
+                               widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    password_confirm = forms.CharField(label="Подтвердите пароль",
+                                       widget=forms.PasswordInput(attrs={'class': 'form-control'}), strip=False)
+    old_password = forms.CharField(label="Старый пароль", strip=False,
+                                   widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     def clean_password_confirm(self):
         password = self.cleaned_data.get("password")
