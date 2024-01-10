@@ -10,6 +10,14 @@ class ShopModelForm(forms.ModelForm):
     class Meta:
         model = Shop
         fields = ['name', 'logo', 'description', 'theme', 'partner_id', 'tg_token']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'style': 'height: 100px'}),
+            'logo': forms.FileInput(attrs={'class': 'form-control'}),
+            'theme': forms.Select(attrs={'class': 'form-control', 'required': True}),
+            'partner_id': forms.NumberInput(attrs={'class': 'form-control'}),
+            'tg_token': forms.TextInput(attrs={'class': 'form-control'}),
+        }
 
     def clean_tg_token(self):
         tg_token = self.cleaned_data.get('tg_token')

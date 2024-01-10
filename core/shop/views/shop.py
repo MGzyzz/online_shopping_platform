@@ -39,14 +39,6 @@ class ShopUpdateView(PermissionRequiredMixin, UpdateView):
     def has_permission(self):
         return self.shop.user == self.request.user
 
-    def form_valid(self, form):
-        shop = form.save(commit=False)
-        old_logo = self.shop.logo
-        storage, path = old_logo.storage, old_logo.path
-        storage.delete(path)
-        shop.save()
-        return super().form_valid(form)
-
     def get_success_url(self):
         return reverse_lazy('profile', kwargs={'id': self.request.user.id})
 
