@@ -29,6 +29,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'django-app', "sms-service", "159.65.
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
