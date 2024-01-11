@@ -1,5 +1,4 @@
 import asyncio
-import json
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters.command import Command
@@ -57,12 +56,10 @@ class ShopBot:
 
 
 async def main() -> None:
-    try:
         shop_data_list = await shop_data()
         bots = [ShopBot(token=shop['tg_token'], shop_data=shop) for shop in shop_data_list]
         await asyncio.gather(*(bot.run() for bot in bots))
-    except Exception as e:
-        print(e)
+
 
 
 if __name__ == '__main__':
