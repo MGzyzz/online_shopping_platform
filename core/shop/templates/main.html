@@ -54,15 +54,15 @@
                     </div>
 
                     <div class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-4 relative search-wrapper on-index">
-{#                        <form action="" class="search">#}
-{#                            <div class="input-group">#}
-{#                                <input type="text" class="form-control" placeholder="Поиск по каталогу">#}
-{#                                <div class="input-group-append">#}
-{#                                    <button class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i>#}
-{#                                    </button>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                        </form>#}
+                        {#                        <form action="" class="search">#}
+                        {#                            <div class="input-group">#}
+                        {#                                <input type="text" class="form-control" placeholder="Поиск по каталогу">#}
+                        {#                                <div class="input-group-append">#}
+                        {#                                    <button class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i>#}
+                        {#                                    </button>#}
+                        {#                                </div>#}
+                        {#                            </div>#}
+                        {#                        </form>#}
                     </div>
                     <div class="col-12 col-sm-6 col-md-4 col-lg-2 text-center text-sm-left mt-3 mt-sm-0">
                         <div class="h6 mb-0">
@@ -77,21 +77,21 @@
                         <div class="widgets-wrap d-flex justify-content-center justify-content-lg-end mt-4 mt-lg-0">
                             <div class="widget-header me-3">
                                 <a href="#" class="icon-text decor">
-{#                                    <div class="icon">#}
-{#                                        <i class="fa-regular fa-heart"></i>#}
-{#                                    </div>#}
-{#                                    <div class="text">#}
-{#                                        <small class="text-muted"> Избранное</small>#}
-{#                                        <br>#}
-{#                                        <span>#}
-{#                                            Кол-во:#}
-{#                                        </span>#}
-{#                                    </div>#}
+                                    {#                                    <div class="icon">#}
+                                    {#                                        <i class="fa-regular fa-heart"></i>#}
+                                    {#                                    </div>#}
+                                    {#                                    <div class="text">#}
+                                    {#                                        <small class="text-muted"> Избранное</small>#}
+                                    {#                                        <br>#}
+                                    {#                                        <span>#}
+                                    {#                                            Кол-во:#}
+                                    {#                                        </span>#}
+                                    {#                                    </div>#}
                                 </a>
                             </div>
 
                             <ul class="navbar-nav ml-auto">
-                                {% if user.is_authenticated and not user.account  %}
+                                {% if user.is_authenticated and not user.account %}
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
                                            role="button" data-toggle="dropdown" aria-haspopup="true"
@@ -113,7 +113,8 @@
                                 {% else %}
 
                                     <div class="widget-header dropdown drop">
-                                    <a id="dropLink" href="" class="ml-3 icon-text decor" data-toggle="dropdown" data-offset="20, 10"
+                                    <a id="dropLink" href="" class="ml-3 icon-text decor" data-toggle="dropdown"
+                                       data-offset="20, 10"
                                        aria-expanded="true">
                                         <div class="icon">
                                             <i class="fa fa-lg fa-user-circle"></i>
@@ -160,7 +161,7 @@
                                         </form>
                                         <hr class="dropdown-divider">
                                         <a href="{% url 'register' %}" class="dropdown-item">Зарегистрироваться</a>
-{#                                        <a href="" class="dropdown-item"> Забыли пароль?</a>#}
+                                        {#                                        <a href="" class="dropdown-item"> Забыли пароль?</a>#}
                                     </div>
                                 {% endif %}
                                 </div>
@@ -181,7 +182,13 @@
                                 <a class="nav-link-color" href="{% url 'shop_catalog' %}">Каталог</a>
                             </li>
                             <li class='nav-item'>
-                                <a class="nav-link-color" href="{% if user.is_authenticated %}{% url 'shop_create' %}{% else %}{% url 'login_page' %}{% endif %}">Создать магазин</a>
+                                <a class="nav-link-color" href="
+
+
+
+
+                                        {% if user.is_authenticated %}{% url 'shop_create' %}{% else %}{% url 'login_page' %}{% endif %}">Создать
+                                    магазин</a>
                             </li>
                         </ul>
                     </div>
@@ -224,8 +231,10 @@
     </section>
 
     <section class="section-content bg padding-y slider-block">
-    <h3 class="marg-shop">Примеры магазинов</h3>
         <div class="container">
+
+            <h3 class="marg-shop">Примеры магазинов</h3>
+
             <div class="row">
                 {% for shop in shops %}
                     <div class="col-12 col-md-4 mb-3 special-col">
@@ -246,7 +255,7 @@
                     </div>
                 {% endfor %}
             </div>
-       <a href="{% url 'shop_catalog' %}" class="">Смотреть ещё ...</a>
+            <a href="{% url 'shop_catalog' %}" class="">Смотреть ещё ...</a>
         </div>
     </section>
 {% endblock %}
@@ -280,18 +289,18 @@
                     </article>
                 </aside>
 
-{#                <aside class="col-md-3 col-12">#}
-{#                    <article>#}
-{#                        <h5 class="title">Каталог</h5>#}
-{#                        <ul class="list-icon">#}
-{#                            <li><a href="#"> Электроника</a></li>#}
-{#                            <li><a href="#"> Одежда</a></li>#}
-{#                            <li><a href="#"> Питание</a></li>#}
-{#                            <li><a href="#"> </a></li>#}
-{#                        </ul>#}
-{##}
-{#                    </article>#}
-{#                </aside>#}
+                {#                <aside class="col-md-3 col-12">#}
+                {#                    <article>#}
+                {#                        <h5 class="title">Каталог</h5>#}
+                {#                        <ul class="list-icon">#}
+                {#                            <li><a href="#"> Электроника</a></li>#}
+                {#                            <li><a href="#"> Одежда</a></li>#}
+                {#                            <li><a href="#"> Питание</a></li>#}
+                {#                            <li><a href="#"> </a></li>#}
+                {#                        </ul>#}
+                {##}
+                {#                    </article>#}
+                {#                </aside>#}
                 <aside class="col-md-3 col-12">
                     <h5 class="title">Информация</h5>
                     <ul class="list-icon">
@@ -300,16 +309,16 @@
                         <li><a href="#"> О Компании</a></li>
                     </ul>
                 </aside>
-{#                <aside class="col-md-3 col-12 social-links">#}
-{#                    <h5 class="title"> Мы в соц. сетях</h5>#}
-{#                    <div>#}
-{#                        <a href="#" target="_blank" class="btn btn-icon btn-primary icon-vk"> <i class="fab fa-vk"></i></a>#}
-{#                        <a href="#" target="_blank" class="btn btn-icon btn-primary border-0 icon-instagram"><i#}
-{#                                class="fab fa-instagram"></i></a>#}
-{#                        <a href="#" target="_blank" class="btn btn-icon btn-primary icon-telegram"><i#}
-{#                                class="fab fa-telegram"></i></a>#}
-{#                    </div>#}
-{#                </aside>#}
+                {#                <aside class="col-md-3 col-12 social-links">#}
+                {#                    <h5 class="title"> Мы в соц. сетях</h5>#}
+                {#                    <div>#}
+                {#                        <a href="#" target="_blank" class="btn btn-icon btn-primary icon-vk"> <i class="fab fa-vk"></i></a>#}
+                {#                        <a href="#" target="_blank" class="btn btn-icon btn-primary border-0 icon-instagram"><i#}
+                {#                                class="fab fa-instagram"></i></a>#}
+                {#                        <a href="#" target="_blank" class="btn btn-icon btn-primary icon-telegram"><i#}
+                {#                                class="fab fa-telegram"></i></a>#}
+                {#                    </div>#}
+                {#                </aside>#}
             </div>
         </section>
     </div>
