@@ -25,10 +25,10 @@
                        href="{% url 'create_product' shop.id %}">Добавить продукт</a>
                 </li>
             {% endif %}
-            <li class="nav-item">
-                <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
-                   href="{% url 'shop_view' shop_id=shop.id %}">Главная страница</a>
-            </li>
+             <li class="nav-item">
+                    <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
+                       href="{% url 'home'  %}">Главная страница</a>
+                </li>
             <li class="nav-item">
                 <a class="nav-link text-{% if shop.theme == 'white' %}black{% else %}white{% endif %} ms-3"
                    href="{% url 'shop_products' shop_id=shop.id %}">Все товары</a>
