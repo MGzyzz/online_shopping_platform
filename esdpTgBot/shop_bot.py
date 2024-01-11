@@ -9,7 +9,7 @@ from aiogram.types import URLInputFile, WebAppInfo
 
 async def shop_data():
     async with httpx.AsyncClient() as client:
-        response = await client.get('http://localhost:8000/api/shop_for_telegram/')
+        response = await client.get('http://django-app:8000/api/shop_for_telegram/')
         result = response.json()
 
         return result
