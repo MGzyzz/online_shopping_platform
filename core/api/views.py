@@ -406,6 +406,6 @@ def user_detail_api_view(request, id, *args, **kwargs):
     value = str(code)
 
     redis_client.set(key, value)
-    redis_client.expire(key, 300)
+    redis_client.expire(key, 60)
 
     return JsonResponse(data=data, status=200)

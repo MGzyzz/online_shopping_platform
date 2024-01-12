@@ -54,15 +54,6 @@
                     </div>
 
                     <div class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-4 relative search-wrapper on-index">
-                        {#                        <form action="" class="search">#}
-                        {#                            <div class="input-group">#}
-                        {#                                <input type="text" class="form-control" placeholder="Поиск по каталогу">#}
-                        {#                                <div class="input-group-append">#}
-                        {#                                    <button class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i>#}
-                        {#                                    </button>#}
-                        {#                                </div>#}
-                        {#                            </div>#}
-                        {#                        </form>#}
                     </div>
                     <div class="col-12 col-sm-12 col-md-4 col-lg-2 text-center text-sm-center mt-3 mt-sm-0">
                         <div class="h6 mb-0">
@@ -77,16 +68,6 @@
                         <div class="widgets-wrap d-flex justify-content-center justify-content-lg-end mt-4 mt-lg-0">
                             <div class="widget-header me-3">
                                 <a href="#" class="icon-text decor">
-                                    {#                                    <div class="icon">#}
-                                    {#                                        <i class="fa-regular fa-heart"></i>#}
-                                    {#                                    </div>#}
-                                    {#                                    <div class="text">#}
-                                    {#                                        <small class="text-muted"> Избранное</small>#}
-                                    {#                                        <br>#}
-                                    {#                                        <span>#}
-                                    {#                                            Кол-во:#}
-                                    {#                                        </span>#}
-                                    {#                                    </div>#}
                                 </a>
                             </div>
 
@@ -161,7 +142,6 @@
                                         </form>
                                         <hr class="dropdown-divider">
                                         <a href="{% url 'register' %}" class="dropdown-item">Зарегистрироваться</a>
-                                        {#                                        <a href="" class="dropdown-item"> Забыли пароль?</a>#}
                                     </div>
                                 {% endif %}
                                 </div>
@@ -182,12 +162,7 @@
                                 <a class="nav-link-color" href="{% url 'shop_catalog' %}">Каталог</a>
                             </li>
                             <li class='nav-item'>
-                                <a class="nav-link-color" href="
-
-
-
-
-                                        {% if user.is_authenticated %}{% url 'shop_create' %}{% else %}{% url 'login_page' %}{% endif %}">Создать
+                                <a class="nav-link-color" href="{% if user.is_authenticated %}{% url 'shop_create' %}{% else %}{% url 'login_page' %}{% endif %}">Создать
                                     магазин</a>
                             </li>
                         </ul>
@@ -288,37 +263,6 @@
                         </ul>
                     </article>
                 </aside>
-
-                {#                <aside class="col-md-3 col-12">#}
-                {#                    <article>#}
-                {#                        <h5 class="title">Каталог</h5>#}
-                {#                        <ul class="list-icon">#}
-                {#                            <li><a href="#"> Электроника</a></li>#}
-                {#                            <li><a href="#"> Одежда</a></li>#}
-                {#                            <li><a href="#"> Питание</a></li>#}
-                {#                            <li><a href="#"> </a></li>#}
-                {#                        </ul>#}
-                {##}
-                {#                    </article>#}
-                {#                </aside>#}
-                <aside class="col-md-3 col-12">
-                    <h5 class="title">Информация</h5>
-                    <ul class="list-icon">
-                        <li><a href="#"> Доставка</a></li>
-                        <li><a href="#"> Оплата</a></li>
-                        <li><a href="#"> О Компании</a></li>
-                    </ul>
-                </aside>
-                {#                <aside class="col-md-3 col-12 social-links">#}
-                {#                    <h5 class="title"> Мы в соц. сетях</h5>#}
-                {#                    <div>#}
-                {#                        <a href="#" target="_blank" class="btn btn-icon btn-primary icon-vk"> <i class="fab fa-vk"></i></a>#}
-                {#                        <a href="#" target="_blank" class="btn btn-icon btn-primary border-0 icon-instagram"><i#}
-                {#                                class="fab fa-instagram"></i></a>#}
-                {#                        <a href="#" target="_blank" class="btn btn-icon btn-primary icon-telegram"><i#}
-                {#                                class="fab fa-telegram"></i></a>#}
-                {#                    </div>#}
-                {#                </aside>#}
             </div>
         </section>
     </div>
