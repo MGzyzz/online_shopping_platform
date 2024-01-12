@@ -49,8 +49,8 @@ class TimeDiscountViewSet(viewsets.ModelViewSet):
             price = product.discounted_price if product.discounted_price else product.price
 
             if time_discount.discount:
-                discounted_price = price - (
-                        price * (time_discount.discount / 100))
+                discounted_price = float(price) - (
+                        float(price) * (float(time_discount.discount) / 100))
 
             elif time_discount.discount_in_currency:
                 discounted_price = price - time_discount.discount_in_currency

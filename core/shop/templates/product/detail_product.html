@@ -102,9 +102,9 @@
             <div class="alert alert-success mt-3 d-none" role="alert">
                 Товар успешно добавлен в корзину
             </div>
-
         </div>
     </div>
+
     <div class="my-4">
         <div class="accordion" id="accordionPanelsStayOpenExample">
             <div class="accordion-item">
@@ -147,11 +147,12 @@
             </div>
         </div>
     </div>
+ {% if request.user == product.shop.user %}
     <input type="hidden" id="product" value="{{ product.id }}" name="product">
                 <button type="button" id="add-discount" class="btn btn-success add-discount mt-3" >
                 Добавить временную скидку
             </button>
-            <div class="modal" id="exampleModal" tabindex="-1" style="display: none">
+            <div class="modal" id="discountModal" tabindex="-1" style="display: none">
                 <div class="modal-dialog">
                     <div class="modal-content">
                     <div class="modal-header">
@@ -203,7 +204,9 @@
                 </div>
             </div>
             </div>
+{% endif %}
 </div>
+
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
