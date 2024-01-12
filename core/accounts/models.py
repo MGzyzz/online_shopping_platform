@@ -4,6 +4,7 @@ from django.db import models
 from django.utils import timezone
 from django.core.validators import RegexValidator
 
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -17,6 +18,7 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('iin_bin', '121212121212')
 
         return self.create_user(email, password, **extra_fields)
 
@@ -25,15 +27,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, verbose_name='Email')
     first_name = models.CharField(max_length=50, verbose_name='Имя')
     last_name = models.CharField(max_length=50, verbose_name='Фамилия')
-    iin = models.CharField(
+    iin_bin = models.CharField(
         max_length=12,
         validators=[RegexValidator(r'^\d{1,12}$', 'Только цифры, максимум 12.')],
-        verbose_name='ИИН'
-    )
-    bin = models.CharField(
-        max_length=12,
-        validators=[RegexValidator(r'^\d{1,12}$', 'Только цифры, максимум 12.')],
-        verbose_name='БИН'
+        verbose_name='ИИН/БИН',
+        unique=True,
     )
     phone = models.BigIntegerField(verbose_name='Телефон', unique=True)
     is_staff = models.BooleanField(default=False, verbose_name='Сотрудник')
@@ -41,7 +39,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False, verbose_name='Суперпользователь')
     date_joined = models.DateTimeField(default=timezone.now, verbose_name='Дата регистрации')
     phone_verification = models.BooleanField(default=False)
-
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'

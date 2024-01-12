@@ -47,7 +47,7 @@
         <section>
             <div class="container">
                 <div class="row align-items-center">
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <div class="col-12 col-sm-12 col-md-4 col-lg-2 text-sm-center">
                         <a href="{% url 'home' %}" class="brand-wrap"> <img class="logo"
                                                                             src="{% static 'img/logo-social.png' %}"
                                                                             alt="logo"> </a>
@@ -55,7 +55,7 @@
 
                     <div class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-4 relative search-wrapper on-index">
                     </div>
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-2 text-center text-sm-left mt-3 mt-sm-0">
+                    <div class="col-12 col-sm-12 col-md-4 col-lg-2 text-center text-sm-center mt-3 mt-sm-0">
                         <div class="h6 mb-0">
                             <a class="text-dark decor" href="#"> 8-705-777-77-77</a>
                         </div>
@@ -64,7 +64,7 @@
                         </div>
 
                     </div>
-                    <div class="col-12 col-sm-12 col-lg-5 col-xl-4 d-none d-md-block">
+                    <div class="col-12 col-sm-12 col-lg-5 col-xl-4 d-md-block">
                         <div class="widgets-wrap d-flex justify-content-center justify-content-lg-end mt-4 mt-lg-0">
                             <div class="widget-header me-3">
                                 <a href="#" class="icon-text decor">
@@ -72,7 +72,7 @@
                             </div>
 
                             <ul class="navbar-nav ml-auto">
-                                {% if user.is_authenticated and not user.account  %}
+                                {% if user.is_authenticated and not user.account %}
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
                                            role="button" data-toggle="dropdown" aria-haspopup="true"
@@ -94,7 +94,8 @@
                                 {% else %}
 
                                     <div class="widget-header dropdown drop">
-                                    <a id="dropLink" href="" class="ml-3 icon-text decor" data-toggle="dropdown" data-offset="20, 10"
+                                    <a id="dropLink" href="" class="ml-3 icon-text decor" data-toggle="dropdown"
+                                       data-offset="20, 10"
                                        aria-expanded="true">
                                         <div class="icon">
                                             <i class="fa fa-lg fa-user-circle"></i>
@@ -161,7 +162,8 @@
                                 <a class="nav-link-color" href="{% url 'shop_catalog' %}">Каталог</a>
                             </li>
                             <li class='nav-item'>
-                                <a class="nav-link-color" href="{% if user.is_authenticated %}{% url 'shop_create' %}{% else %}{% url 'login_page' %}{% endif %}">Создать магазин</a>
+                                <a class="nav-link-color" href="{% if user.is_authenticated %}{% url 'shop_create' %}{% else %}{% url 'login_page' %}{% endif %}">Создать
+                                    магазин</a>
                             </li>
                         </ul>
                     </div>
@@ -204,8 +206,10 @@
     </section>
 
     <section class="section-content bg padding-y slider-block">
-    <h3 class="marg-shop">Примеры магазинов</h3>
         <div class="container">
+
+            <h3 class="marg-shop">Примеры магазинов</h3>
+
             <div class="row">
                 {% for shop in shops %}
                     <div class="col-12 col-md-4 mb-3 special-col">
@@ -226,7 +230,7 @@
                     </div>
                 {% endfor %}
             </div>
-       <a href="{% url 'shop_catalog' %}" class="">Смотреть ещё ...</a>
+            <a href="{% url 'shop_catalog' %}" class="">Смотреть ещё ...</a>
         </div>
     </section>
 {% endblock %}

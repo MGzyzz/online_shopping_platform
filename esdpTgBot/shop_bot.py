@@ -1,5 +1,4 @@
 import asyncio
-import json
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters.command import Command
@@ -9,7 +8,7 @@ from aiogram.types import URLInputFile, WebAppInfo
 
 async def shop_data():
     async with httpx.AsyncClient() as client:
-        response = await client.get('http://localhost:8000/api/shop_for_telegram/')
+        response = await client.get('http://django-app:8000/api/shop_for_telegram/')
         result = response.json()
 
         return result
@@ -36,12 +35,11 @@ class ShopBot:
 
         @self.dp.message(Command('info'))
         async def info(message: types.Message):
-            products_json = json.dumps(self.shop_data['products'])
             buttons = [
                 [
                     types.InlineKeyboardButton(text="Оформить досатвку", callback_data='test2'),
                     types.InlineKeyboardButton(text="Каталог магазина ", web_app=WebAppInfo(
-                        url=f"https://market.shopuchet.kz/static/telegram.html?products={products_json}"))
+                        url=f"https://market.shopuchet.kz/"))
                 ],
 
                 [types.InlineKeyboardButton(text="Перейти на наш сайт", url=f'https://market.shopuchet.kz/shop/{self.shop_data["id"]}')]
@@ -58,9 +56,10 @@ class ShopBot:
 
 
 async def main() -> None:
-    shop_data_list = await shop_data()
-    bots = [ShopBot(token=shop['tg_token'], shop_data=shop) for shop in shop_data_list]
-    await asyncio.gather(*(bot.run() for bot in bots))
+        shop_data_list = await shop_data()
+        bots = [ShopBot(token=shop['tg_token'], shop_data=shop) for shop in shop_data_list]
+        await asyncio.gather(*(bot.run() for bot in bots))
+
 
 
 if __name__ == '__main__':
