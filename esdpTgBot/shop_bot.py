@@ -28,7 +28,7 @@ class ShopBot:
                 await message.answer_photo(image_from_url,
                                        caption=f'Здраствуйте! Вас приветствует бот магазина: {self.shop_data["name"]}\n'
                                                f'Описание нашего магазина: {self.shop_data["description"]}'
-                                               f'{self.shop_data["products"]}')
+                                               )
 
             except Exception as e:
                 print(e)
@@ -39,9 +39,8 @@ class ShopBot:
                 [
                     types.InlineKeyboardButton(text="Оформить досатвку", callback_data='test2'),
                     types.InlineKeyboardButton(text="Каталог магазина ", web_app=WebAppInfo(
-                        url=f"https://market.shopuchet.kz/"))
+                        url=f"https://market.shopuchet.kz/{self.shop_data['id']}"))
                 ],
-
                 [types.InlineKeyboardButton(text="Перейти на наш сайт", url=f'https://market.shopuchet.kz/shop/{self.shop_data["id"]}')]
             ]
             keyboard = types.InlineKeyboardMarkup(inline_keyboard=buttons)
