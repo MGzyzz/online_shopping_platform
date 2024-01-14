@@ -132,7 +132,7 @@ function checkConstantSale(productId){
         }
     }).then(function (data){
         if (data.discount && data.discount > 0) {
-                $('#productPrice').html( `<del class="text-secondary fs-4">${data.price} ₸</del> <p class="fs-3 m-0">${data.discounted_price} ₸</p><p class="text-success fs-5">Скидка: ${data.discount}%</p>`)
+                $('#productPrice').html( `<del class="text-secondary fs-4">${data.price} ₸</del> <p class="fs-3 m-0" style="font-weight: 500">${data.discounted_price} ₸</p><p class="text-success fs-5">Скидка: ${data.discount}%</p>`)
         }
         else {
             $('#productPrice').html(`<div id="priceDiscount">\n` +
@@ -159,9 +159,9 @@ function checkTimeDiscountField(productId) {
                 checkStartDiscount(productId).then(function (started) {
                     if (started) {
                         if (data.discount) {
-                            $('#productPrice').html(`<del class="text-secondary fs-4">${productPrice} ₸</del> <p class="fs-3 m-0">${data.discounted_price} ₸</p><p class=" text-success fs-5">Скидка: ${data.discount}%</p>`);
+                            $('#productPrice').html(`<del class="text-secondary fs-4">${productPrice} ₸</del> <p class="fs-3 m-0" style="font-weight: 500">${data.discounted_price} ₸</p><p class=" text-success fs-5">Скидка: ${data.discount}%</p>`);
                         } else if (data.discount_in_currency) {
-                            $('#productPrice').html(` <del class="text-secondary fs-4">${productPrice} ₸</del> <p class="fs-3 m-0">${data.discounted_price} ₸</p><p class=" text-success fs-5">Скидка: ${data.discount_in_currency} ₸</p>`);
+                            $('#productPrice').html(` <del class="text-secondary fs-4">${productPrice} ₸</del> <p class="fs-3 m-0" style="font-weight: 500">${data.discounted_price} ₸</p><p class=" text-success fs-5">Скидка: ${data.discount_in_currency} ₸</p>`);
                         }
                     }
                 });
