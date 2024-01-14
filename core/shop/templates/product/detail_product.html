@@ -52,6 +52,7 @@
             <div class="d-flex flex-column">
                 <h1>{{ product.name }}</h1>
                 <small>АРТ: {{ product.vendor_code }}</small>
+            <div id="productPrice">
                 {% if product.time_discount and product.time_discount.start_date <= now %}
                     <del class="text-secondary fs-4">{{ product.price }} ₸</del>
                     <p class="fs-3 m-0" style="font-weight: 500">
@@ -68,6 +69,7 @@
                         <p id="price" class="fs-3">{{ product.price }} ₸</p>
                     </div>
                 {% endif %}
+            </div>
             </div>
             <div>
                 {% for name, values in parameters.items %}
@@ -149,6 +151,7 @@
     </div>
  {% if request.user == product.shop.user %}
     <input type="hidden" id="product" value="{{ product.id }}" name="product">
+     <input type="hidden" id="somePrice" value="{{ product.price }}">
                 <button type="button" id="add-discount" class="btn btn-success add-discount mt-3" >
                 Добавить временную скидку
             </button>

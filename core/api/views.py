@@ -46,7 +46,7 @@ class TimeDiscountViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             time_discount = serializer.save()
             product = time_discount.product
-            price = product.discounted_price if product.discounted_price else product.price
+            price = product.price
 
             if time_discount.discount:
                 discounted_price = float(price) - (
