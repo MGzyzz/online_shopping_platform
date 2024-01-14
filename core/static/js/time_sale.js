@@ -132,11 +132,11 @@ function checkConstantSale(productId){
         }
     }).then(function (data){
         if (data.discount && data.discount > 0) {
-                $('#productPrice').html(`<p>Цена: <del class="text-danger">${data.price}</del> ${data.discounted_price}</p><p class="text-success fw-700">Скидка: ${data.discount}%</p>`)
+                $('#productPrice').html( `<del class="text-secondary fs-4">${data.price} ₸</del> <p class="fs-3 m-0" style="font-weight: 500">${data.discounted_price} ₸</p><p class="text-success fs-5">Скидка: ${data.discount}%</p>`)
         }
         else {
             $('#productPrice').html(`<div id="priceDiscount">\n` +
-                `                            <p id="price" class="fw-700">Цена: ${data.price}</p>\n` +
+                `                            <p id="price" class="fs-4">${data.price} ₸</p>\n` +
                 `                        </div>`)
         }
 
@@ -159,9 +159,9 @@ function checkTimeDiscountField(productId) {
                 checkStartDiscount(productId).then(function (started) {
                     if (started) {
                         if (data.discount) {
-                            $('#productPrice').html(`<p>Цена: <del class="text-danger">${productPrice}</del> ${data.discounted_price}</p><p class="text-success fw-700">Скидка: ${data.discount}%</p>`);
+                            $('#productPrice').html(`<del class="text-secondary fs-4">${productPrice} ₸</del> <p class="fs-3 m-0" style="font-weight: 500">${data.discounted_price} ₸</p><p class=" text-success fs-5">Скидка: ${data.discount}%</p>`);
                         } else if (data.discount_in_currency) {
-                            $('#productPrice').html(`<p>Цена: <del class="text-danger">${productPrice}</del> ${data.discounted_price}</p>`);
+                            $('#productPrice').html(` <del class="text-secondary fs-4">${productPrice} ₸</del> <p class="fs-3 m-0" style="font-weight: 500">${data.discounted_price} ₸</p><p class=" text-success fs-5">Скидка: ${data.discount_in_currency} ₸</p>`);
                         }
                     }
                 });
@@ -200,11 +200,13 @@ function checkSale(productId){
             $('#delete-btn').hide()
         $('#add-discount').show()
         checkConstantSale(productId)
+
         }
         else {
             $('#delete-btn').show()
             $('#add-discount').hide()
             checkTimeDiscountField(productId)
+
         }
     })
 }
@@ -212,6 +214,6 @@ function checkSale(productId){
 setInterval(function (){
     let productId = $('#product').val()
     checkSale(productId)
-}, 100000)
+}, 10000)
 
 
