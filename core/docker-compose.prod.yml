@@ -9,6 +9,6 @@ services:
     expose:
       - 6379
 
-  nginx:
-    expose:
-      - 8585
+  # nginx:
+  #   expose:
+  #     - 8585
