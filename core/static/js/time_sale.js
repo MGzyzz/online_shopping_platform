@@ -136,7 +136,7 @@ function checkConstantSale(productId){
         }
         else {
             $('#productPrice').html(`<div id="priceDiscount">\n` +
-                `                            <p id="price" class="fs-4">${data.price} ₸</p>\n` +
+                `                            <p id="price" class="fs-3">${data.price} ₸</p>\n` +
                 `                        </div>`)
         }
 
