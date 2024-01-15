@@ -214,6 +214,6 @@ function checkSale(productId){
 setInterval(function (){
     let productId = $('#product').val()
     checkSale(productId)
-}, 10000)
+}, 3000)
 
 
