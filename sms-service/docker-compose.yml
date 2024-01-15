@@ -7,9 +7,9 @@ services:
       context: .
       dockerfile: Dockerfile
     env_file:
+      - .env
     ports:
       - "1026:1026"
-      - .env
     volumes:
       - .:/usr/src/sms
     command: bash -c "python3 main.py"
