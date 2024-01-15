@@ -8,7 +8,7 @@ from adapters import SMSAdapter
 import httpx
 from fastapi.middleware.cors import CORSMiddleware
 
-app = fastapi.FastAPI()
+app = fastapi.FastAPI() 
 
 app.add_middleware(
     CORSMiddleware,
@@ -19,7 +19,7 @@ app.add_middleware(
 )
 
 
-@app.post('/send/{id_}')
+@app.post('/sms/send/{id_}')
 async def send_sms(id_: int):
     response = httpx.get(f'{os.environ.get("CORE_URL")}/api/user/{id_}')
 
