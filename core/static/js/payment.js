@@ -38,7 +38,6 @@ function order() {
 let pay = function(orderId, total, payer_phone, account, payer_email) {
     var widget = new cp.CloudPayments();
     widget.pay('charge', {
-        // options
         publicId: 'pk_3d2e6006deeae8feba63160d9efd2',
         description: 'Оплата товаров в example.com',
         amount: total,
@@ -50,25 +49,30 @@ let pay = function(orderId, total, payer_phone, account, payer_email) {
             phone: payer_phone,
         }
     }).then(function(widgetResult) {
-        console.log('Payment successful', widgetResult);
+        if (widgetResult && widgetResult.success) {
+            console.log('Payment successful', widgetResult);
 
-        $.ajax({
-            url: 'https://market.shopuchet.kz/api/create-check/',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ order_id: orderId, email: payer_email }),
-            success: function(response) {
-                console.log('Server response', response);
-            },
-            error: function(error) {
-                console.error('Error in AJAX request', error);
-            }
-        });
+            $.ajax({
+                url: 'https://market.shopuchet.kz/api/create-check/',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ order_id: orderId, email: payer_email }),
+                success: function(response) {
+                    console.log('Server response', response);
+                },
+                error: function(error) {
+                    console.error('Error in AJAX request', error);
+                }
+            });
 
-        window.location.reload();
+            window.location.reload();
+        } else {
+            console.log('Payment not successful or cancelled');
+        }
     }).catch(function(error) {
         console.log('Payment error', error);
     });
 };
+
 
 $('#checkout').click(order);
