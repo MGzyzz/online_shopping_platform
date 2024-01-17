@@ -68,14 +68,14 @@ services:
       - TZ=Asia/Almaty
 
 
-  nginx:
-    container_name: nginx
-    image: nginx:latest
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./static:/usr/share/nginx/html/static:ro
-    depends_on:
-      - app
+  # nginx:
+  #   container_name: nginx
+  #   image: nginx:latest
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - ./static:/usr/share/nginx/html/static:ro
+  #   depends_on:
+  #     - app
 
 networks:
   default:
