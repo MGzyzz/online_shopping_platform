@@ -17,18 +17,18 @@ class LoginView(views.LoginView):
     def get_success_url(self):
         return reverse('home')
 
-    # def form_valid(self, form):
-    #     user = form.get_user()
-    #
-    #     self.request.session['user_id'] = user.id
-    #     self.request.session['phone'] = user.phone
-    #
-    #     if user.phone_verification and user is not None:
-    #         login(self.request, user)
-    #
-    #         return redirect(self.get_success_url())
-    #
-    #     return redirect('sms-verification')
+    def form_valid(self, form):
+        user = form.get_user()
+
+        self.request.session['user_id'] = user.id
+        self.request.session['phone'] = user.phone
+
+        if user.phone_verification and user is not None:
+            login(self.request, user)
+
+            return redirect(self.get_success_url())
+
+        return redirect('sms-verification')
 
 
 class LoginPageView(views.LoginView):
@@ -38,18 +38,18 @@ class LoginPageView(views.LoginView):
     def get_success_url(self):
         return reverse('home')
 
-    # def form_valid(self, form):
-    #     user = form.get_user()
-    #
-    #     self.request.session['user_id'] = user.id
-    #     self.request.session['phone'] = user.phone
-    #
-    #     if user.phone_verification and user is not None:
-    #         login(self.request, user)
-    #
-    #         return redirect(self.get_success_url())
-    #
-    #     return redirect('sms-verification')
+    def form_valid(self, form):
+        user = form.get_user()
+
+        self.request.session['user_id'] = user.id
+        self.request.session['phone'] = user.phone
+
+        if user.phone_verification and user is not None:
+            login(self.request, user)
+
+            return redirect(self.get_success_url())
+
+        return redirect('sms-verification')
 
 
 class Logout(views.LogoutView):
@@ -65,7 +65,6 @@ class RegisterView(CreateView):
     def form_valid(self, form):
         user = form.save(commit=False)
         user.save()
-        # user.groups.add(1)
         user.is_staff = True
 
         self.request.session['user_id'] = user.id
