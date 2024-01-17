@@ -26,51 +26,49 @@ function order() {
             payer_postal_code,
             account
         },
-    }).then(function (data) {
+    }).then(function(data) {
         pay(data['order_id'], parseFloat(total), payer_phone, data['user_id'], payer_email)
     }).catch(
-        function (error) {
+        function(error) {
             console.log(error)
         }
     )
 }
 
-let pay = function (orderId, total, payer_phone, account, payer_email) {
-        var widget = new cp.CloudPayments();
-        widget.pay('charge',
-            { //options
-                publicId: 'pk_3d2e6006deeae8feba63160d9efd2', //id из личного кабинета
-                description: 'Оплата товаров в example.com', //назначение
-                amount: total, //сумма
-                currency: 'KZT', //валюта
-                accountId: account, //идентификатор плательщика (необязательно)
-                invoiceId: orderId, //номер заказа  (необязательно)
-                skin: "classic", //дизайн виджета (необязательно)б
-                payer: {
-                    phone: payer_phone, //номер телефона плательщика
-                }
-            }).then(function (widgetResult) {
-            console.log('result', widgetResult);
+let pay = function(orderId, total, payer_phone, account, payer_email) {
+    var widget = new cp.CloudPayments();
+    widget.pay('charge', {
+        // options
+        publicId: 'pk_3d2e6006deeae8feba63160d9efd2',
+        description: 'Оплата товаров в example.com',
+        amount: total,
+        currency: 'KZT',
+        accountId: account,
+        invoiceId: orderId,
+        skin: "classic",
+        payer: {
+            phone: payer_phone,
+        }
+    }).then(function(widgetResult) {
+        console.log('Payment successful', widgetResult);
 
-            $.ajax({
-                url: 'https://market.shopuchet.kz/api/create-check/',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ order_id: orderId, email: payer_email }),
-                success: function(response) {
-                    console.log('Server response', response);
-                },
-                error: function(error) {
-                    console.error('Error in AJAX request', error);
-                }
-            });
-            window.location.reload()
-        }).catch(function (error) {
-                console.log('error', error);
+        $.ajax({
+            url: 'https://market.shopuchet.kz/api/create-check/',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ order_id: orderId, email: payer_email }),
+            success: function(response) {
+                console.log('Server response', response);
+            },
+            error: function(error) {
+                console.error('Error in AJAX request', error);
             }
-        )
+        });
 
-    }
-;
+        window.location.reload();
+    }).catch(function(error) {
+        console.log('Payment error', error);
+    });
+};
 
 $('#checkout').click(order);
