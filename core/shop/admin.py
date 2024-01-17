@@ -3,7 +3,7 @@ from django.db.models import Sum
 from django.utils import timezone
 
 from shop.models import *
-
+from accounts.models import User
 
 # Register your models here.
 
@@ -60,7 +60,8 @@ class MultiModelAdmin(admin.ModelAdmin):
     get_income.short_description = 'Доход'
 
 
-admin.site.register(Shop, MultiModelAdmin)
+admin.site.register(Shop)
+admin.site.register(User)
 admin.site.register(Product)
 admin.site.register(Order)
 admin.site.register(OrderProducts)
